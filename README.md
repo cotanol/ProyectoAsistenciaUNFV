@@ -5,3 +5,5 @@
 - SCRIPT sql Base de Datos (Mysql)
 - Xampp
 - DRIVER Sql adjuntado
+
+![Descripción del GIF](PinguinoBailarin.gif)
