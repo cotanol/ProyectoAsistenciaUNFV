@@ -1,0 +1,91 @@
+-- Se crea la Base de Datos del Proyecto
+DROP DATABASE IF EXISTS unfv_bd;
+CREATE DATABASE unfv_bd;
+USE unfv_bd;
+
+-- 1. Crear la tabla alumno (sin dependencias)
+CREATE TABLE alumno (
+  codigo_alumno INT AUTO_INCREMENT PRIMARY KEY,
+  nombres VARCHAR(100),
+  apellidos VARCHAR(100)
+);
+
+-- 2. Crear la tabla usuario (sin dependencias)
+CREATE TABLE usuario (
+  id_usuario INT AUTO_INCREMENT PRIMARY KEY,
+  nombres VARCHAR(100),
+  apellidos VARCHAR(100),
+  tipo_documento VARCHAR(20),
+  nro_documento VARCHAR(20) UNIQUE,
+  numero VARCHAR(20),
+  cargo VARCHAR(50),
+  nombre_usuario VARCHAR(100) UNIQUE,
+  contrasena VARCHAR(100),
+  email VARCHAR(100) UNIQUE
+);
+
+-- 3. Crear la tabla laboratorio (sin dependencias)
+CREATE TABLE laboratorio (
+  numero_lab INT AUTO_INCREMENT PRIMARY KEY,
+  capacidad INT 
+);
+
+-- 4. Crear la tabla horario_laboratorio (depende de laboratorio)
+CREATE TABLE horario_laboratorio (
+  id_horario INT AUTO_INCREMENT PRIMARY KEY,
+  numero_lab INT,
+  asignatura VARCHAR(100),
+  dia ENUM('LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 'VIERNES', 'SABADO', 'DOMINGO'),
+  horario_inicio TIME,
+  horario_fin TIME,
+  docente VARCHAR(100),
+  FOREIGN KEY (numero_lab) REFERENCES laboratorio(numero_lab)
+);
+
+-- 5. Crear la tabla equipo (depende de laboratorio)
+CREATE TABLE equipo (
+  cod_patrimonial VARCHAR(50) PRIMARY KEY,
+  numero_lab INT,
+  tipo_equipo VARCHAR(100),
+  numero_serie VARCHAR(50),
+  estado ENUM('ACTIVO', 'INACTIVO', 'MANTENIMIENTO'),
+  FOREIGN KEY (numero_lab) REFERENCES laboratorio(numero_lab)
+);
+
+-- 6. Crear la tabla reporte (depende de laboratorio)
+CREATE TABLE reporte (
+  id_reporte INT AUTO_INCREMENT PRIMARY KEY,
+  ano INT,
+  mes INT,
+  asistencia_total INT,
+  numero_lab INT,
+  FOREIGN KEY (numero_lab) REFERENCES laboratorio(numero_lab)
+);
+
+-- 7. Crear la tabla asistencia (depende de alumno y laboratorio)
+CREATE TABLE asistencia (
+  id_asistencia INT AUTO_INCREMENT PRIMARY KEY,
+  fecha DATE,
+  estado ENUM('PRESENTE', 'AUSENTE'),
+  numero_lab INT,
+  codigo_alumno INT,
+  FOREIGN KEY (numero_lab) REFERENCES laboratorio(numero_lab),
+  FOREIGN KEY (codigo_alumno) REFERENCES alumno(codigo_alumno)
+);
+
+-- 8. Crear la tabla usuario_funcionalidad (depende de usuario y laboratorio)
+CREATE TABLE usuario_funcionalidad (
+  id_usuario_funcion INT AUTO_INCREMENT PRIMARY KEY,
+  id_usuario INT,
+  numero_lab INT,
+  funcionalidad VARCHAR(100),
+  FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario),
+  FOREIGN KEY (numero_lab) REFERENCES laboratorio(numero_lab)
+);
+
+
+INSERT INTO alumno (nombres, apellidos) VALUES
+("Jorge", "Sacsa"),
+("Marco", "Zarate");
+
+
