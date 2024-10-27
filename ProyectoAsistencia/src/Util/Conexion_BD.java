@@ -12,7 +12,7 @@ public class Conexion_BD {
         try {
             
             Class.forName("com.mysql.cj.jdbc.Driver"); 
-            String url = "jdbc:mysql://localhost:3306/veterinaria_db";
+            String url = "jdbc:mysql://localhost:3306/unfv_bd";
             String user = "root";
             String password = "rafaelgatogordo"; 
 

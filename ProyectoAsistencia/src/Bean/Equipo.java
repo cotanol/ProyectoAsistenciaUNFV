@@ -12,7 +12,7 @@ import Util.Enums.EstadoEquipo;
  */
 public class Equipo {
     private int codPatrimonial;
-    private int numLab;
+    private int numeroLaboratorio;
     private String tipoEquipo;
     private String numeroSerie;
     private EstadoEquipo estado;
@@ -25,12 +25,12 @@ public class Equipo {
         this.codPatrimonial = codPatrimonial;
     }
 
-    public int getNumLab() {
-        return numLab;
+    public int getNumeroLab() {
+        return numeroLaboratorio;
     }
 
-    public void setNumLab(int numLab) {
-        this.numLab = numLab;
+    public void setNumeroLab(int numeroLaboratorio) {
+        this.numeroLaboratorio = numeroLaboratorio;
     }
 
     public String getTipoEquipo() {

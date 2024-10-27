@@ -19,6 +19,7 @@ public class HorarioLaboratorio {
     private Dia dia;
     private LocalTime horarioInicio;
     private LocalTime horarioFin;
+    private String docente;
 
     public int getIdHorario() {
         return idHorario;
@@ -66,6 +67,14 @@ public class HorarioLaboratorio {
 
     public void setHorarioFin(LocalTime horarioFin) {
         this.horarioFin = horarioFin;
+    }
+
+    public String getDocente() {
+        return docente;
+    }
+
+    public void setDocente(String docente) {
+        this.docente = docente;
     }
     
     

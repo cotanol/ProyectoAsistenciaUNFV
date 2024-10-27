@@ -11,9 +11,7 @@ package Bean;
 public class Laboratorio {
     
     private int numeroLab;
-    private String asignatura;
-    private String docente;
-    private String horario;
+    private int capacidad;
 
     public int getNumeroLab() {
         return numeroLab;
@@ -23,30 +21,13 @@ public class Laboratorio {
         this.numeroLab = numeroLab;
     }
 
-    public String getAsignatura() {
-        return asignatura;
+    public int getCapacidad() {
+        return capacidad;
     }
 
-    public void setAsignatura(String asignatura) {
-        this.asignatura = asignatura;
+    public void setCapacidad(int capacidad) {
+        this.capacidad = capacidad;
     }
-
-    public String getDocente() {
-        return docente;
-    }
-
-    public void setDocente(String docente) {
-        this.docente = docente;
-    }
-
-    public String getHorario() {
-        return horario;
-    }
-
-    public void setHorario(String horario) {
-        this.horario = horario;
-    }
-    
     
     
 }

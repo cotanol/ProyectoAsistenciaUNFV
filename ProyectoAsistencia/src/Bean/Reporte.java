@@ -9,17 +9,28 @@ package Bean;
  * @author brigi
  */
 public class Reporte {
-    private int año;
+    private int idReporte;
+    private int ano;
     private int mes;
     private int asistenciaTotal;
     private int numeroLab;
 
-    public int getAño() {
-        return año;
+    public int getIdReporte() {
+        return idReporte;
     }
 
-    public void setAño(int año) {
-        this.año = año;
+    public void setIdReporte(int idReporte) {
+        this.idReporte = idReporte;
+    }
+
+    
+    
+    public int getAno() {
+        return ano;
+    }
+
+    public void setAno(int ano) {
+        this.ano = ano;
     }
 
     public int getMes() {
