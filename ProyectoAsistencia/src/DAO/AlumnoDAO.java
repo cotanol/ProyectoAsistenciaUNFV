@@ -116,7 +116,7 @@ public class AlumnoDAO {
         return listaAlumnos;
     }
     
-    public static void main(String[] args) {
+    public static void main(String[] args) { // Probando el codigo si muestra los datos de la tabla
         AlumnoDAO dao = new AlumnoDAO();
         dao.enlistarAlumno();
     }
