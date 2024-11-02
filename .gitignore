@@ -1,7 +1,24 @@
-ProyectoAsistenciaUNFV/build/
-ProyectoAsistenciaUNFV/nbproject/private/
-ProyectoAsistenciaUNFV/nbproject/build-impl.xml
-ProyectoAsistenciaUNFV/nbproject/genfiles.properties
-ProyectoAsistenciaUNFV/dist/
-/ProyectoAsistencia/nbproject/private/
-/ProyectoAsistencia/build/
+# Ignorar las carpetas de construcción y distribución dentro de ProyectoAsistencia
+ProyectoAsistencia/build/
+ProyectoAsistencia/dist/
+
+# Ignorar configuraciones privadas y archivos generados automáticamente de NetBeans dentro de ProyectoAsistencia
+ProyectoAsistencia/nbproject/private/
+ProyectoAsistencia/nbproject/build-impl.xml
+ProyectoAsistencia/nbproject/genfiles.properties
+
+# Ignorar archivos de registro de errores en la raíz de ProyectoAsistencia
+ProyectoAsistencia/hs_err_pid*
+ProyectoAsistencia/replay_pid*
+
+# Ignorar archivos generados y específicos del sistema dentro de ProyectoAsistencia
+ProyectoAsistencia/*.class
+ProyectoAsistencia/*.jar
+ProyectoAsistencia/*.war
+ProyectoAsistencia/*.ear
+ProyectoAsistencia/*.log
+ProyectoAsistencia/.DS_Store
+
+# Ignorar archivos de configuración temporal o de entorno dentro de ProyectoAsistencia
+ProyectoAsistencia/*.properties~
+ProyectoAsistencia/*.settings
