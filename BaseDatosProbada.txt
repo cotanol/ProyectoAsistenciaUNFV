@@ -87,5 +87,3 @@ CREATE TABLE usuario_funcionalidad (
 INSERT INTO alumno (nombres, apellidos) VALUES
 ("Jorge", "Sacsa"),
 ("Marco", "Zarate");
-
-
