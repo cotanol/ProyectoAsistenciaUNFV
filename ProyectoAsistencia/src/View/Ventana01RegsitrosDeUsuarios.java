@@ -1,15 +1,7 @@
-
 package View;
 
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Font;
-import java.awt.Image;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
@@ -17,296 +9,268 @@ import javax.swing.table.DefaultTableModel;
 import Model.*;
 import java.util.ArrayList;
 
+public class Ventana01RegsitrosDeUsuarios extends JFrame {
 
-public class Ventana01RegsitrosDeUsuarios extends JFrame implements ActionListener {
-    
-    int idUsuario;
-    
-    JPanel panelLeft, panelRight1, panelRight2, panelRight3, panelRight4, panelLogo, panelUser;
-    
-    ImageIcon imagen1, imagen2, imagenEscala1, imagenEscala2, imagen3, imagenEscalada3;
-    JLabel lbImagenUser, lbImagenLogo, lbNameUser;
-    
-    JButton btnCerrarSesion, btnRegsitroUsuarios, btnControlAsistencia, btnControlEquipos, btnHorariosLaboratorio;
-    
-    JLabel lbRegistrosUsuarios, lbControlAsistencia, lbControlEquipos, lbHorariosLaboratorio,
-            nombreSubPanel1_1, nombreSubPanel1_2;
-    
-    JPanel subPanel1, subPanel2, subPanel3, subPanel4, subPanel5, subPanel6, subPanel7, subPanel8;
-    JScrollPane  scrollSubPanel1_2;
-    
-    JLabel lbNombres, lbApellidos, lbTipoDeDocumento, lbNumeroDeDocumento, lbNumeroDeContacto, lbCargo,
-            lbUsuario, lbContraseña, lbEmail;
+    // Variables de instancia
+    private int idUsuario;
+    private JPanel panelLeft, panelDerecho;
+    private JPanel panelLogo, panelUser;
+    private JButton btnRegistroUsuarios, btnControlAsistencia, btnControlEquipos, btnHorariosLaboratorio, btnCerrarSesion;
+    private JLabel lbImagenUser, lbImagenLogo, lbNameUser;
 
-    JTextField txtNombres, txtApellidos, txtTipoDeDocumento, txtNumeroDeDocumento, txtNumeroDeContacto, txtCargo,
-            txtUsuario, txtContraseña, txtEmail;
-    
-    JComboBox<String> cbTipoDeDocumento, cbCargo;
-    
-    JButton btnAgregar, btnModificar, btnEliminar;
-    
-    Color colorBaseBotones = new Color(255,152,0);  
-    Color colorHoverSeleccionado1 = new Color(233,113,50);
-    Color colorHoverSeleccionado2 = new Color(255,198,66);
-    
-    Border border = BorderFactory.createLineBorder(Color.BLACK, 2); // Borde negro de 2 px
-    Border border1 = BorderFactory.createLineBorder(colorHoverSeleccionado1,2);
-    
-    JTable tablaUsuarios;
-    DefaultTableModel modeloUsuario;
-    
-    ArrayList<Usuario> listaUsuarios;
-    Usuario usuario;
-    UsuarioDAO usuarioDAO;
-    
-    
-    private boolean boton1Seleccionado = false;
-    private boolean boton2Seleccionado = false;
-    private boolean boton3Seleccionado = false;
-    private boolean boton4Seleccionado = false;
-    
-    public Ventana01RegsitrosDeUsuarios(){
-        //COMANDO PARA QUE NO HAYA FOCO A LA HORA DE PRESIONAR EL BOTON
-        UIManager.put("Button.select", new Color(0, 0, 0, 0)); // Foco transparente de seleccion
-        //PROPIEDADES DE LA VENTANA EN GENERAL
-        setSize(1600,900);
-        setTitle("GESTOR DE LABORATORIO DE LA UNIVERSIDAD NACIONAL FEDERCIO VILLARREAL");
+    // Paneles derechos
+    private JPanel panelRight1, panelRight2, panelRight3, panelRight4;
+
+    // Componentes de panelRight1
+    private JLabel lbRegistrosUsuarios;
+    private JPanel subPanel1;
+    private JLabel lbNombres, lbApellidos, lbUsuario, lbTipoDeDocumento, lbNumeroDeContacto, lbContraseña, lbNumeroDeDocumento, lbCargo, lbEmail;
+    private JTextField txtNombres, txtApellidos, txtUsuario, txtNumeroDeContacto, txtContraseña, txtNumeroDeDocumento, txtEmail;
+    private JComboBox<String> cbTipoDeDocumento, cbCargo;
+    private JButton btnAgregar, btnModificar, btnEliminar;
+    private JLabel nombreSubPanel1_1, nombreSubPanel1_2;
+    private JScrollPane scrollSubPanel1_2;
+    private JTable tablaUsuarios;
+    private DefaultTableModel modeloUsuario;
+
+    // Modelo
+    private ArrayList<Usuario> listaUsuarios;
+    private Usuario usuario;
+    private UsuarioDAO usuarioDAO;
+
+    // Colores
+    private static final Color COLOR_BASE_BOTONES = new Color(255, 152, 0);
+    private static final Color COLOR_HOVER_SELECCIONADO1 = new Color(233, 113, 50);
+    private static final Color COLOR_HOVER_SELECCIONADO2 = new Color(255, 198, 66);
+    private static final Color COLOR_TEXTO_BLANCO = Color.WHITE;
+    private static final Color COLOR_TEXTO_NEGRO = Color.BLACK;
+    private static final Color COLOR_FONDO_PANEL = new Color(238, 238, 238);
+
+    // Fuentes
+    private static final Font FUENTE_TITULO = new Font("Poppins", Font.BOLD, 50);
+    private static final Font FUENTE_SUBTITULO = new Font("Poppins", Font.BOLD, 30);
+    private static final Font FUENTE_LABEL = new Font("Poppins", Font.BOLD, 20);
+    private static final Font FUENTE_TEXTFIELD = new Font("Poppins", Font.PLAIN, 18);
+    private static final Font FUENTE_BOTON = new Font("Poppins", Font.BOLD, 20);
+    private static final Font FUENTE_MENU = new Font("Poppins", Font.PLAIN, 22);
+
+    // Bordes
+    private Border border = BorderFactory.createLineBorder(Color.BLACK, 2);
+    private Border border1 = BorderFactory.createLineBorder(COLOR_HOVER_SELECCIONADO1, 2);
+
+    // Variable para el botón seleccionado actualmente
+    private JButton botonSeleccionado;
+
+    // CardLayout para manejar los paneles derechos
+    private CardLayout cardLayout;
+
+    public Ventana01RegsitrosDeUsuarios() {
+        // Configuración de la ventana
+        setSize(1600, 900);
+        setTitle("GESTOR DE LABORATORIO DE LA UNIVERSIDAD NACIONAL FEDERICO VILLARREAL");
         setResizable(false);
         setLocationRelativeTo(null);
         setLayout(null);
-        
-        //DAO
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // DAO
         usuarioDAO = new UsuarioDAO();
-        
-        
-        
-        
-        //-----------------------------
-        //PANEL IZQUIERDO DONDE ESTA LAS PESTAÑAS DE TODOS LOS MENUS
-        panelLeft = new JPanel();
-        panelLeft.setLayout(null);
-        panelLeft.setBounds(0,0,300,900);
-        panelLeft.setBackground(new Color(255,152,0));
+
+        // Inicialización de componentes
+        inicializarComponentes();
+
+        // Configuración de paneles y componentes
+        configurarPaneles();
+        configurarMenu();
+        configurarEventos();
+
+        // Listar usuarios
+        listarUsuario();
+    }
+
+    private void inicializarComponentes() {
+        // Panel izquierdo
+        panelLeft = new JPanel(null);
+        panelLeft.setBounds(0, 0, 300, 900);
+        panelLeft.setBackground(COLOR_BASE_BOTONES);
+
+        // Panel derecho con CardLayout
+        cardLayout = new CardLayout();
+        panelDerecho = new JPanel(cardLayout);
+        panelDerecho.setBounds(300, 0, 1300, 900);
+
+        // Paneles derechos individuales
+        panelRight1 = new JPanel(null);
+        panelRight1.setBackground(COLOR_FONDO_PANEL);
+
+        panelRight2 = new JPanel(null);
+        panelRight2.setBackground(COLOR_FONDO_PANEL);
+
+        panelRight3 = new JPanel(null);
+        panelRight3.setBackground(COLOR_FONDO_PANEL);
+
+        panelRight4 = new JPanel(null);
+        panelRight4.setBackground(COLOR_FONDO_PANEL);
+
+        // Agregar paneles derechos al CardLayout
+        panelDerecho.add(panelRight1, "RegistroUsuarios");
+        panelDerecho.add(panelRight2, "ControlAsistencia");
+        panelDerecho.add(panelRight3, "ControlEquipos");
+        panelDerecho.add(panelRight4, "HorariosLaboratorio");
+
+        // Botones del menú
+        btnRegistroUsuarios = crearBotonMenu("Registro de Usuarios");
+        btnControlAsistencia = crearBotonMenu("Control de Asistencia");
+        btnControlEquipos = crearBotonMenu("Control de Equipos");
+        btnHorariosLaboratorio = crearBotonMenu("Horarios de Laboratorio");
+        btnCerrarSesion = crearBotonAccion("Cerrar Sesión", 50, 730, 200, 70);
+
+        // Inicializar etiquetas e imágenes
+        lbImagenLogo = new JLabel();
+        lbImagenUser = new JLabel();
+        lbNameUser = new JLabel("", SwingConstants.CENTER);
+    }
+
+    private void configurarPaneles() {
+        // Panel izquierdo
         add(panelLeft);
-        //------------------------------
-        //PANELES DERECHOS DONDE ESTANA LOS ELEMENTOS DE CADA SECCION
-        //PANEL DERECHO 1 - REGISTRO DE USUARIOS
-        panelRight1 = new JPanel();
-        panelRight1.setLayout(null);
-        panelRight1.setBounds(300,0,1300,900);
-        panelRight1.setBackground(new Color (238,238,238));
-        add(panelRight1);
-        //--------------------------------
-        //PANEL DERECHO 2 - CONTROL DE ASISTENCIA
-        panelRight2 = new JPanel();
-        panelRight2.setLayout(null);
-        panelRight2.setBounds(300,0,1300,900);
-        panelRight2.setBackground(new Color (238,238,238));
-        panelRight2.setOpaque(true);
-        add(panelRight2);
-        //--------------------------------
-        //PANEL DERECHO 3 - CONTROL DE EQUIPOS
-        panelRight3 = new JPanel();
-        panelRight3.setLayout(null);
-        panelRight3.setBounds(300,0,1300,900);
-        panelRight3.setBackground(new Color (238,238,238));
-        add(panelRight3);
-        //--------------------------------
-        //PANEL DERECHO 4 - HORARIOS DE LABORATORIO
-        panelRight4 = new JPanel();
-        panelRight4.setLayout(null);
-        panelRight4.setBounds(300,0,1300,900);
-        panelRight4.setBackground(new Color (238,238,238));
-        add(panelRight4);
-        //--------------------------------
-        //PANEL LOGO VA DENTRO DEL (PANEL IZQUIEROD / PANEL LEFT)
-        panelLogo = new JPanel();
-        panelLogo.setLayout(null);
-        panelLogo.setBounds(0,0,300,150);
-        panelLogo.setBackground(new Color(233,113,50));
+
+        // Panel logo
+        panelLogo = new JPanel(null);
+        panelLogo.setBounds(0, 0, 300, 150);
+        panelLogo.setBackground(COLOR_HOVER_SELECCIONADO1);
         panelLeft.add(panelLogo);
-        
-        //DE ESTA FORMA SE AGREGA IMAGENES
-        // SE REQUIERE 2 TIPOS "ImageIcon" y un JLabel
-        imagen3 =new ImageIcon("Images/logo_villarreal.png");
-        imagenEscalada3 = new ImageIcon(imagen3.getImage().getScaledInstance(250, 110, Image.SCALE_DEFAULT));
-        lbImagenLogo = new JLabel(imagenEscalada3,SwingConstants.CENTER);
-        lbImagenLogo.setBounds(20,10,260,130);
+
+        // Imagen del logo
+        ImageIcon imagenLogo = new ImageIcon("Images/logo_villarreal.png");
+        ImageIcon imagenEscaladaLogo = new ImageIcon(imagenLogo.getImage().getScaledInstance(250, 110, Image.SCALE_DEFAULT));
+        lbImagenLogo.setIcon(imagenEscaladaLogo);
+        lbImagenLogo.setBounds(20, 10, 260, 130);
         panelLogo.add(lbImagenLogo);
-        
-        //--------------------------------
-        //PANEL USUER VA DENTRO DEL (PANEL IZQUIEROD / PANEL LEFT)
-        //EN ESTE PANEL ESTA EL NOMBRE DE USUARIO CON EL PINGUINO ORRAI
-        panelUser = new JPanel();
-        panelUser.setLayout(null);
-        panelUser.setBounds(0,150,300,290);
+
+        // Panel usuario
+        panelUser = new JPanel(null);
+        panelUser.setBounds(0, 150, 300, 290);
         panelUser.setOpaque(false);
         panelLeft.add(panelUser);
-        
-        //CREAMOS LA ETIQUETA IMAGEN PARA PONER AL PINGUINO ORRAI VAGAZO
-        imagen2 = new ImageIcon("Images/user_penguin.png");
-        imagenEscala2 = new ImageIcon(imagen2.getImage().getScaledInstance(195, 195, Image.SCALE_DEFAULT));
 
-        lbImagenUser = new JLabel(imagenEscala2,SwingConstants.CENTER);
-        lbImagenUser.setBackground(colorBaseBotones);
-        lbImagenUser.setOpaque(false);
-        lbImagenUser.setBounds(0,7,300,205);
+        // Imagen del usuario
+        ImageIcon imagenUser = new ImageIcon("Images/user_penguin.png");
+        ImageIcon imagenEscaladaUser = new ImageIcon(imagenUser.getImage().getScaledInstance(195, 195, Image.SCALE_DEFAULT));
+        lbImagenUser.setIcon(imagenEscaladaUser);
+        lbImagenUser.setBounds(0, 7, 300, 205);
         panelUser.add(lbImagenUser);
-        
-        //SE CREO UN METODO PARA CAPTURAR EL NOMBRE DE USUARIO Y PODER MOSTRARLO
-        //EN EL PANEL USER QUE ESTA DENTRO DEL PANEL LEFT O IZQUIERDO
-        //POR ESO NO HAY ND AQUI DE BAJO DEL LABEL
-        lbNameUser = new JLabel();
-        lbNameUser.setForeground(Color.BLACK);
-        lbNameUser.setBackground(new Color(233,113,50));
+
+        // Nombre del usuario
+        lbNameUser.setForeground(Color.WHITE);
+        lbNameUser.setBackground(COLOR_HOVER_SELECCIONADO1);
         lbNameUser.setOpaque(true);
-        lbNameUser.setForeground(Color.white);
-        lbNameUser.setFont(new Font("poppins", 1, 22));
-        lbNameUser.setHorizontalAlignment(SwingConstants.CENTER);
+        lbNameUser.setFont(new Font("Poppins", Font.BOLD, 22));
         lbNameUser.setBounds(0, 220, 300, 30);
-        panelUser.add(lbNameUser); // Asegúrate de que esté agregado al panel correctamente
-        
-        //--------------------------------
-        //SE AGREGAN LOS BOTONES DE LAS PETAÑAS DE CADA SECCION
-        //ESTOS BOTONES VAN DENTRO DEL PANEL LEFT O IZQUIERDO
-        
-        //BOTON/PESTAÑA - RESGISTRO DE USUARIOS (DEFAULT) CUANDO SE INGRESA AL PROGRAMA
-        btnRegsitroUsuarios = new JButton("Registro de Usuarios");
-        btnRegsitroUsuarios.setBounds(0,410,300,70);
-        btnRegsitroUsuarios.addActionListener(this); 
-        btnRegsitroUsuarios.setBackground(new Color(255,152,0));
-        btnRegsitroUsuarios.setForeground(Color.black);
-        btnRegsitroUsuarios.setFont(new Font("poppins",0,22));
-        btnRegsitroUsuarios.setBorderPainted(false); // marco del boton no seleccionado
-        btnRegsitroUsuarios.setFocusPainted(false); // nombre del boton no seleccionado
-        panelLeft.add(btnRegsitroUsuarios);
-        
-        //BOTON/PESTAÑA - CONTROL DE ASISTENCIAS
-        btnControlAsistencia = new JButton("Control de Asistencia");
-        btnControlAsistencia.setBounds(0,480,300,70);
-        btnControlAsistencia.addActionListener(this); 
-        btnControlAsistencia.setBackground(new Color(255,152,0));
-        btnControlAsistencia.setForeground(Color.black);
-        btnControlAsistencia.setFont(new Font("poppins",0,22));
-        btnControlAsistencia.setBorderPainted(false); // marco del boton no seleccionado
-        btnControlAsistencia.setFocusPainted(false); // nombre del boton no seleccionado
+        panelUser.add(lbNameUser);
+
+        // Botones del menú
+        btnRegistroUsuarios.setBounds(0, 410, 300, 70);
+        btnControlAsistencia.setBounds(0, 480, 300, 70);
+        btnControlEquipos.setBounds(0, 550, 300, 70);
+        btnHorariosLaboratorio.setBounds(0, 620, 300, 70);
+        panelLeft.add(btnRegistroUsuarios);
         panelLeft.add(btnControlAsistencia);
-        
-        //BOTON/PESTAÑA - CONTROL DE EQUIPOS
-        btnControlEquipos = new JButton("Control de Equipos");
-        btnControlEquipos.setBounds(0,550,300,70);
-        btnControlEquipos.addActionListener(this); 
-        btnControlEquipos.setBackground(new Color(255,152,0));
-        btnControlEquipos.setForeground(Color.black);
-        btnControlEquipos.setFont(new Font("poppins",0,22));
-        btnControlEquipos.setBorderPainted(false); // marco del boton no seleccionado (aspecto visula de seleccion anular)
-        btnControlEquipos.setFocusPainted(false); // nombre del boton no seleccionado (aspecto visula de seleccion anular)
         panelLeft.add(btnControlEquipos);
-        
-        //BOTON/PESTAÑA - HORARIOS DE LABORATORIO
-        btnHorariosLaboratorio = new JButton("Horarios de Laboratorio");
-        btnHorariosLaboratorio.setBounds(0,620,300,70);
-        btnHorariosLaboratorio.addActionListener(this); 
-        btnHorariosLaboratorio.setBackground(new Color(255,152,0));
-        btnHorariosLaboratorio.setForeground(Color.black);
-        btnHorariosLaboratorio.setFont(new Font("poppins",0,22));
-        btnHorariosLaboratorio.setBorderPainted(false); // marco del boton no seleccionado
-        btnHorariosLaboratorio.setFocusPainted(false); // nombre del boton no seleccionado
-        btnHorariosLaboratorio.setFocusable(false); // elimina el foco cuando hay un click
         panelLeft.add(btnHorariosLaboratorio);
-        
-        //------------------------------------------
-        //BOTON (CERRAR SESION) - ESTE BOTON ESTA DENTRO DEL PANEL LEFT / IZQUIERDO
-        btnCerrarSesion = new JButton("Cerrar Sesion");
-        btnCerrarSesion.setBounds(50,730,200,70);
-        btnCerrarSesion.addActionListener(this);  
-        btnCerrarSesion.setBackground(new Color(233,113,50));
-        btnCerrarSesion.setForeground(Color.white);
-        btnCerrarSesion.setFont(new Font("poppins",1,16));
-        btnCerrarSesion.setBorderPainted(false);// marco del boton no seleccionado
-        btnCerrarSesion.setFocusPainted(false); // nombre del boton no seleccionado
         panelLeft.add(btnCerrarSesion);
-        //--------------------------------
-   
 
-//TITULO DE LA VENTANA DE CONTROL DE ASISTENCIA (AQUI COMIENZA EL PANEL-RIGHT 1)     
+        // Añadir panel derecho
+        add(panelDerecho);
 
-        //NOMBRE/TITULO PRINCIPAL DEL PANEL-RIGHT1
-        lbRegistrosUsuarios = new JLabel("REGISTRO DE USUARIOS");
-        lbRegistrosUsuarios.setBounds(50,30,590,52);
-        lbRegistrosUsuarios.setFont(new Font("poppins",1,50));
-        lbRegistrosUsuarios.setBackground(Color.green);
+        // Configurar panelRight1 (Registro de Usuarios)
+        configurarPanelRight1();
+    }
+
+    private void configurarMenu() {
+        // Asignar el primer botón como seleccionado por defecto
+        botonSeleccionado = btnRegistroUsuarios;
+        actualizarEstadoBotones();
+        cardLayout.show(panelDerecho, "RegistroUsuarios");
+    }
+
+    private void configurarEventos() {
+        // Asignar MouseListener y ActionListener a los botones del menú
+        btnRegistroUsuarios.addMouseListener(new BotonMenuMouseAdapter(btnRegistroUsuarios));
+        btnControlAsistencia.addMouseListener(new BotonMenuMouseAdapter(btnControlAsistencia));
+        btnControlEquipos.addMouseListener(new BotonMenuMouseAdapter(btnControlEquipos));
+        btnHorariosLaboratorio.addMouseListener(new BotonMenuMouseAdapter(btnHorariosLaboratorio));
+
+        btnRegistroUsuarios.addActionListener(new BotonMenuActionListener("RegistroUsuarios"));
+        btnControlAsistencia.addActionListener(new BotonMenuActionListener("ControlAsistencia"));
+        btnControlEquipos.addActionListener(new BotonMenuActionListener("ControlEquipos"));
+        btnHorariosLaboratorio.addActionListener(new BotonMenuActionListener("HorariosLaboratorio"));
+
+        // Botón Cerrar Sesión
+        btnCerrarSesion.addActionListener(e -> manejarCerrarSesion());
+        btnCerrarSesion.addMouseListener(new BotonAccionMouseAdapter(btnCerrarSesion));
+
+        // Botones de acción
+        btnAgregar.addActionListener(e -> manejarAgregarUsuario());
+        btnModificar.addActionListener(e -> manejarModificarUsuario());
+        btnEliminar.addActionListener(e -> manejarEliminarUsuario());
+
+        btnAgregar.addMouseListener(new BotonAccionMouseAdapter(btnAgregar));
+        btnModificar.addMouseListener(new BotonAccionMouseAdapter(btnModificar));
+        btnEliminar.addMouseListener(new BotonAccionMouseAdapter(btnEliminar));
+
+        // Evento de la tabla
+        tablaUsuarios.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent evt) {
+                llenarCamposDesdeTabla();
+            }
+        });
+    }
+
+    private void configurarPanelRight1() {
+        // Título
+        lbRegistrosUsuarios = crearEtiqueta("REGISTRO DE USUARIOS", 50, 30, 590, 52, FUENTE_TITULO, COLOR_TEXTO_NEGRO);
+        lbRegistrosUsuarios.setBackground(Color.GREEN);
         lbRegistrosUsuarios.setOpaque(true);
         panelRight1.add(lbRegistrosUsuarios);
-        
-        
-        
-//---------------------------ELEMENTOS DEL PANEL RIGHT - 1 DE REGISTRO USUARIOS --------------------------       
-        
-        //-----------------------------------------------------------------------------
-        //ETIQUETA LABEL - DATOS DEL REGSITRO (INDICA QUE HAY QUE REGISTRAR DATOS)
-        nombreSubPanel1_1 = new JLabel("DATOS DEL REGISTRO", SwingConstants.CENTER);
-        nombreSubPanel1_1.setBounds(100, 110, 500, 50); // Ajustar posición para que esté superpuesta
-        nombreSubPanel1_1.setBackground(colorHoverSeleccionado1);
+
+        // Subtítulo
+        nombreSubPanel1_1 = crearEtiqueta("DATOS DEL REGISTRO", 100, 110, 500, 50, FUENTE_SUBTITULO, COLOR_TEXTO_BLANCO);
+        nombreSubPanel1_1.setBackground(COLOR_HOVER_SELECCIONADO1);
         nombreSubPanel1_1.setOpaque(true);
-        nombreSubPanel1_1.setFont(new Font("poppins", Font.BOLD, 30));
-        nombreSubPanel1_1.setForeground(Color.white);
+        nombreSubPanel1_1.setHorizontalAlignment(SwingConstants.CENTER);
         panelRight1.add(nombreSubPanel1_1);
-        //-----------------------------------------------------------------------------
-        //SUBPANEL1 DEL PANEL DERECHO 1 / RIGHT 1 - REGISTROS DE USUSARIOS
-        subPanel1 = new JPanel();
-        subPanel1.setLayout(null);
-        subPanel1.setBounds(100, 180, 1090, 270); 
-        subPanel1.setBackground(Color.white);
+
+        // Subpanel1
+        subPanel1 = new JPanel(null);
+        subPanel1.setBounds(100, 180, 1090, 270);
+        subPanel1.setBackground(Color.WHITE);
         subPanel1.setBorder(border);
-        panelRight1.add(subPanel1); 
-        //-----------------------------------------------------------------------------
-        //ETIQEUTAS Y CUADROS DE TEXTO DE NOMBRES, APELLIDOS, TIPO DE DOCUEMNTO,
-        //NRO. DOCUMENTO, NRO. CONTACTO, CARGO, USUARIO, CONTRASEÑA, EMAIL
-        
-        lbNombres = new JLabel("Nombres");
-        lbNombres.setBounds(30, 20, 200, 30);
-        lbNombres.setFont(new Font("poppins", Font.BOLD, 20));
-        lbNombres.setForeground(colorHoverSeleccionado1);
+        panelRight1.add(subPanel1);
+
+        // Etiquetas y campos de texto
+        lbNombres = crearEtiqueta("Nombres", 30, 20, 200, 30, FUENTE_LABEL, COLOR_HOVER_SELECCIONADO1);
         subPanel1.add(lbNombres);
 
-        txtNombres = new JTextField();
-        txtNombres.setBounds(30, 50, 300, 30);
-        txtNombres.setFont(new Font("poppins", Font.PLAIN, 18));
-        txtNombres.setBorder(border1);
+        txtNombres = crearCampoTexto(30, 50, 300, 30);
         subPanel1.add(txtNombres);
 
-        lbApellidos = new JLabel("Apellidos");
-        lbApellidos.setBounds(30, 100, 200, 30);
-        lbApellidos.setFont(new Font("poppins", Font.BOLD, 20));
-        lbApellidos.setForeground(colorHoverSeleccionado1);
+        lbApellidos = crearEtiqueta("Apellidos", 30, 100, 200, 30, FUENTE_LABEL, COLOR_HOVER_SELECCIONADO1);
         subPanel1.add(lbApellidos);
 
-        txtApellidos = new JTextField();
-        txtApellidos.setBounds(30, 130, 300, 30);
-        txtApellidos.setFont(new Font("poppins", Font.PLAIN, 18));
-        txtApellidos.setBorder(border1);
+        txtApellidos = crearCampoTexto(30, 130, 300, 30);
         subPanel1.add(txtApellidos);
 
-        lbUsuario = new JLabel("Usuario");
-        lbUsuario.setBounds(30, 180, 200, 30); // Ajustar para la tercera fila en la primera columna
-        lbUsuario.setFont(new Font("poppins", Font.BOLD, 20));
-        lbUsuario.setForeground(colorHoverSeleccionado1);
+        lbUsuario = crearEtiqueta("Usuario", 30, 180, 200, 30, FUENTE_LABEL, COLOR_HOVER_SELECCIONADO1);
         subPanel1.add(lbUsuario);
 
-        txtUsuario = new JTextField();
-        txtUsuario.setBounds(30, 210, 300, 30);
-        txtUsuario.setFont(new Font("poppins", Font.PLAIN, 18));
-        txtUsuario.setBorder(border1);
+        txtUsuario = crearCampoTexto(30, 210, 300, 30);
         subPanel1.add(txtUsuario);
 
-
-        lbTipoDeDocumento = new JLabel("Tipo de Documento");
-        lbTipoDeDocumento.setBounds(435, 20, 210, 30);
-        lbTipoDeDocumento.setFont(new Font("poppins", Font.BOLD, 20));
-        lbTipoDeDocumento.setForeground(colorHoverSeleccionado1);
+        lbTipoDeDocumento = crearEtiqueta("Tipo de Documento", 435, 20, 210, 30, FUENTE_LABEL, COLOR_HOVER_SELECCIONADO1);
         subPanel1.add(lbTipoDeDocumento);
-        
+
         cbTipoDeDocumento = new JComboBox<>();
         cbTipoDeDocumento.setBounds(435, 50, 210, 30);
         cbTipoDeDocumento.setBorder(border1);
@@ -314,59 +278,28 @@ public class Ventana01RegsitrosDeUsuarios extends JFrame implements ActionListen
         cbTipoDeDocumento.addItem("DNI");
         cbTipoDeDocumento.addItem("PASAPORTE");
         subPanel1.add(cbTipoDeDocumento);
-        /*
-        txtTipoDeDocumento = new JTextField();
-        txtTipoDeDocumento.setBounds(435, 50, 210, 30);
-        txtTipoDeDocumento.setFont(new Font("poppins", Font.PLAIN, 18));
-        txtTipoDeDocumento.setBorder(border1);
-        subPanel1.add(txtTipoDeDocumento);*/
 
-        lbNumeroDeContacto = new JLabel("Nro. de Contacto");
-        lbNumeroDeContacto.setBounds(435, 100, 210, 30);
-        lbNumeroDeContacto.setFont(new Font("poppins", Font.BOLD, 20));
-        lbNumeroDeContacto.setForeground(colorHoverSeleccionado1);
+        lbNumeroDeContacto = crearEtiqueta("Nro. de Contacto", 435, 100, 210, 30, FUENTE_LABEL, COLOR_HOVER_SELECCIONADO1);
         subPanel1.add(lbNumeroDeContacto);
 
-        txtNumeroDeContacto = new JTextField();
-        txtNumeroDeContacto.setBounds(435, 130, 210, 30);
-        txtNumeroDeContacto.setFont(new Font("poppins", Font.PLAIN, 18));
-        txtNumeroDeContacto.setBorder(border1);
+        txtNumeroDeContacto = crearCampoTexto(435, 130, 210, 30);
         subPanel1.add(txtNumeroDeContacto);
 
-        lbContraseña = new JLabel("Contraseña");
-        lbContraseña.setBounds(435, 180, 210, 30); // Ajustar para la tercera fila en la segunda columna
-        lbContraseña.setFont(new Font("poppins", Font.BOLD, 20));
-        lbContraseña.setForeground(colorHoverSeleccionado1);
+        lbContraseña = crearEtiqueta("Contraseña", 435, 180, 210, 30, FUENTE_LABEL, COLOR_HOVER_SELECCIONADO1);
         subPanel1.add(lbContraseña);
 
-        txtContraseña = new JTextField();
-        txtContraseña.setBounds(435, 210, 210, 30);
-        txtContraseña.setFont(new Font("poppins", Font.PLAIN, 18));
-        txtContraseña.setBorder(border1);
+        txtContraseña = crearCampoTexto(435, 210, 210, 30);
         subPanel1.add(txtContraseña);
 
-
-        lbNumeroDeDocumento = new JLabel("Nro. de Documento");
-        lbNumeroDeDocumento.setBounds(730, 20, 250, 30);
-        lbNumeroDeDocumento.setFont(new Font("poppins", Font.BOLD, 20));
-        lbNumeroDeDocumento.setForeground(colorHoverSeleccionado1);
+        lbNumeroDeDocumento = crearEtiqueta("Nro. de Documento", 730, 20, 250, 30, FUENTE_LABEL, COLOR_HOVER_SELECCIONADO1);
         subPanel1.add(lbNumeroDeDocumento);
 
-        txtNumeroDeDocumento = new JTextField();
-        txtNumeroDeDocumento.setBounds(730, 50, 300, 30);
-        txtNumeroDeDocumento.setFont(new Font("poppins", Font.PLAIN, 18));
-        txtNumeroDeDocumento.setBorder(border1);
+        txtNumeroDeDocumento = crearCampoTexto(730, 50, 300, 30);
         subPanel1.add(txtNumeroDeDocumento);
 
-        //JComboBox cbTipoDeDocumento, cbCargo;
-        lbCargo = new JLabel("Cargo");
-        lbCargo.setBounds(730, 100, 250, 30);
-        lbCargo.setFont(new Font("poppins", Font.BOLD, 20));
-        lbCargo.setForeground(colorHoverSeleccionado1);
+        lbCargo = crearEtiqueta("Cargo", 730, 100, 250, 30, FUENTE_LABEL, COLOR_HOVER_SELECCIONADO1);
         subPanel1.add(lbCargo);
-        /**
-         * 
-        **/
+
         cbCargo = new JComboBox<>();
         cbCargo.setBounds(730, 130, 300, 30);
         cbCargo.setBorder(border1);
@@ -375,569 +308,276 @@ public class Ventana01RegsitrosDeUsuarios extends JFrame implements ActionListen
         cbCargo.addItem("DOCENTE");
         subPanel1.add(cbCargo);
 
-        lbEmail = new JLabel("Email");
-        lbEmail.setBounds(730, 180, 250, 30); // Ajustar para la tercera fila en la tercera columna
-        lbEmail.setFont(new Font("poppins", Font.BOLD, 20));
-        lbEmail.setForeground(colorHoverSeleccionado1);
+        lbEmail = crearEtiqueta("Email", 730, 180, 250, 30, FUENTE_LABEL, COLOR_HOVER_SELECCIONADO1);
         subPanel1.add(lbEmail);
 
-        txtEmail = new JTextField();
-        txtEmail.setBounds(730, 210, 300, 30);
-        txtEmail.setFont(new Font("poppins", Font.PLAIN, 18));
-        txtEmail.setBorder(border1);
+        txtEmail = crearCampoTexto(730, 210, 300, 30);
         subPanel1.add(txtEmail);
-        //-----------------------------------------------------------------------------
-        // BOTONES AGREGAR, MODIFICAR Y ELIMINAR A LA HORA DE REGISTRAR USUARIOS
 
-        btnAgregar = new JButton("AGREGAR");
-        btnAgregar.setBounds(700, 110, 150, 50); // Ajustar posición para que esté superpuesta
-        btnAgregar.setBackground(colorHoverSeleccionado1);
-        btnAgregar.setOpaque(true);
-        btnAgregar.setFont(new Font("poppins", Font.BOLD, 20));
-        btnAgregar.setForeground(Color.white);
-        btnAgregar.setBorderPainted(false); // marco del boton no seleccionado
-        btnAgregar.setFocusPainted(false); // nombre del boton no seleccionado
-        btnAgregar.addActionListener(this);
+        // Botones de acción
+        btnAgregar = crearBotonAccion("AGREGAR", 700, 110, 150, 50);
         panelRight1.add(btnAgregar);
 
-        btnModificar = new JButton("MODIFICAR");
-        btnModificar.setBounds(870, 110, 150, 50); // Ajustar posición para que esté superpuesta
-        btnModificar.setBackground(colorHoverSeleccionado1);
-        btnModificar.setOpaque(true);
-        btnModificar.setFont(new Font("poppins", Font.BOLD, 20));
-        btnModificar.setForeground(Color.white);
-        btnModificar.setBorderPainted(false); // marco del boton no seleccionado
-        btnModificar.setFocusPainted(false); // nombre del boton no seleccionado
-        btnModificar.addActionListener(this);
+        btnModificar = crearBotonAccion("MODIFICAR", 870, 110, 150, 50);
         panelRight1.add(btnModificar);
 
-        btnEliminar = new JButton("ELIMINAR");
-        btnEliminar.setBounds(1040, 110, 150, 50); // Ajustar posición para que esté superpuesta
-        btnEliminar.setBackground(colorHoverSeleccionado1);
-        btnEliminar.setOpaque(true);
-        btnEliminar.setFont(new Font("poppins", Font.BOLD, 20));
-        btnEliminar.setForeground(Color.white);
-        btnEliminar.setBorderPainted(false); // marco del boton no seleccionado
-        btnEliminar.setFocusPainted(false); // nombre del boton no seleccionado
-        btnEliminar.addActionListener(this);
+        btnEliminar = crearBotonAccion("ELIMINAR", 1040, 110, 150, 50);
         panelRight1.add(btnEliminar);
 
-//------------------------------------------------------------------------------------------
-//-- EN ESTA PARTE COMIENZA EL SUB-PANEL 2 - DEL PANEL DERECHO / PANEL RIGHT 1
-        //FRANSHECO CREA LA TABLA AQUI Y PONLE SCROLL CON CRUD GAAA
-
-        nombreSubPanel1_2 = new JLabel("LISTA DE USUARIOS REGISTRADOS",SwingConstants.CENTER);
-        nombreSubPanel1_2.setBounds(100,490,570,50);
-        nombreSubPanel1_2.setBackground(colorHoverSeleccionado1);
+        // Subtítulo de la tabla
+        nombreSubPanel1_2 = crearEtiqueta("LISTA DE USUARIOS REGISTRADOS", 100, 490, 570, 50, FUENTE_SUBTITULO, COLOR_TEXTO_BLANCO);
+        nombreSubPanel1_2.setBackground(COLOR_HOVER_SELECCIONADO1);
         nombreSubPanel1_2.setOpaque(true);
-        nombreSubPanel1_2.setFont(new Font("poppins",1,30));
-        nombreSubPanel1_2.setForeground(Color.white);
+        nombreSubPanel1_2.setHorizontalAlignment(SwingConstants.CENTER);
         panelRight1.add(nombreSubPanel1_2);
-        
-        
-        /*
-        subPanel2 = new JPanel();
-        subPanel2.setBounds(100,560,1090,270);
-        subPanel2.setBackground(Color.white);
-        subPanel2.setBorder(border);
-        panelRight1.add(subPanel2);
-        */
-        
-        String[] columnasUsuario = {"Id","Nombres", "Apellidos", "Tipo Doc.", "Nro. Doc.", "Numero", "Cargo", "Apodo", "Contrasena", "email"};
+
+        // Tabla de usuarios
+        String[] columnasUsuario = {"Id", "Nombres", "Apellidos", "Tipo Doc.", "Nro. Doc.", "Número", "Cargo", "Usuario", "Contraseña", "Email"};
         modeloUsuario = new DefaultTableModel(columnasUsuario, 0);
         tablaUsuarios = new JTable(modeloUsuario);
         scrollSubPanel1_2 = new JScrollPane(tablaUsuarios);
-        scrollSubPanel1_2.setBounds(100,560,1090,270);
+        scrollSubPanel1_2.setBounds(100, 560, 1090, 270);
         scrollSubPanel1_2.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         scrollSubPanel1_2.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
         panelRight1.add(scrollSubPanel1_2);
-        
-        
-//TITULO DE LA VENTANA DE CONTROL DE ASISTENCIA (AQUI COMIENZA EL PANELRIGHT 2)
-        lbControlAsistencia = new JLabel("CONTROL DE ASISTENCIA");
-        lbControlAsistencia.setBounds(50,30,630,52);
-        lbControlAsistencia.setFont(new Font("poppins",1,50));
-        lbControlAsistencia.setBackground(Color.green);
-        lbControlAsistencia.setOpaque(true);
-        panelRight2.add(lbControlAsistencia);
+    }
 
-    
-        subPanel3 = new JPanel();
-        subPanel3.setLayout(null);
-        subPanel3.setBounds(100, 180, 1090, 270); 
-        subPanel3.setBackground(Color.white);
-        subPanel3.setBorder(border);
-        panelRight2.add(subPanel3);
+    // Métodos auxiliares para crear componentes
+    private JButton crearBotonMenu(String texto) {
+        JButton boton = new JButton(texto);
+        boton.setBackground(COLOR_BASE_BOTONES);
+        boton.setForeground(COLOR_TEXTO_NEGRO);
+        boton.setFont(FUENTE_MENU);
+        boton.setBorderPainted(false);
+        boton.setFocusPainted(false);
+        boton.setHorizontalAlignment(SwingConstants.LEFT);
+        return boton;
+    }
 
-        subPanel4 = new JPanel();
-        subPanel4.setLayout(null);
-        subPanel4.setBounds(100,560,1090,270);
-        subPanel4.setBackground(Color.white);
-        subPanel4.setBorder(border);
-        panelRight2.add(subPanel4); 
-        
-//TITULO DE LA VENTANA DE CONTROL DE ASISTENCIA (AQUI COMIENZA EL PANELRIGHT 3)
-        lbControlEquipos = new JLabel("CONTROL DE EQUIPOS");
-        lbControlEquipos.setBounds(50,30,590,52);
-        lbControlEquipos.setFont(new Font("poppins",1,50));
-        lbControlEquipos.setBackground(Color.green);
-        lbControlEquipos.setOpaque(true);
-        panelRight3.add(lbControlEquipos);
-        
-        subPanel5 = new JPanel();
-        subPanel5.setLayout(null);
-        subPanel5.setBounds(100, 180, 1090, 270); 
-        subPanel5.setBackground(Color.white);
-        subPanel5.setBorder(border);
-        panelRight3.add(subPanel5);
+    private JButton crearBotonAccion(String texto, int x, int y, int ancho, int alto) {
+        JButton boton = new JButton(texto);
+        boton.setBounds(x, y, ancho, alto);
+        boton.setBackground(COLOR_HOVER_SELECCIONADO1);
+        boton.setForeground(COLOR_TEXTO_BLANCO);
+        boton.setFont(FUENTE_BOTON);
+        boton.setBorderPainted(false);
+        boton.setFocusPainted(false);
+        return boton;
+    }
 
-        subPanel6 = new JPanel();
-        subPanel6.setLayout(null);
-        subPanel6.setBounds(100,560,1090,270);
-        subPanel6.setBackground(Color.white);
-        subPanel6.setBorder(border);
-        panelRight3.add(subPanel6);
-       
-//TITULO DE LA VENTANA DE CONTROL DE ASISTENCIA (AQUI COMIENZA EL PANELRIGHT 4)
-        lbHorariosLaboratorio = new JLabel("HORARIOS DE LABORATORIO");
-        lbHorariosLaboratorio.setBounds(50,30,720,52);
-        lbHorariosLaboratorio.setFont(new Font("poppins",1,50));
-        lbHorariosLaboratorio.setBackground(Color.green);
-        lbHorariosLaboratorio.setOpaque(true);
-        panelRight4.add(lbHorariosLaboratorio);
+    private JLabel crearEtiqueta(String texto, int x, int y, int ancho, int alto, Font fuente, Color colorTexto) {
+        JLabel etiqueta = new JLabel(texto);
+        etiqueta.setBounds(x, y, ancho, alto);
+        etiqueta.setFont(fuente);
+        etiqueta.setForeground(colorTexto);
+        return etiqueta;
+    }
 
-       
-        subPanel7 = new JPanel();
-        subPanel7.setLayout(null);
-        subPanel7.setBounds(100, 180, 1090, 270); 
-        subPanel7.setBackground(Color.white);
-        subPanel7.setBorder(border);
-        panelRight4.add(subPanel7);
+    private JTextField crearCampoTexto(int x, int y, int ancho, int alto) {
+        JTextField campoTexto = new JTextField();
+        campoTexto.setBounds(x, y, ancho, alto);
+        campoTexto.setFont(FUENTE_TEXTFIELD);
+        campoTexto.setBorder(border1);
+        return campoTexto;
+    }
 
-        subPanel8 = new JPanel();
-        subPanel8.setLayout(null);
-        subPanel8.setBounds(100,560,1090,270);
-        subPanel8.setBackground(Color.white);
-        subPanel8.setBorder(border);
-        panelRight4.add(subPanel8); 
-        
-//-----------------------------------------------------------------------------    
-        btnRegsitroUsuarios.addMouseListener(new MouseAdapter() {
+    // Clases internas para manejar eventos
+    private class BotonMenuMouseAdapter extends MouseAdapter {
+        private JButton boton;
+
+        public BotonMenuMouseAdapter(JButton boton) {
+            this.boton = boton;
+        }
+
         @Override
         public void mouseEntered(MouseEvent e) {
-        // Cambia a color de hover solo si el botón no está seleccionado
-            if (!boton1Seleccionado) {
-                btnRegsitroUsuarios.setBackground(colorHoverSeleccionado1);
-                btnRegsitroUsuarios.setForeground(Color.white);
+            if (!boton.equals(botonSeleccionado)) {
+                boton.setBackground(COLOR_HOVER_SELECCIONADO1);
+                boton.setForeground(COLOR_TEXTO_BLANCO);
             }
-                btnRegsitroUsuarios.setCursor(new Cursor(Cursor.HAND_CURSOR)); // Cambia el cursor a mano
-         }
-
-        @Override
-        public void mouseExited(MouseEvent e) {
-        // Restaura el color base si el botón no está seleccionado
-            if (!boton1Seleccionado) {
-                btnRegsitroUsuarios.setBackground(colorBaseBotones);
-                btnRegsitroUsuarios.setForeground(Color.black);
-            }
-                btnRegsitroUsuarios.setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); // Restaura el cursor
-            }
-        });
-
-        btnRegsitroUsuarios.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-        // Cambia a color seleccionado y desmarca el otro botón
-            boton1Seleccionado = true;
-            boton2Seleccionado = false;
-            boton3Seleccionado = false;
-            boton4Seleccionado = false;
-            btnRegsitroUsuarios.setBackground(colorHoverSeleccionado1);
-            btnControlAsistencia.setBackground(colorBaseBotones);
-            btnControlEquipos.setBackground(colorBaseBotones);
-            btnHorariosLaboratorio.setBackground(colorBaseBotones);
-            btnRegsitroUsuarios.setForeground(Color.white);
-            btnControlAsistencia.setForeground(Color.black);
-            btnControlEquipos.setForeground(Color.black);
-            btnHorariosLaboratorio.setForeground(Color.black);
-
-            }
-        });
-//-----------------------------------------------------------------------------    
-        btnControlAsistencia.addMouseListener(new MouseAdapter() {
-        @Override
-        public void mouseEntered(MouseEvent e) {
-        // Cambia a color de hover solo si el botón no está seleccionado
-            if (!boton2Seleccionado) {
-                btnControlAsistencia.setBackground(colorHoverSeleccionado1);
-                btnControlAsistencia.setForeground(Color.white);
-            }
-                btnControlAsistencia.setCursor(new Cursor(Cursor.HAND_CURSOR)); // Cambia el cursor a mano
+            boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         }
 
         @Override
         public void mouseExited(MouseEvent e) {
-        // Restaura el color base si el botón no está seleccionado
-            if (!boton2Seleccionado) {
-                btnControlAsistencia.setBackground(colorBaseBotones);
-                btnControlAsistencia.setForeground(Color.black);
+            if (!boton.equals(botonSeleccionado)) {
+                boton.setBackground(COLOR_BASE_BOTONES);
+                boton.setForeground(COLOR_TEXTO_NEGRO);
             }
-                btnControlAsistencia.setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); // Restaura el cursor
-            }
-        });
+            boton.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+        }
+    }
 
-        btnControlAsistencia.addActionListener(new ActionListener() {
+    private class BotonMenuActionListener implements ActionListener {
+        private String nombrePanel;
+
+        public BotonMenuActionListener(String nombrePanel) {
+            this.nombrePanel = nombrePanel;
+        }
+
         @Override
         public void actionPerformed(ActionEvent e) {
-        // Cambia a color seleccionado y desmarca el otro botón
-            boton1Seleccionado = false;
-            boton2Seleccionado = true;
-            boton3Seleccionado = false;
-            boton4Seleccionado = false;
-            btnRegsitroUsuarios.setBackground(colorBaseBotones);
-            btnControlAsistencia.setBackground(colorHoverSeleccionado1);
-            btnControlEquipos.setBackground(colorBaseBotones);
-            btnHorariosLaboratorio.setBackground(colorBaseBotones);
-            btnRegsitroUsuarios.setForeground(Color.black);
-            btnControlAsistencia.setForeground(Color.white);
-            btnControlEquipos.setForeground(Color.black);
-            btnHorariosLaboratorio.setForeground(Color.black);
+            botonSeleccionado = (JButton) e.getSource();
+            actualizarEstadoBotones();
+            cardLayout.show(panelDerecho, nombrePanel);
+        }
+    }
 
-            }
-        });
-//-----------------------------------------------------------------------------    
-        btnControlEquipos.addMouseListener(new MouseAdapter() {
+    private class BotonAccionMouseAdapter extends MouseAdapter {
+        private JButton boton;
+
+        public BotonAccionMouseAdapter(JButton boton) {
+            this.boton = boton;
+        }
+
         @Override
         public void mouseEntered(MouseEvent e) {
-        // Cambia a color de hover solo si el botón no está seleccionado
-            if (!boton3Seleccionado) {
-                btnControlEquipos.setBackground(colorHoverSeleccionado1);
-                btnControlEquipos.setForeground(Color.white);
-            }
-                btnControlEquipos.setCursor(new Cursor(Cursor.HAND_CURSOR)); // Cambia el cursor a mano
-         }
-
-        @Override
-        public void mouseExited(MouseEvent e) {
-        // Restaura el color base si el botón no está seleccionado
-            if (!boton3Seleccionado) {
-                btnControlEquipos.setBackground(colorBaseBotones);
-                btnControlEquipos.setForeground(Color.black);
-            }
-                btnControlEquipos.setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); // Restaura el cursor
-            }
-        });
-
-        btnControlEquipos.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-        // Cambia a color seleccionado y desmarca el otro botón
-            boton1Seleccionado = false;
-            boton2Seleccionado = false;
-            boton3Seleccionado = true;
-            boton4Seleccionado = false;
-            btnRegsitroUsuarios.setBackground(colorBaseBotones);
-            btnControlAsistencia.setBackground(colorBaseBotones);
-            btnControlEquipos.setBackground(colorHoverSeleccionado1);
-            btnHorariosLaboratorio.setBackground(colorBaseBotones);
-            btnRegsitroUsuarios.setForeground(Color.black);
-            btnControlAsistencia.setForeground(Color.black);
-            btnControlEquipos.setForeground(Color.white);
-            btnHorariosLaboratorio.setForeground(Color.black);
-
-            }
-        });
-//-----------------------------------------------------------------------------    
-        btnHorariosLaboratorio.addMouseListener(new MouseAdapter() {
-        @Override
-        public void mouseEntered(MouseEvent e) {
-        // Cambia a color de hover solo si el botón no está seleccionado
-            if (!boton4Seleccionado) {
-                btnHorariosLaboratorio.setBackground(colorHoverSeleccionado1);
-                btnHorariosLaboratorio.setForeground(Color.white);
-            }
-                btnHorariosLaboratorio.setCursor(new Cursor(Cursor.HAND_CURSOR)); // Cambia el cursor a mano
+            boton.setBackground(COLOR_HOVER_SELECCIONADO2);
+            boton.setForeground(COLOR_TEXTO_NEGRO);
+            boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         }
 
         @Override
         public void mouseExited(MouseEvent e) {
-        // Restaura el color base si el botón no está seleccionado
-            if (!boton4Seleccionado) {
-                btnHorariosLaboratorio.setBackground(colorBaseBotones);
-                btnHorariosLaboratorio.setForeground(Color.black);
-            }
-                btnHorariosLaboratorio.setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); // Restaura el cursor
-            }
-        });
+            boton.setBackground(COLOR_HOVER_SELECCIONADO1);
+            boton.setForeground(COLOR_TEXTO_BLANCO);
+            boton.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+        }
+    }
 
-        btnHorariosLaboratorio.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-        // Cambia a color seleccionado y desmarca el otro botón
-            boton1Seleccionado = false;
-            boton2Seleccionado = false;
-            boton3Seleccionado = false;
-            boton4Seleccionado = true;
-            btnRegsitroUsuarios.setBackground(colorBaseBotones);
-            btnControlAsistencia.setBackground(colorBaseBotones);
-            btnControlEquipos.setBackground(colorBaseBotones);
-            btnHorariosLaboratorio.setBackground(colorHoverSeleccionado1);
-            btnRegsitroUsuarios.setForeground(Color.black);
-            btnControlAsistencia.setForeground(Color.black);
-            btnControlEquipos.setForeground(Color.black);
-            btnHorariosLaboratorio.setForeground(Color.white);
-
-            }
-        });
-//-----------------------------------------------------------------------------   
-        btnCerrarSesion.addMouseListener(new MouseAdapter() {
-        @Override
-        public void mouseEntered(MouseEvent e) {
-        // Cambia a color de hover solo si el botón no está seleccionado
-            
-                btnCerrarSesion.setBackground(colorHoverSeleccionado2);
-                btnCerrarSesion.setForeground(Color.black);
-                btnCerrarSesion.setCursor(new Cursor(Cursor.HAND_CURSOR)); // Cambia el cursor a mano
-         }
-
-        @Override
-        public void mouseExited(MouseEvent e) {
-        // Restaura el color base si el botón no está seleccionado
-            
-                btnCerrarSesion.setBackground(new Color(233,113,50));
-                btnCerrarSesion.setForeground(Color.white);
-                btnCerrarSesion.setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); // Restaura el cursor
-            }
-        });
-//-----------------------------------------------------------------------------
-        btnAgregar.addMouseListener(new MouseAdapter() {
-        @Override
-        public void mouseEntered(MouseEvent e) {
-        // Cambia a color de hover solo si el botón no está seleccionado
-            
-                btnAgregar.setBackground(colorHoverSeleccionado2);
-                btnAgregar.setForeground(Color.black);
-                btnAgregar.setCursor(new Cursor(Cursor.HAND_CURSOR)); // Cambia el cursor a mano
-         }
-
-        @Override
-        public void mouseExited(MouseEvent e) {
-        // Restaura el color base si el botón no está seleccionado
-            
-                btnAgregar.setBackground(new Color(233,113,50));
-                btnAgregar.setForeground(Color.white);
-                btnAgregar.setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); // Restaura el cursor
-            }
-        });
-//-----------------------------------------------------------------------------    
-        btnModificar.addMouseListener(new MouseAdapter() {
-        @Override
-        public void mouseEntered(MouseEvent e) {
-        // Cambia a color de hover solo si el botón no está seleccionado
-            
-                btnModificar.setBackground(colorHoverSeleccionado2);
-                btnModificar.setForeground(Color.black);
-                btnModificar.setCursor(new Cursor(Cursor.HAND_CURSOR)); // Cambia el cursor a mano
-         }
-
-        @Override
-        public void mouseExited(MouseEvent e) {
-        // Restaura el color base si el botón no está seleccionado
-            
-                btnModificar.setBackground(new Color(233,113,50));
-                btnModificar.setForeground(Color.white);
-                btnModificar.setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); // Restaura el cursor
-            }
-        });
- //-----------------------------------------------------------------------------   
-        btnEliminar.addMouseListener(new MouseAdapter() {
-        @Override
-        public void mouseEntered(MouseEvent e) {
-        // Cambia a color de hover solo si el botón no está seleccionado
-            
-                btnEliminar.setBackground(colorHoverSeleccionado2);
-                btnEliminar.setForeground(Color.black);
-                btnEliminar.setCursor(new Cursor(Cursor.HAND_CURSOR)); // Cambia el cursor a mano
-         }
-
-        @Override
-        public void mouseExited(MouseEvent e) {
-        // Restaura el color base si el botón no está seleccionado
-            
-                btnEliminar.setBackground(new Color(233,113,50));
-                btnEliminar.setForeground(Color.white);
-                btnEliminar.setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); // Restaura el cursor
-            }
-        });
-        //Tabla devuelva valores al seleccionar
-        tablaUsuarios.addMouseListener(new java.awt.event.MouseAdapter() {
-        @Override
-        public void mouseClicked(java.awt.event.MouseEvent evt) {
-            int filaSeleccionada = tablaUsuarios.getSelectedRow();
-            if (filaSeleccionada != -1) { // Verifica que una fila esté seleccionada
-                idUsuario = Integer.parseInt((modeloUsuario.getValueAt(filaSeleccionada, 0).toString()));
-                txtNombres.setText(modeloUsuario.getValueAt(filaSeleccionada, 1).toString());
-                txtApellidos.setText(modeloUsuario.getValueAt(filaSeleccionada, 2).toString());
-                cbTipoDeDocumento.setSelectedItem(modeloUsuario.getValueAt(filaSeleccionada, 3).toString());
-                txtNumeroDeDocumento.setText(modeloUsuario.getValueAt(filaSeleccionada, 4).toString());
-                txtNumeroDeContacto.setText(modeloUsuario.getValueAt(filaSeleccionada, 5).toString());
-                cbCargo.setSelectedItem(modeloUsuario.getValueAt(filaSeleccionada, 6).toString());
-                txtUsuario.setText(modeloUsuario.getValueAt(filaSeleccionada, 7).toString());
-                txtContraseña.setText(modeloUsuario.getValueAt(filaSeleccionada, 8).toString());
-                txtEmail.setText(modeloUsuario.getValueAt(filaSeleccionada, 9).toString());
+    // Método para actualizar el estado de los botones del menú
+    private void actualizarEstadoBotones() {
+        JButton[] botones = {btnRegistroUsuarios, btnControlAsistencia, btnControlEquipos, btnHorariosLaboratorio};
+        for (JButton boton : botones) {
+            if (boton.equals(botonSeleccionado)) {
+                boton.setBackground(COLOR_HOVER_SELECCIONADO1);
+                boton.setForeground(COLOR_TEXTO_BLANCO);
+            } else {
+                boton.setBackground(COLOR_BASE_BOTONES);
+                boton.setForeground(COLOR_TEXTO_NEGRO);
             }
         }
-        });
-    
-        
-        //Listar
+    }
+
+    // Métodos para manejar acciones
+    private void manejarCerrarSesion() {
+        QuieresCerrarSession window = new QuieresCerrarSession();
+        window.setVisible(true);
+        this.dispose();
+    }
+
+    private void manejarAgregarUsuario() {
+        usuario = new Usuario();
+
+        String nombre = txtNombres.getText();
+        String apellido = txtApellidos.getText();
+        String nombUsuario = txtUsuario.getText();
+        String tipoDoc = cbTipoDeDocumento.getSelectedItem().toString();
+        String numero = txtNumeroDeContacto.getText();
+        String contrasena = txtContraseña.getText();
+        String nroDoc = txtNumeroDeDocumento.getText();
+        String cargo = cbCargo.getSelectedItem().toString();
+        String email = txtEmail.getText();
+
+        usuario.setNombres(nombre);
+        usuario.setApellidos(apellido);
+        usuario.setNombreUsuario(nombUsuario);
+        usuario.setTipoDocumento(tipoDoc);
+        usuario.setNumero(numero);
+        usuario.setContrasena(contrasena);
+        usuario.setNroDocumento(nroDoc);
+        usuario.setCargo(cargo);
+        usuario.setEmail(email);
+        usuario.setIdUsuario(usuarioDAO.ultimoId() + 1);
+
+        int estado = usuarioDAO.insertarUsuario(usuario);
+
+        if (estado == 1) {
+            JOptionPane.showMessageDialog(null, "Registro Insertado 🐧!!");
+        } else {
+            JOptionPane.showMessageDialog(null, "Registro no Insertado 🐧!!");
+        }
+
         listarUsuario();
-            
+        limpiarCampos();
     }
 
-//----------------------------------------------------------------------------- 
-    // METODO PRINCIPAL - ESTA EN EL PROGRAMA PARA EJECUTAR MAS RAPIDO
-    public static void main(String[] args){
-        Ventana01RegsitrosDeUsuarios vtn = new Ventana01RegsitrosDeUsuarios();
-        vtn.setVisible(true);
+    private void manejarModificarUsuario() {
+        usuario = new Usuario();
+
+        String nombre = txtNombres.getText();
+        String apellido = txtApellidos.getText();
+        String nombUsuario = txtUsuario.getText();
+        String tipoDoc = cbTipoDeDocumento.getSelectedItem().toString();
+        String numero = txtNumeroDeContacto.getText();
+        String contrasena = txtContraseña.getText();
+        String nroDoc = txtNumeroDeDocumento.getText();
+        String cargo = cbCargo.getSelectedItem().toString();
+        String email = txtEmail.getText();
+
+        usuario.setNombres(nombre);
+        usuario.setApellidos(apellido);
+        usuario.setNombreUsuario(nombUsuario);
+        usuario.setTipoDocumento(tipoDoc);
+        usuario.setNumero(numero);
+        usuario.setContrasena(contrasena);
+        usuario.setNroDocumento(nroDoc);
+        usuario.setCargo(cargo);
+        usuario.setEmail(email);
+        usuario.setIdUsuario(idUsuario);
+
+        int estado = usuarioDAO.modificarUsuario(usuario);
+
+        if (estado == 1) {
+            JOptionPane.showMessageDialog(null, "Registro Modificado 🐧!!");
+        } else {
+            JOptionPane.showMessageDialog(null, "Registro no Modificado 🐧!!");
+        }
+
+        listarUsuario();
+        limpiarCampos();
     }
-//-----------------------------------------------------------------------------
-    //ESTE ES EL ACTION LISTENER GENERAL
-    //PARA OCULATAR Y MOSTRAR PANELES DERECHOS / PANELES RIGHT 1,2,3,4
-    @Override
-    public void actionPerformed(ActionEvent e) {
-       if(e.getSource() == btnCerrarSesion){
-          QuieresCerrarSession window = new QuieresCerrarSession();
-           window.setVisible(true);
-           this.dispose();
-       }
-       if(e.getSource() == btnRegsitroUsuarios ){
-           panelRight1.setVisible(true);
-           panelRight2.setVisible(false);
-           panelRight3.setVisible(false);
-           panelRight4.setVisible(false);
-       }
-       if(e.getSource() == btnControlAsistencia ){
-           panelRight1.setVisible(false);
-           panelRight2.setVisible(true);
-           panelRight3.setVisible(false);
-           panelRight4.setVisible(false);
-       }
-       if(e.getSource() == btnControlEquipos ){
-           panelRight1.setVisible(false);
-           panelRight2.setVisible(false);
-           panelRight3.setVisible(true);
-           panelRight4.setVisible(false);
-       }
-       if(e.getSource() == btnHorariosLaboratorio ){
-           panelRight1.setVisible(false);
-           panelRight2.setVisible(false);
-           panelRight3.setVisible(false);
-           panelRight4.setVisible(true);
-       }
-        // Logica de agregar Uusuario
-        if(e.getSource() == btnAgregar) {
-           
-            usuario = new Usuario();
-           
-            String nombre = txtNombres.getText();
-            String apellido = txtApellidos.getText();
-            String nombUsuario = txtUsuario.getText();
-            String tipoDoc = cbTipoDeDocumento.getSelectedItem().toString();
-            String numero = txtNumeroDeContacto.getText();
-            String contrasena = txtContraseña.getText();
-            String nroDoc = txtNumeroDeDocumento.getText();
-            String cargo = cbCargo.getSelectedItem().toString();
-            String email = txtEmail.getText();
-           
-            usuario.setNombres(nombre);
-            usuario.setApellidos(apellido);
-            usuario.setNombreUsuario(nombUsuario);
-            usuario.setTipoDocumento(tipoDoc);
-            usuario.setNumero(numero);
-            usuario.setContrasena(contrasena);
-            usuario.setNroDocumento(nroDoc);
-            usuario.setCargo(cargo);
-            usuario.setEmail(email);
-            usuario.setIdUsuario(usuarioDAO.ultimoId() + 1);
-           
-            int estado = usuarioDAO.insertarUsuario(usuario);
-            
-            if (estado == 1) {
-                JOptionPane.showMessageDialog(null, "Registro Insertado 🐧!!");
-            } else {
-                JOptionPane.showMessageDialog(null, "Registro no Insertado 🐧!!");
-            }
-            
-            listarUsuario();
-            
+
+    private void manejarEliminarUsuario() {
+        usuario = new Usuario();
+        usuario.setIdUsuario(idUsuario);
+
+        int estado = usuarioDAO.eliminarUsuario(usuario);
+
+        if (estado == 1) {
+            JOptionPane.showMessageDialog(null, "Registro Eliminado 🐧!!");
+        } else {
+            JOptionPane.showMessageDialog(null, "Registro no Eliminado 🐧!!");
         }
-        if (e.getSource() == btnModificar) {
-            
-            usuario = new Usuario();
-            
-            String nombre = txtNombres.getText();
-            String apellido = txtApellidos.getText();
-            String nombUsuario = txtUsuario.getText();
-            String tipoDoc = cbTipoDeDocumento.getSelectedItem().toString();
-            String numero = txtNumeroDeContacto.getText();
-            String contrasena = txtContraseña.getText();
-            String nroDoc = txtNumeroDeDocumento.getText();
-            String cargo = cbCargo.getSelectedItem().toString();
-            String email = txtEmail.getText();
-            
-            
-            usuario.setNombres(nombre);
-            usuario.setApellidos(apellido);
-            usuario.setNombreUsuario(nombUsuario);
-            usuario.setTipoDocumento(tipoDoc);
-            usuario.setNumero(numero);
-            usuario.setContrasena(contrasena);
-            usuario.setNroDocumento(nroDoc);
-            usuario.setCargo(cargo);
-            usuario.setEmail(email);
-            usuario.setIdUsuario(idUsuario);
-            
-            
-            int estado = usuarioDAO.modificarUsuario(usuario);
-            
-            if (estado == 1) {
-                JOptionPane.showMessageDialog(null, "Registro Modificado 🐧!!");
-            } else {
-                JOptionPane.showMessageDialog(null, "Registro no Modificado 🐧!!");
-            }
-            
-            listarUsuario();
-            
-        }
-        
-        if (e.getSource() == btnEliminar) {
-            
-            usuario = new Usuario();
-            
-            usuario.setIdUsuario(idUsuario);
-            
-            int estado = usuarioDAO.eliminarUsuario(usuario);
-            
-            if (estado == 1) {
-                JOptionPane.showMessageDialog(null, "Registro Eliminado 🐧!!");
-            } else {
-                JOptionPane.showMessageDialog(null, "Registro no Eliminado 🐧!!");
-            }
-            
-            listarUsuario();
-            
-        }
-       
+
+        listarUsuario();
+        limpiarCampos();
     }
-    
+
+    // Método para llenar campos desde la tabla
+    private void llenarCamposDesdeTabla() {
+        int filaSeleccionada = tablaUsuarios.getSelectedRow();
+        if (filaSeleccionada != -1) {
+            idUsuario = Integer.parseInt(modeloUsuario.getValueAt(filaSeleccionada, 0).toString());
+            txtNombres.setText(modeloUsuario.getValueAt(filaSeleccionada, 1).toString());
+            txtApellidos.setText(modeloUsuario.getValueAt(filaSeleccionada, 2).toString());
+            cbTipoDeDocumento.setSelectedItem(modeloUsuario.getValueAt(filaSeleccionada, 3).toString());
+            txtNumeroDeDocumento.setText(modeloUsuario.getValueAt(filaSeleccionada, 4).toString());
+            txtNumeroDeContacto.setText(modeloUsuario.getValueAt(filaSeleccionada, 5).toString());
+            cbCargo.setSelectedItem(modeloUsuario.getValueAt(filaSeleccionada, 6).toString());
+            txtUsuario.setText(modeloUsuario.getValueAt(filaSeleccionada, 7).toString());
+            txtContraseña.setText(modeloUsuario.getValueAt(filaSeleccionada, 8).toString());
+            txtEmail.setText(modeloUsuario.getValueAt(filaSeleccionada, 9).toString());
+        }
+    }
+
+    // Método para listar usuarios
     public void listarUsuario() {
-        
         modeloUsuario.setRowCount(0);
         listaUsuarios = usuarioDAO.enlistarUsuario();
-        
-        for (Usuario usuarioTa: listaUsuarios) {
-            modeloUsuario.addRow(new Object[] {
+
+        for (Usuario usuarioTa : listaUsuarios) {
+            modeloUsuario.addRow(new Object[]{
                 usuarioTa.getIdUsuario(),
                 usuarioTa.getNombres(),
                 usuarioTa.getApellidos(),
@@ -950,17 +590,29 @@ public class Ventana01RegsitrosDeUsuarios extends JFrame implements ActionListen
                 usuarioTa.getEmail()
             });
         }
-        
     }
-//-----------------------------------------------------------------------------
-        // ESTE ES EL METODO CON EL CUAL OBTENEMOS EL NOMBRE DE USUARIO 
-        // DIGITADO EN EL LOGIN
-        
+
+    // Método para limpiar campos
+    private void limpiarCampos() {
+        txtNombres.setText("");
+        txtApellidos.setText("");
+        txtUsuario.setText("");
+        cbTipoDeDocumento.setSelectedIndex(0);
+        txtNumeroDeContacto.setText("");
+        txtContraseña.setText("");
+        txtNumeroDeDocumento.setText("");
+        cbCargo.setSelectedIndex(0);
+        txtEmail.setText("");
+    }
+
+    // Método para establecer el nombre de usuario en la interfaz
     public void setUser(String user) {
-        lbNameUser.setText(user);  // Configura el texto del JLabel con el nombre de usuario
+        lbNameUser.setText(user);
     }
 
-    
-
- 
+    // Método principal
+    public static void main(String[] args) {
+        Ventana01RegsitrosDeUsuarios vtn = new Ventana01RegsitrosDeUsuarios();
+        vtn.setVisible(true);
+    }
 }
