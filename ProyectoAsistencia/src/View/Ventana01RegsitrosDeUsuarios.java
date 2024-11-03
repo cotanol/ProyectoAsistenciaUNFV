@@ -144,7 +144,7 @@ public class Ventana01RegsitrosDeUsuarios extends JFrame {
         // Imagen del logo
         ImageIcon imagenLogo = new ImageIcon("Images/logo_villarreal.png");
         ImageIcon imagenEscaladaLogo = new ImageIcon(imagenLogo.getImage().getScaledInstance(250, 110, Image.SCALE_DEFAULT));
-        lbImagenLogo.setIcon(imagenEscaladaLogo);
+        lbImagenLogo = new JLabel(imagenEscaladaLogo, SwingConstants.CENTER); // Centrado horizontal
         lbImagenLogo.setBounds(20, 10, 260, 130);
         panelLogo.add(lbImagenLogo);
 
@@ -157,7 +157,7 @@ public class Ventana01RegsitrosDeUsuarios extends JFrame {
         // Imagen del usuario
         ImageIcon imagenUser = new ImageIcon("Images/user_penguin.png");
         ImageIcon imagenEscaladaUser = new ImageIcon(imagenUser.getImage().getScaledInstance(195, 195, Image.SCALE_DEFAULT));
-        lbImagenUser.setIcon(imagenEscaladaUser);
+        lbImagenUser = new JLabel(imagenEscaladaUser, SwingConstants.CENTER);
         lbImagenUser.setBounds(0, 7, 300, 205);
         panelUser.add(lbImagenUser);
 
@@ -171,9 +171,13 @@ public class Ventana01RegsitrosDeUsuarios extends JFrame {
 
         // Botones del menú
         btnRegistroUsuarios.setBounds(0, 410, 300, 70);
+        btnRegistroUsuarios.setHorizontalAlignment(SwingConstants.CENTER);
         btnControlAsistencia.setBounds(0, 480, 300, 70);
+        btnControlAsistencia.setHorizontalAlignment(SwingConstants.CENTER);
         btnControlEquipos.setBounds(0, 550, 300, 70);
+        btnControlEquipos.setHorizontalAlignment(SwingConstants.CENTER);
         btnHorariosLaboratorio.setBounds(0, 620, 300, 70);
+        btnHorariosLaboratorio.setHorizontalAlignment(SwingConstants.CENTER);
         panelLeft.add(btnRegistroUsuarios);
         panelLeft.add(btnControlAsistencia);
         panelLeft.add(btnControlEquipos);
