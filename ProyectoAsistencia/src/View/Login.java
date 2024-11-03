@@ -204,7 +204,7 @@ public class Login extends JFrame implements ActionListener {
             
             if(estado == true){
                 this.dispose();
-                Ventana01RegsitrosDeUsuarios vtn = new Ventana01RegsitrosDeUsuarios();
+                Ventana01RegistrosDeUsuarios vtn = new Ventana01RegistrosDeUsuarios();
                 vtn.setUser(usuario);
                 vtn.setVisible(true);
             }
