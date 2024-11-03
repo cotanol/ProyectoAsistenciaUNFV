@@ -21,6 +21,7 @@ public class QuieresSalirDelPrograma extends JFrame implements ActionListener, M
         setLayout(null);
         setLocationRelativeTo(null);
         setResizable(false);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         UIManager.put("Button.select", new Color(0, 0, 0, 0));
         
