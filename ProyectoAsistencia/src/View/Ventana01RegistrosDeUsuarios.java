@@ -7,6 +7,7 @@ import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
 
 import Model.*;
+import Util.ComponentFactory;
 import java.util.ArrayList;
 
 public class Ventana01RegistrosDeUsuarios extends JFrame {
@@ -119,11 +120,11 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
         panelDerecho.add(panelRight4, "HorariosLaboratorio");
 
         // Botones del menú
-        btnRegistroUsuarios = crearBotonMenu("Registro de Usuarios");
-        btnControlAsistencia = crearBotonMenu("Control de Asistencia");
-        btnControlEquipos = crearBotonMenu("Control de Equipos");
-        btnHorariosLaboratorio = crearBotonMenu("Horarios de Laboratorio");
-        btnCerrarSesion = crearBotonAccion("Cerrar Sesión", 50, 730, 200, 70);
+        btnRegistroUsuarios = ComponentFactory.crearBotonMenu("Registro de Usuarios");
+        btnControlAsistencia = ComponentFactory.crearBotonMenu("Control de Asistencia");
+        btnControlEquipos = ComponentFactory.crearBotonMenu("Control de Equipos");
+        btnHorariosLaboratorio = ComponentFactory.crearBotonMenu("Horarios de Laboratorio");
+        btnCerrarSesion = ComponentFactory.crearBotonAccion("Cerrar Sesión", 50, 730, 200, 70);
 
         // Inicializar etiquetas e imágenes
         lbImagenLogo = new JLabel();
@@ -234,13 +235,13 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
 
     private void configurarPanelRight1() {
         // Título
-        lbRegistrosUsuarios = crearEtiqueta("REGISTRO DE USUARIOS", 50, 30, 590, 52, FUENTE_TITULO, COLOR_TEXTO_NEGRO);
+        lbRegistrosUsuarios = ComponentFactory.crearEtiqueta("REGISTRO DE USUARIOS", 50, 30, 590, 52, FUENTE_TITULO, COLOR_TEXTO_NEGRO);
         lbRegistrosUsuarios.setBackground(Color.GREEN);
         lbRegistrosUsuarios.setOpaque(true);
         panelRight1.add(lbRegistrosUsuarios);
 
         // Subtítulo
-        nombreSubPanel1_1 = crearEtiqueta("DATOS DEL REGISTRO", 100, 110, 500, 50, FUENTE_SUBTITULO, COLOR_TEXTO_BLANCO);
+        nombreSubPanel1_1 = ComponentFactory.crearEtiqueta("DATOS DEL REGISTRO", 100, 110, 500, 50, FUENTE_SUBTITULO, COLOR_TEXTO_BLANCO);
         nombreSubPanel1_1.setBackground(COLOR_HOVER_SELECCIONADO1);
         nombreSubPanel1_1.setOpaque(true);
         nombreSubPanel1_1.setHorizontalAlignment(SwingConstants.CENTER);
@@ -254,25 +255,25 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
         panelRight1.add(subPanel1);
 
         // Etiquetas y campos de texto
-        lbNombres = crearEtiqueta("Nombres", 30, 20, 200, 30, FUENTE_LABEL, COLOR_HOVER_SELECCIONADO1);
+        lbNombres = ComponentFactory.crearEtiqueta("Nombres", 30, 20, 200, 30, FUENTE_LABEL, COLOR_HOVER_SELECCIONADO1);
         subPanel1.add(lbNombres);
 
-        txtNombres = crearCampoTexto(30, 50, 300, 30);
+        txtNombres = ComponentFactory.crearCampoTexto(30, 50, 300, 30, border1);
         subPanel1.add(txtNombres);
 
-        lbApellidos = crearEtiqueta("Apellidos", 30, 100, 200, 30, FUENTE_LABEL, COLOR_HOVER_SELECCIONADO1);
+        lbApellidos = ComponentFactory.crearEtiqueta("Apellidos", 30, 100, 200, 30, FUENTE_LABEL, COLOR_HOVER_SELECCIONADO1);
         subPanel1.add(lbApellidos);
 
-        txtApellidos = crearCampoTexto(30, 130, 300, 30);
+        txtApellidos = ComponentFactory.crearCampoTexto(30, 130, 300, 30, border1);
         subPanel1.add(txtApellidos);
 
-        lbUsuario = crearEtiqueta("Usuario", 30, 180, 200, 30, FUENTE_LABEL, COLOR_HOVER_SELECCIONADO1);
+        lbUsuario = ComponentFactory.crearEtiqueta("Usuario", 30, 180, 200, 30, FUENTE_LABEL, COLOR_HOVER_SELECCIONADO1);
         subPanel1.add(lbUsuario);
 
-        txtUsuario = crearCampoTexto(30, 210, 300, 30);
+        txtUsuario = ComponentFactory.crearCampoTexto(30, 210, 300, 30, border1);
         subPanel1.add(txtUsuario);
 
-        lbTipoDeDocumento = crearEtiqueta("Tipo de Documento", 435, 20, 210, 30, FUENTE_LABEL, COLOR_HOVER_SELECCIONADO1);
+        lbTipoDeDocumento = ComponentFactory.crearEtiqueta("Tipo de Documento", 435, 20, 210, 30, FUENTE_LABEL, COLOR_HOVER_SELECCIONADO1);
         subPanel1.add(lbTipoDeDocumento);
 
         cbTipoDeDocumento = new JComboBox<>();
@@ -283,25 +284,25 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
         cbTipoDeDocumento.addItem("PASAPORTE");
         subPanel1.add(cbTipoDeDocumento);
 
-        lbNumeroDeContacto = crearEtiqueta("Nro. de Contacto", 435, 100, 210, 30, FUENTE_LABEL, COLOR_HOVER_SELECCIONADO1);
+        lbNumeroDeContacto = ComponentFactory.crearEtiqueta("Nro. de Contacto", 435, 100, 210, 30, FUENTE_LABEL, COLOR_HOVER_SELECCIONADO1);
         subPanel1.add(lbNumeroDeContacto);
 
-        txtNumeroDeContacto = crearCampoTexto(435, 130, 210, 30);
+        txtNumeroDeContacto = ComponentFactory.crearCampoTexto(435, 130, 210, 30, border1);
         subPanel1.add(txtNumeroDeContacto);
 
-        lbContraseña = crearEtiqueta("Contraseña", 435, 180, 210, 30, FUENTE_LABEL, COLOR_HOVER_SELECCIONADO1);
+        lbContraseña = ComponentFactory.crearEtiqueta("Contraseña", 435, 180, 210, 30, FUENTE_LABEL, COLOR_HOVER_SELECCIONADO1);
         subPanel1.add(lbContraseña);
 
-        txtContraseña = crearCampoTexto(435, 210, 210, 30);
+        txtContraseña = ComponentFactory.crearCampoTexto(435, 210, 210, 30, border1);
         subPanel1.add(txtContraseña);
 
-        lbNumeroDeDocumento = crearEtiqueta("Nro. de Documento", 730, 20, 250, 30, FUENTE_LABEL, COLOR_HOVER_SELECCIONADO1);
+        lbNumeroDeDocumento = ComponentFactory.crearEtiqueta("Nro. de Documento", 730, 20, 250, 30, FUENTE_LABEL, COLOR_HOVER_SELECCIONADO1);
         subPanel1.add(lbNumeroDeDocumento);
 
-        txtNumeroDeDocumento = crearCampoTexto(730, 50, 300, 30);
+        txtNumeroDeDocumento = ComponentFactory.crearCampoTexto(730, 50, 300, 30, border1);
         subPanel1.add(txtNumeroDeDocumento);
 
-        lbCargo = crearEtiqueta("Cargo", 730, 100, 250, 30, FUENTE_LABEL, COLOR_HOVER_SELECCIONADO1);
+        lbCargo = ComponentFactory.crearEtiqueta("Cargo", 730, 100, 250, 30, FUENTE_LABEL, COLOR_HOVER_SELECCIONADO1);
         subPanel1.add(lbCargo);
 
         cbCargo = new JComboBox<>();
@@ -312,24 +313,24 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
         cbCargo.addItem("DOCENTE");
         subPanel1.add(cbCargo);
 
-        lbEmail = crearEtiqueta("Email", 730, 180, 250, 30, FUENTE_LABEL, COLOR_HOVER_SELECCIONADO1);
+        lbEmail = ComponentFactory.crearEtiqueta("Email", 730, 180, 250, 30, FUENTE_LABEL, COLOR_HOVER_SELECCIONADO1);
         subPanel1.add(lbEmail);
 
-        txtEmail = crearCampoTexto(730, 210, 300, 30);
+        txtEmail = ComponentFactory.crearCampoTexto(730, 210, 300, 30, border1);
         subPanel1.add(txtEmail);
 
         // Botones de acción
-        btnAgregar = crearBotonAccion("AGREGAR", 700, 110, 150, 50);
+        btnAgregar = ComponentFactory.crearBotonAccion("AGREGAR", 700, 110, 150, 50);
         panelRight1.add(btnAgregar);
 
-        btnModificar = crearBotonAccion("MODIFICAR", 870, 110, 150, 50);
+        btnModificar = ComponentFactory.crearBotonAccion("MODIFICAR", 870, 110, 150, 50);
         panelRight1.add(btnModificar);
 
-        btnEliminar = crearBotonAccion("ELIMINAR", 1040, 110, 150, 50);
+        btnEliminar = ComponentFactory.crearBotonAccion("ELIMINAR", 1040, 110, 150, 50);
         panelRight1.add(btnEliminar);
 
         // Subtítulo de la tabla
-        nombreSubPanel1_2 = crearEtiqueta("LISTA DE USUARIOS REGISTRADOS", 100, 490, 570, 50, FUENTE_SUBTITULO, COLOR_TEXTO_BLANCO);
+        nombreSubPanel1_2 = ComponentFactory.crearEtiqueta("LISTA DE USUARIOS REGISTRADOS", 100, 490, 570, 50, FUENTE_SUBTITULO, COLOR_TEXTO_BLANCO);
         nombreSubPanel1_2.setBackground(COLOR_HOVER_SELECCIONADO1);
         nombreSubPanel1_2.setOpaque(true);
         nombreSubPanel1_2.setHorizontalAlignment(SwingConstants.CENTER);
@@ -344,45 +345,6 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
         scrollSubPanel1_2.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         scrollSubPanel1_2.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
         panelRight1.add(scrollSubPanel1_2);
-    }
-
-    // Métodos auxiliares para crear componentes
-    private JButton crearBotonMenu(String texto) {
-        JButton boton = new JButton(texto);
-        boton.setBackground(COLOR_BASE_BOTONES);
-        boton.setForeground(COLOR_TEXTO_NEGRO);
-        boton.setFont(FUENTE_MENU);
-        boton.setBorderPainted(false);
-        boton.setFocusPainted(false);
-        boton.setHorizontalAlignment(SwingConstants.LEFT);
-        return boton;
-    }
-
-    private JButton crearBotonAccion(String texto, int x, int y, int ancho, int alto) {
-        JButton boton = new JButton(texto);
-        boton.setBounds(x, y, ancho, alto);
-        boton.setBackground(COLOR_HOVER_SELECCIONADO1);
-        boton.setForeground(COLOR_TEXTO_BLANCO);
-        boton.setFont(FUENTE_BOTON);
-        boton.setBorderPainted(false);
-        boton.setFocusPainted(false);
-        return boton;
-    }
-
-    private JLabel crearEtiqueta(String texto, int x, int y, int ancho, int alto, Font fuente, Color colorTexto) {
-        JLabel etiqueta = new JLabel(texto);
-        etiqueta.setBounds(x, y, ancho, alto);
-        etiqueta.setFont(fuente);
-        etiqueta.setForeground(colorTexto);
-        return etiqueta;
-    }
-
-    private JTextField crearCampoTexto(int x, int y, int ancho, int alto) {
-        JTextField campoTexto = new JTextField();
-        campoTexto.setBounds(x, y, ancho, alto);
-        campoTexto.setFont(FUENTE_TEXTFIELD);
-        campoTexto.setBorder(border1);
-        return campoTexto;
     }
 
     // Clases internas para manejar eventos
