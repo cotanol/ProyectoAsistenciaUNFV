@@ -9,7 +9,7 @@ import javax.swing.table.DefaultTableModel;
 import Model.*;
 import java.util.ArrayList;
 
-public class Ventana01RegsitrosDeUsuarios extends JFrame {
+public class Ventana01RegistrosDeUsuarios extends JFrame {
 
     // Variables de instancia
     private int idUsuario;
@@ -64,7 +64,7 @@ public class Ventana01RegsitrosDeUsuarios extends JFrame {
     // CardLayout para manejar los paneles derechos
     private CardLayout cardLayout;
 
-    public Ventana01RegsitrosDeUsuarios() {
+    public Ventana01RegistrosDeUsuarios() {
         // Configuración de la ventana
         setSize(1600, 900);
         setTitle("GESTOR DE LABORATORIO DE LA UNIVERSIDAD NACIONAL FEDERICO VILLARREAL");
@@ -616,7 +616,7 @@ public class Ventana01RegsitrosDeUsuarios extends JFrame {
 
     // Método principal
     public static void main(String[] args) {
-        Ventana01RegsitrosDeUsuarios vtn = new Ventana01RegsitrosDeUsuarios();
+        Ventana01RegistrosDeUsuarios vtn = new Ventana01RegistrosDeUsuarios();
         vtn.setVisible(true);
     }
 }
