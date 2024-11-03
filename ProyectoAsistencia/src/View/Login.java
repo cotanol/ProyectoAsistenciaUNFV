@@ -32,6 +32,7 @@ public class Login extends JFrame implements ActionListener {
         setResizable(false);
         setLocationRelativeTo(null);
         setLayout(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         //----------------------------------------------------------------------
         
         //PANEL HEADER - CARACTERISTICAS

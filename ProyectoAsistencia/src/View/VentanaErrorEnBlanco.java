@@ -17,6 +17,7 @@ public class VentanaErrorEnBlanco extends JFrame implements ActionListener{
         setLayout(null);
         setLocationRelativeTo(null);
         setResizable(false);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         //----------------------------
         panelPrincipal = new JPanel();
         panelPrincipal.setLayout(null);
