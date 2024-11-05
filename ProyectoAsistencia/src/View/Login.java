@@ -9,6 +9,9 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseAdapter;
 import javax.swing.*;
 
+import Model.*;
+import java.util.ArrayList;
+
 public class Login extends JFrame implements ActionListener {
 
     //TODAS LAS ETIQUETAS
@@ -180,8 +183,22 @@ public class Login extends JFrame implements ActionListener {
     }
     
     public void Entrar(){
-        String usu[] = {"admin","CAMOTE MORADO","ORRAI","TIO XIANCA"};
-        String cla[] = {"123","ORRAI","VAGAZO","789"};
+        UsuarioDAO DAO = new UsuarioDAO();
+        ArrayList<String> usu = new ArrayList<>();
+        ArrayList<String> pass = new ArrayList<>();
+        
+        for (Usuario usuario: DAO.enlistarUsuario ()) {
+            usu.add(usuario.getNombreUsuario());
+            pass.add(usuario.getContrasena());
+        }
+        
+        String admin = "admin";
+        String passAdmin = "123";
+        
+        usu.add(admin);
+        pass.add(passAdmin);
+        
+        
         boolean estado = false;
         String usuario = txtUsuario.getText();
         String clave = new String(txtPassword.getPassword());
@@ -190,8 +207,8 @@ public class Login extends JFrame implements ActionListener {
             error.setVisible(true);
         }else{
             
-            for(int i=0;i<usu.length;i++){
-                if(usu[i].equals(usuario) && cla[i].equals(clave)){
+            for(int i=0;i<usu.size();i++){
+                if(usu.get(i).equals(usuario) && pass.get(i).equals(clave)){
                     estado = true;
                     break;
                 }
