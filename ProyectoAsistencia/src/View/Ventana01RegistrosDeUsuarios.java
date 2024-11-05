@@ -172,13 +172,10 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
 
         // Botones del menú
         btnRegistroUsuarios.setBounds(0, 410, 300, 70);
-        btnRegistroUsuarios.setHorizontalAlignment(SwingConstants.CENTER);
         btnControlAsistencia.setBounds(0, 480, 300, 70);
-        btnControlAsistencia.setHorizontalAlignment(SwingConstants.CENTER);
         btnControlEquipos.setBounds(0, 550, 300, 70);
-        btnControlEquipos.setHorizontalAlignment(SwingConstants.CENTER);
         btnHorariosLaboratorio.setBounds(0, 620, 300, 70);
-        btnHorariosLaboratorio.setHorizontalAlignment(SwingConstants.CENTER);
+        
         panelLeft.add(btnRegistroUsuarios);
         panelLeft.add(btnControlAsistencia);
         panelLeft.add(btnControlEquipos);
@@ -201,28 +198,28 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
 
     private void configurarEventos() {
         // Asignar MouseListener y ActionListener a los botones del menú
-        btnRegistroUsuarios.addMouseListener(new BotonMenuMouseAdapter(btnRegistroUsuarios));
-        btnControlAsistencia.addMouseListener(new BotonMenuMouseAdapter(btnControlAsistencia));
-        btnControlEquipos.addMouseListener(new BotonMenuMouseAdapter(btnControlEquipos));
-        btnHorariosLaboratorio.addMouseListener(new BotonMenuMouseAdapter(btnHorariosLaboratorio));
+        btnRegistroUsuarios.addMouseListener(new EstiloHoverMenuBoton(btnRegistroUsuarios));
+        btnControlAsistencia.addMouseListener(new EstiloHoverMenuBoton(btnControlAsistencia));
+        btnControlEquipos.addMouseListener(new EstiloHoverMenuBoton(btnControlEquipos));
+        btnHorariosLaboratorio.addMouseListener(new EstiloHoverMenuBoton(btnHorariosLaboratorio));
 
-        btnRegistroUsuarios.addActionListener(new BotonMenuActionListener("RegistroUsuarios"));
-        btnControlAsistencia.addActionListener(new BotonMenuActionListener("ControlAsistencia"));
-        btnControlEquipos.addActionListener(new BotonMenuActionListener("ControlEquipos"));
-        btnHorariosLaboratorio.addActionListener(new BotonMenuActionListener("HorariosLaboratorio"));
+        btnRegistroUsuarios.addActionListener(new ClickMenuBoton("RegistroUsuarios"));
+        btnControlAsistencia.addActionListener(new ClickMenuBoton("ControlAsistencia"));
+        btnControlEquipos.addActionListener(new ClickMenuBoton("ControlEquipos"));
+        btnHorariosLaboratorio.addActionListener(new ClickMenuBoton("HorariosLaboratorio"));
 
         // Botón Cerrar Sesión
         btnCerrarSesion.addActionListener(e -> manejarCerrarSesion());
-        btnCerrarSesion.addMouseListener(new BotonAccionMouseAdapter(btnCerrarSesion));
+        btnCerrarSesion.addMouseListener(new EstiloHoverAccionBoton(btnCerrarSesion));
 
         // Botones de acción
         btnAgregar.addActionListener(e -> manejarAgregarUsuario());
         btnModificar.addActionListener(e -> manejarModificarUsuario());
         btnEliminar.addActionListener(e -> manejarEliminarUsuario());
 
-        btnAgregar.addMouseListener(new BotonAccionMouseAdapter(btnAgregar));
-        btnModificar.addMouseListener(new BotonAccionMouseAdapter(btnModificar));
-        btnEliminar.addMouseListener(new BotonAccionMouseAdapter(btnEliminar));
+        btnAgregar.addMouseListener(new EstiloHoverAccionBoton(btnAgregar));
+        btnModificar.addMouseListener(new EstiloHoverAccionBoton(btnModificar));
+        btnEliminar.addMouseListener(new EstiloHoverAccionBoton(btnEliminar));
 
         // Evento de la tabla
         tablaUsuarios.addMouseListener(new MouseAdapter() {
@@ -348,10 +345,10 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
     }
 
     // Clases internas para manejar eventos
-    private class BotonMenuMouseAdapter extends MouseAdapter {
+    private class EstiloHoverMenuBoton extends MouseAdapter {
         private JButton boton;
 
-        public BotonMenuMouseAdapter(JButton boton) {
+        public EstiloHoverMenuBoton(JButton boton) {
             this.boton = boton;
         }
 
@@ -374,10 +371,10 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
         }
     }
 
-    private class BotonMenuActionListener implements ActionListener {
+    private class ClickMenuBoton implements ActionListener {
         private String nombrePanel;
 
-        public BotonMenuActionListener(String nombrePanel) {
+        public ClickMenuBoton(String nombrePanel) {
             this.nombrePanel = nombrePanel;
         }
 
@@ -389,10 +386,10 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
         }
     }
 
-    private class BotonAccionMouseAdapter extends MouseAdapter {
+    private class EstiloHoverAccionBoton  extends MouseAdapter {
         private JButton boton;
 
-        public BotonAccionMouseAdapter(JButton boton) {
+        public EstiloHoverAccionBoton (JButton boton) {
             this.boton = boton;
         }
 

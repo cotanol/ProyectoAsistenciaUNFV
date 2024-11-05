@@ -25,7 +25,7 @@ public class ComponentFactory {
         boton.setFont(FUENTE_MENU);
         boton.setBorderPainted(false);
         boton.setFocusPainted(false);
-        boton.setHorizontalAlignment(SwingConstants.LEFT);
+        boton.setHorizontalAlignment(SwingConstants.CENTER);
         return boton;
     }
 

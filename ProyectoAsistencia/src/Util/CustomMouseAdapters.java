@@ -12,6 +12,9 @@ import java.awt.event.MouseEvent;
  *
  * @author brigi
  */
+
+
+// No le encontre uso pero por si acaso
 public class CustomMouseAdapters {
     // Adapter para cambiar el fondo y texto en botones de menú
     public static class BotonMenuMouseAdapter extends MouseAdapter {
