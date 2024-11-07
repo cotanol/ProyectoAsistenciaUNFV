@@ -430,39 +430,57 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
     }
 
     private void manejarAgregarUsuario() {
-        usuario = new Usuario();
+        if (seLlenaronTodosLosCampos()) {
+            usuario = new Usuario();
 
-        String nombre = txtNombres.getText();
-        String apellido = txtApellidos.getText();
-        String nombUsuario = txtUsuario.getText();
-        String tipoDoc = cbTipoDeDocumento.getSelectedItem().toString();
-        String numero = txtNumeroDeContacto.getText();
-        String contrasena = txtContraseña.getText();
-        String nroDoc = txtNumeroDeDocumento.getText();
-        String cargo = cbCargo.getSelectedItem().toString();
-        String email = txtEmail.getText();
+            String nombre = txtNombres.getText();
+            String apellido = txtApellidos.getText();
+            String nombUsuario = txtUsuario.getText();
+            String tipoDoc = cbTipoDeDocumento.getSelectedItem().toString();
+            String numero = txtNumeroDeContacto.getText();
+            String contrasena = txtContraseña.getText();
+            String nroDoc = txtNumeroDeDocumento.getText();
+            String cargo = cbCargo.getSelectedItem().toString();
+            String email = txtEmail.getText();
 
-        usuario.setNombres(nombre);
-        usuario.setApellidos(apellido);
-        usuario.setNombreUsuario(nombUsuario);
-        usuario.setTipoDocumento(tipoDoc);
-        usuario.setNumero(numero);
-        usuario.setContrasena(contrasena);
-        usuario.setNroDocumento(nroDoc);
-        usuario.setCargo(cargo);
-        usuario.setEmail(email);
-        usuario.setIdUsuario(usuarioDAO.ultimoId() + 1);
+            usuario.setNombres(nombre);
+            usuario.setApellidos(apellido);
+            usuario.setNombreUsuario(nombUsuario);
+            usuario.setTipoDocumento(tipoDoc);
+            usuario.setNumero(numero);
+            usuario.setContrasena(contrasena);
+            usuario.setNroDocumento(nroDoc);
+            usuario.setCargo(cargo);
+            usuario.setEmail(email);
+            usuario.setIdUsuario(usuarioDAO.ultimoId() + 1);
 
-        int estado = usuarioDAO.insertarUsuario(usuario);
+            int estado = usuarioDAO.insertarUsuario(usuario);
 
-        if (estado == 1) {
-            JOptionPane.showMessageDialog(null, "Registro Insertado 🐧!!");
+            if (estado == 1) {
+                JOptionPane.showMessageDialog(null, "Registro Insertado 🐧!!");
+            } else {
+                JOptionPane.showMessageDialog(null, "Registro no Insertado 🐧!!");
+            }
+
+            listarUsuario();
+            limpiarCampos();
         } else {
-            JOptionPane.showMessageDialog(null, "Registro no Insertado 🐧!!");
+            JOptionPane.showMessageDialog(null, "Llena todos los campos 🐧!!");
         }
-
-        listarUsuario();
-        limpiarCampos();
+        
+    }
+    
+    private boolean seLlenaronTodosLosCampos() {
+        String[] campos = {txtNombres.getText(), txtApellidos.getText(), txtUsuario.getText(),
+                           cbTipoDeDocumento.getSelectedItem().toString(), txtNumeroDeContacto.getText(),
+                           txtContraseña.getText(), txtNumeroDeDocumento.getText(), cbCargo.getSelectedItem().toString(),
+                           txtEmail.getText()};
+        for (String campo : campos) {
+            if (campo.equals("")) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private void manejarModificarUsuario() {
