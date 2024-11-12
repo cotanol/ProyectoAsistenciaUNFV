@@ -7,6 +7,7 @@ import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
 
 import Model.*;
+import Controller.UsuarioController;
 import Util.ComponentFactory;
 import java.util.ArrayList;
 
@@ -35,9 +36,8 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
     private DefaultTableModel modeloUsuario;
 
     // Modelo
-    private ArrayList<Usuario> listaUsuarios;
-    private Usuario usuario;
-    private UsuarioDAO usuarioDAO;
+    private ArrayList<UsuarioModelo> listaUsuarios;
+    private UsuarioController usuarioControlador;
 
     // Colores
     private static final Color COLOR_BASE_BOTONES = new Color(255, 152, 0);
@@ -74,8 +74,8 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
         setLayout(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // DAO
-        usuarioDAO = new UsuarioDAO();
+        
+        usuarioControlador = new UsuarioController(this);
 
         // Inicialización de componentes
         inicializarComponentes();
@@ -431,7 +431,7 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
 
     private void manejarAgregarUsuario() {
         if (seLlenaronTodosLosCampos()) {
-            usuario = new Usuario();
+            UsuarioModelo usuarioModelo = new UsuarioModelo();
 
             String nombre = txtNombres.getText();
             String apellido = txtApellidos.getText();
@@ -443,18 +443,18 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
             String cargo = cbCargo.getSelectedItem().toString();
             String email = txtEmail.getText();
 
-            usuario.setNombres(nombre);
-            usuario.setApellidos(apellido);
-            usuario.setNombreUsuario(nombUsuario);
-            usuario.setTipoDocumento(tipoDoc);
-            usuario.setNumero(numero);
-            usuario.setContrasena(contrasena);
-            usuario.setNroDocumento(nroDoc);
-            usuario.setCargo(cargo);
-            usuario.setEmail(email);
-            usuario.setIdUsuario(usuarioDAO.ultimoId() + 1);
+            usuarioModelo.setNombres(nombre);
+            usuarioModelo.setApellidos(apellido);
+            usuarioModelo.setNombreUsuario(nombUsuario);
+            usuarioModelo.setTipoDocumento(tipoDoc);
+            usuarioModelo.setNumero(numero);
+            usuarioModelo.setContrasena(contrasena);
+            usuarioModelo.setNroDocumento(nroDoc);
+            usuarioModelo.setCargo(cargo);
+            usuarioModelo.setEmail(email);
+            usuarioModelo.setIdUsuario(usuarioControlador.ultimoIdController()+ 1);
 
-            int estado = usuarioDAO.insertarUsuario(usuario);
+            int estado = usuarioControlador.insertarUsuarioController(usuarioModelo);
 
             if (estado == 1) {
                 JOptionPane.showMessageDialog(null, "Registro Insertado 🐧!!");
@@ -484,7 +484,7 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
     }
 
     private void manejarModificarUsuario() {
-        usuario = new Usuario();
+        UsuarioModelo usuarioModelo = new UsuarioModelo();
 
         String nombre = txtNombres.getText();
         String apellido = txtApellidos.getText();
@@ -496,18 +496,18 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
         String cargo = cbCargo.getSelectedItem().toString();
         String email = txtEmail.getText();
 
-        usuario.setNombres(nombre);
-        usuario.setApellidos(apellido);
-        usuario.setNombreUsuario(nombUsuario);
-        usuario.setTipoDocumento(tipoDoc);
-        usuario.setNumero(numero);
-        usuario.setContrasena(contrasena);
-        usuario.setNroDocumento(nroDoc);
-        usuario.setCargo(cargo);
-        usuario.setEmail(email);
-        usuario.setIdUsuario(idUsuario);
+        usuarioModelo.setNombres(nombre);
+        usuarioModelo.setApellidos(apellido);
+        usuarioModelo.setNombreUsuario(nombUsuario);
+        usuarioModelo.setTipoDocumento(tipoDoc);
+        usuarioModelo.setNumero(numero);
+        usuarioModelo.setContrasena(contrasena);
+        usuarioModelo.setNroDocumento(nroDoc);
+        usuarioModelo.setCargo(cargo);
+        usuarioModelo.setEmail(email);
+        usuarioModelo.setIdUsuario(idUsuario);
 
-        int estado = usuarioDAO.modificarUsuario(usuario);
+        int estado = usuarioControlador.modificarUsuarioController(usuarioModelo);
 
         if (estado == 1) {
             JOptionPane.showMessageDialog(null, "Registro Modificado 🐧!!");
@@ -520,10 +520,10 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
     }
 
     private void manejarEliminarUsuario() {
-        usuario = new Usuario();
-        usuario.setIdUsuario(idUsuario);
+        UsuarioModelo usuarioModelo = new UsuarioModelo();
+        usuarioModelo.setIdUsuario(idUsuario);
 
-        int estado = usuarioDAO.eliminarUsuario(usuario);
+        int estado = usuarioControlador.eliminarUsuarioController(usuarioModelo);
 
         if (estado == 1) {
             JOptionPane.showMessageDialog(null, "Registro Eliminado 🐧!!");
@@ -555,9 +555,9 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
     // Método para listar usuarios
     public void listarUsuario() {
         modeloUsuario.setRowCount(0);
-        listaUsuarios = usuarioDAO.enlistarUsuario();
+        listaUsuarios = usuarioControlador.enlistarUsuarioController();
 
-        for (Usuario usuarioTa : listaUsuarios) {
+        for (UsuarioModelo usuarioTa : listaUsuarios) {
             modeloUsuario.addRow(new Object[]{
                 usuarioTa.getIdUsuario(),
                 usuarioTa.getNombres(),
