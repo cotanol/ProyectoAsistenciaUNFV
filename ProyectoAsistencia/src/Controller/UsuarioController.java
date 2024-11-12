@@ -16,8 +16,6 @@ public class UsuarioController {
     UsuarioModelo objUsuarioModelo;
     Ventana01RegistrosDeUsuarios objVentReg;
     
-    
-    
     public UsuarioController(Ventana01RegistrosDeUsuarios objVentReg) {
         this.objVentReg = objVentReg;
         objUsuarioModelo = new UsuarioModelo(objVentReg);

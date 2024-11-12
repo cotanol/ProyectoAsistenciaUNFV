@@ -55,7 +55,6 @@ public class UsuarioModelo {
             pt.setString(9, usuarioModelo.getEmail());
             
             
-            
             estado = pt.executeUpdate();
             
             cn.close();

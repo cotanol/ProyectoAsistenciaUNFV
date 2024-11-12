@@ -516,6 +516,7 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
         }
 
         listarUsuario();
+        
         limpiarCampos();
     }
 
