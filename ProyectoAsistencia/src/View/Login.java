@@ -1,6 +1,7 @@
 
 package View;
 
+import Controller.UsuarioController;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,7 +10,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseAdapter;
 import javax.swing.*;
 
-import Model.*;
+import Model.UsuarioModelo;
 import java.util.ArrayList;
 
 public class Login extends JFrame implements ActionListener {
@@ -168,9 +169,6 @@ public class Login extends JFrame implements ActionListener {
     
     
     
-    
-    
-    
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == btnSalir){
@@ -183,11 +181,11 @@ public class Login extends JFrame implements ActionListener {
     }
     
     public void Entrar(){
-        UsuarioDAO DAO = new UsuarioDAO();
+        UsuarioController usuarioControlador = new UsuarioController();
         ArrayList<String> usu = new ArrayList<>();
         ArrayList<String> pass = new ArrayList<>();
         
-        for (Usuario usuario: DAO.enlistarUsuario ()) {
+        for (UsuarioModelo usuario: usuarioControlador.enlistarUsuarioController ()) {
             usu.add(usuario.getNombreUsuario());
             pass.add(usuario.getContrasena());
         }
