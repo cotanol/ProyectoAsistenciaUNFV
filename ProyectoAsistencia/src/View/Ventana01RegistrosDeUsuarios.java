@@ -465,7 +465,8 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
             listarUsuario();
             limpiarCampos();
         } else {
-            JOptionPane.showMessageDialog(null, "Llena todos los campos 🐧!!");
+            VentanaErrorEnBlanco vtn = new VentanaErrorEnBlanco();
+            vtn.setVisible(true);
         }
         
     }
