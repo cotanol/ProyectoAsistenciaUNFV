@@ -1,17 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Model;
 import Util.Conexion_BD;
 import java.sql.*;
 import java.util.ArrayList;
 import View.Ventana01RegistrosDeUsuarios;
 
-/**
- *
- * @author brigi
- */
 public class UsuarioModelo {
     private int idUsuario;
     private String nombres;
@@ -158,17 +150,16 @@ public class UsuarioModelo {
     }
     
     public int ultimoId() {
-        int id = 0; // Inicializa el ID con un valor predeterminado
+        int id = 0;
         try {
             cn = Conexion_BD.getConexionBD();
             pt = cn.prepareStatement("SELECT MAX(id_usuario) AS max_id FROM usuario;");
             rs = pt.executeQuery();
 
             if (rs.next()) {
-                id = rs.getInt("max_id"); // Obtén el máximo ID de la columna 'max_id'
+                id = rs.getInt("max_id");
             }
 
-            // Cerrar recursos
             rs.close();
             pt.close();
             cn.close();
@@ -258,8 +249,5 @@ public class UsuarioModelo {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-    
-    
-    
+    } 
 }
