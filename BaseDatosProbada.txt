@@ -48,7 +48,7 @@ CREATE TABLE equipo (
   numero_lab INT,
   tipo_equipo VARCHAR(100),
   numero_serie VARCHAR(50),
-  estado ENUM('ACTIVO', 'INACTIVO', 'MANTENIMIENTO'),
+  estado ENUM('Operativo', 'No Operativo'),
   FOREIGN KEY (numero_lab) REFERENCES laboratorio(numero_lab)
 );
 

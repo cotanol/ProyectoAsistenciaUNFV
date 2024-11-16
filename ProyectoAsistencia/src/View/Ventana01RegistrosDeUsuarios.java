@@ -10,20 +10,23 @@ import Model.*;
 import Controller.UsuarioController;
 import Util.ComponentFactory;
 import java.util.ArrayList;
+import Controller.EquipoController;
 
 public class Ventana01RegistrosDeUsuarios extends JFrame {
 
     // Variables de instancia
     private int idUsuario;
+    private int numeroLaboratorio;
+
     private JPanel panelLeft, panelDerecho;
     private JPanel panelLogo, panelUser;
     private JButton btnRegistroUsuarios, btnControlAsistencia, btnControlEquipos, btnHorariosLaboratorio, btnCerrarSesion;
     private JLabel lbImagenUser, lbImagenLogo, lbNameUser;
 
     // Paneles derechos
-    private JPanel panelRight1, panelRight2, panelRight3, panelRight4;
+    private JPanel panelRight1, panelRight2, panelRight3, panelRight4, panelRightConfig;
 
-    // Componentes de panelRight1
+    // Componentes de panelRight1 (Registro de Usuarios)
     private JLabel lbRegistrosUsuarios;
     private JPanel subPanel1;
     private JLabel lbNombres, lbApellidos, lbUsuario, lbTipoDeDocumento, lbNumeroDeContacto, lbContraseña, lbNumeroDeDocumento, lbCargo, lbEmail;
@@ -35,9 +38,21 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
     private JTable tablaUsuarios;
     private DefaultTableModel modeloUsuario;
 
-    // Modelo
+    // Componentes de panelRight3 (Control de Equipos)
+    private JLabel lbTituloPantalla1, lbEquiposDisponiblesLabel, lbTituloPantalla2, lbRegistroEquiposLabel, lbListaEquiposLabel, lbTipoEquipoLabel, lbLaboratorioLabel, lbEstadoLabel, lbNumeroSerieLabel, lbCodigoPatrimonialLabel;
+    private JTextField txtNumeroSerie, txtCodigoPatrimonial;
+    private JComboBox<String> cbTipoEquipo, cbLaboratorio, cbEstado;
+    private JButton btnAgregarEquipo, btnModificarEquipo, btnEliminarEquipo, btnConfiguracion;
+    private JTable tablaEquiposDisponibles, tablaEquiposRegistrados;
+    private JScrollPane scrollTablaEquiposDisponibles, scrollTablaEquiposRegistrados;
+    private DefaultTableModel modeloEquiposDisponibles, modeloEquiposRegistrados;
+
+    // Modelos
     private ArrayList<UsuarioModelo> listaUsuarios;
+    private ArrayList<EquipoModelo> listaEquipos;
     private UsuarioController usuarioControlador;
+    private EquipoController equipoController;
+    private EquipoModelo equipo;
 
     // Colores
     private static final Color COLOR_BASE_BOTONES = new Color(255, 152, 0);
@@ -66,6 +81,9 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
     private CardLayout cardLayout;
 
     public Ventana01RegistrosDeUsuarios() {
+        usuarioControlador = new UsuarioController(this);
+        equipoController = new EquipoController();
+
         // Configuración de la ventana
         setSize(1600, 900);
         setTitle("GESTOR DE LABORATORIO DE LA UNIVERSIDAD NACIONAL FEDERICO VILLARREAL");
@@ -73,9 +91,6 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
         setLocationRelativeTo(null);
         setLayout(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        
-        usuarioControlador = new UsuarioController(this);
 
         // Inicialización de componentes
         inicializarComponentes();
@@ -85,11 +100,16 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
         configurarMenu();
         configurarEventos();
 
-        // Listar usuarios
+        // Listar usuarios y equipos
         listarUsuario();
+        listarEquiposDisponibles();
+        listarEquiposRegistrados();
     }
 
     private void inicializarComponentes() {
+        // Inicialización común para ambos paneles
+        cbEstado = new JComboBox<>(new String[]{"", "Operativo", "No Operativo"});
+
         // Panel izquierdo
         panelLeft = new JPanel(null);
         panelLeft.setBounds(0, 0, 300, 900);
@@ -101,23 +121,24 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
         panelDerecho.setBounds(300, 0, 1300, 900);
 
         // Paneles derechos individuales
-        panelRight1 = new JPanel(null);
+        panelRight1 = new JPanel(null); // Registro de Usuarios
+        panelRight2 = new JPanel(null); // Control de Asistencia
+        panelRight3 = new JPanel(null); // Control de Equipos
+        panelRight4 = new JPanel(null); // Horarios de Laboratorio
+        panelRightConfig = new JPanel(null); // Configuración de Equipos
+
         panelRight1.setBackground(COLOR_FONDO_PANEL);
-
-        panelRight2 = new JPanel(null);
         panelRight2.setBackground(COLOR_FONDO_PANEL);
-
-        panelRight3 = new JPanel(null);
         panelRight3.setBackground(COLOR_FONDO_PANEL);
-
-        panelRight4 = new JPanel(null);
         panelRight4.setBackground(COLOR_FONDO_PANEL);
+        panelRightConfig.setBackground(COLOR_FONDO_PANEL);
 
         // Agregar paneles derechos al CardLayout
         panelDerecho.add(panelRight1, "RegistroUsuarios");
         panelDerecho.add(panelRight2, "ControlAsistencia");
         panelDerecho.add(panelRight3, "ControlEquipos");
         panelDerecho.add(panelRight4, "HorariosLaboratorio");
+        panelDerecho.add(panelRightConfig, "ConfigurarEquipos");
 
         // Botones del menú
         btnRegistroUsuarios = ComponentFactory.crearBotonMenu("Registro de Usuarios");
@@ -130,6 +151,9 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
         lbImagenLogo = new JLabel();
         lbImagenUser = new JLabel();
         lbNameUser = new JLabel("", SwingConstants.CENTER);
+
+        cbTipoEquipo = new JComboBox<>(new String[]{"", "Teclado", "CPU", "Monitor", "PizarraDigital"});
+        cbLaboratorio = new JComboBox<>(new String[]{"", "1", "2", "3", "4", "5", "6"});
     }
 
     private void configurarPaneles() {
@@ -145,7 +169,7 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
         // Imagen del logo
         ImageIcon imagenLogo = new ImageIcon("Images/logo_villarreal.png");
         ImageIcon imagenEscaladaLogo = new ImageIcon(imagenLogo.getImage().getScaledInstance(250, 110, Image.SCALE_DEFAULT));
-        lbImagenLogo = new JLabel(imagenEscaladaLogo, SwingConstants.CENTER); // Centrado horizontal
+        lbImagenLogo = new JLabel(imagenEscaladaLogo, SwingConstants.CENTER);
         lbImagenLogo.setBounds(20, 10, 260, 130);
         panelLogo.add(lbImagenLogo);
 
@@ -175,7 +199,7 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
         btnControlAsistencia.setBounds(0, 480, 300, 70);
         btnControlEquipos.setBounds(0, 550, 300, 70);
         btnHorariosLaboratorio.setBounds(0, 620, 300, 70);
-        
+
         panelLeft.add(btnRegistroUsuarios);
         panelLeft.add(btnControlAsistencia);
         panelLeft.add(btnControlEquipos);
@@ -185,12 +209,13 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
         // Añadir panel derecho
         add(panelDerecho);
 
-        // Configurar panelRight1 (Registro de Usuarios)
+        // Configurar paneles de la interfaz
         configurarPanelRight1();
+        configurarPanelRight3();
+        configurarPanelRightConfig();
     }
 
     private void configurarMenu() {
-        // Asignar el primer botón como seleccionado por defecto
         botonSeleccionado = btnRegistroUsuarios;
         actualizarEstadoBotones();
         cardLayout.show(panelDerecho, "RegistroUsuarios");
@@ -213,6 +238,9 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
         btnCerrarSesion.addMouseListener(new EstiloHoverAccionBoton(btnCerrarSesion));
 
         // Botones de acción
+        //======================================================================
+        //      REGISTROS DE USUARIOS
+        //======================================================================
         btnAgregar.addActionListener(e -> manejarAgregarUsuario());
         btnModificar.addActionListener(e -> manejarModificarUsuario());
         btnEliminar.addActionListener(e -> manejarEliminarUsuario());
@@ -220,14 +248,40 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
         btnAgregar.addMouseListener(new EstiloHoverAccionBoton(btnAgregar));
         btnModificar.addMouseListener(new EstiloHoverAccionBoton(btnModificar));
         btnEliminar.addMouseListener(new EstiloHoverAccionBoton(btnEliminar));
-
+        //======================================================================
+        //     CONTROL DE EQUIPOS
+        //======================================================================
+        btnConfiguracion.addActionListener(e -> manejarConfigurarEquipo());
+        btnAgregarEquipo.addActionListener(e -> manejarAgregarEquipo());
+        btnModificarEquipo.addActionListener(e -> manejarModificarEquipo());
+        btnEliminarEquipo.addActionListener(e -> manejarEliminarEquipo());
+           
+        btnConfiguracion.addMouseListener(new EstiloHoverAccionBoton(btnConfiguracion));
+        btnAgregarEquipo.addMouseListener(new EstiloHoverAccionBoton(btnAgregarEquipo));
+        btnModificarEquipo.addMouseListener(new EstiloHoverAccionBoton(btnModificarEquipo));
+        btnEliminarEquipo.addMouseListener(new EstiloHoverAccionBoton(btnEliminarEquipo));
+        
+        
         // Evento de la tabla
+        //======================================================================
+        //      REGISTROS DE USUARIOS
+        //======================================================================
         tablaUsuarios.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent evt) {
                 llenarCamposDesdeTabla();
             }
         });
+        //======================================================================
+        //     CONTROL DE EQUIPOS
+        //======================================================================
+        tablaEquiposRegistrados.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent evt) {
+                llenarCamposDesdeTablaEquipo();
+            }
+        });
+        //======================================================================
     }
 
     private void configurarPanelRight1() {
@@ -343,7 +397,120 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
         scrollSubPanel1_2.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
         panelRight1.add(scrollSubPanel1_2);
     }
+    
+    private void configurarPanelRight3(){
+        //Tirulo
+        // Título
+        lbTituloPantalla1 = ComponentFactory.crearEtiqueta("CONTROL DE EQUIPOS", 50, 30, 590, 52, FUENTE_TITULO, COLOR_TEXTO_NEGRO);
+        lbTituloPantalla1.setBackground(Color.GREEN);
+        lbTituloPantalla1.setOpaque(true);
+        panelRight3.add(lbTituloPantalla1);
+            
+        // Subtítulo
+        lbEquiposDisponiblesLabel = ComponentFactory.crearEtiqueta("EQUIPOS DISPONIBLES", 100, 110, 500, 50, FUENTE_SUBTITULO, COLOR_TEXTO_BLANCO);
+        lbEquiposDisponiblesLabel.setBackground(COLOR_HOVER_SELECCIONADO1);
+        lbEquiposDisponiblesLabel.setOpaque(true);
+        lbEquiposDisponiblesLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        panelRight3.add(lbEquiposDisponiblesLabel);
+        
+        //Boton de Accion - Equipos Disponibles
+        btnConfiguracion = ComponentFactory.crearBotonAccion("CONFIGURACION", 870, 110, 250, 50);
+        panelRight3.add(btnConfiguracion);
 
+        // Tabla de Equipos Disponibles
+        String[] columnasEquipoDisponible = {"LAB", "TIPO", "Código Patrimonial", "Número de Serie", "Estado"};
+        modeloEquiposDisponibles = new DefaultTableModel(columnasEquipoDisponible, 0);
+        tablaEquiposDisponibles = new JTable(modeloEquiposDisponibles);
+        scrollTablaEquiposDisponibles = new JScrollPane(tablaEquiposDisponibles);
+        scrollTablaEquiposDisponibles.setBounds(50, 170, 1150, 600);
+        scrollTablaEquiposDisponibles.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollTablaEquiposDisponibles.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+        panelRight3.add(scrollTablaEquiposDisponibles);
+        
+    }
+    
+    private void configurarPanelRightConfig() {
+        lbTituloPantalla2 = ComponentFactory.crearEtiqueta("CONFIGURACIÓN DE EQUIPOS", 50, 30, 765, 52, FUENTE_TITULO, COLOR_TEXTO_NEGRO);
+        lbTituloPantalla2.setBackground(Color.GREEN);
+        lbTituloPantalla2.setOpaque(true);
+        panelRightConfig.add(lbTituloPantalla2);
+
+        lbRegistroEquiposLabel = ComponentFactory.crearEtiqueta("REGISTRO DE EQUIPOS", 100, 110, 500, 50, FUENTE_SUBTITULO, COLOR_TEXTO_BLANCO);
+        lbRegistroEquiposLabel.setBackground(COLOR_HOVER_SELECCIONADO1);
+        lbRegistroEquiposLabel.setOpaque(true);
+        lbRegistroEquiposLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        panelRightConfig.add(lbRegistroEquiposLabel);
+
+        JPanel subPanelRegistro = new JPanel(null);
+        subPanelRegistro.setBounds(100, 180, 1000, 170);
+        subPanelRegistro.setBackground(Color.WHITE);
+        subPanelRegistro.setBorder(border);
+        panelRightConfig.add(subPanelRegistro);
+
+        lbTipoEquipoLabel = ComponentFactory.crearEtiqueta("Tipo de Equipo", 30, 20, 200, 30, FUENTE_LABEL, COLOR_HOVER_SELECCIONADO1);
+        subPanelRegistro.add(lbTipoEquipoLabel);
+
+        cbTipoEquipo = new JComboBox<>(new String[]{"", "Teclado", "CPU", "Monitor", "PizarraDigital"});
+        cbTipoEquipo.setBounds(30, 50, 300, 30);
+        cbTipoEquipo.setBorder(border1);
+        subPanelRegistro.add(cbTipoEquipo);
+
+        lbLaboratorioLabel = ComponentFactory.crearEtiqueta("Laboratorio", 350, 20, 200, 30, FUENTE_LABEL, COLOR_HOVER_SELECCIONADO1);
+        subPanelRegistro.add(lbLaboratorioLabel);
+
+        cbLaboratorio = new JComboBox<>(new String[]{"", "1", "2", "3", "4", "5", "6"});
+        cbLaboratorio.setBounds(350, 50, 300, 30);
+        cbLaboratorio.setBorder(border1);
+        subPanelRegistro.add(cbLaboratorio);
+
+        lbEstadoLabel = ComponentFactory.crearEtiqueta("Estado", 670, 20, 200, 30, FUENTE_LABEL, COLOR_HOVER_SELECCIONADO1);
+        subPanelRegistro.add(lbEstadoLabel);
+
+        cbEstado.setBounds(670, 50, 300, 30);
+        cbEstado.setBorder(border1);
+        subPanelRegistro.add(cbEstado);
+
+        lbNumeroSerieLabel = ComponentFactory.crearEtiqueta("Número de Serie", 30, 90, 200, 30, FUENTE_LABEL, COLOR_HOVER_SELECCIONADO1);
+        subPanelRegistro.add(lbNumeroSerieLabel);
+
+        txtNumeroSerie = new JTextField();
+        txtNumeroSerie.setBounds(30, 120, 300, 30);
+        txtNumeroSerie.setBorder(border1);
+        subPanelRegistro.add(txtNumeroSerie);
+
+        lbCodigoPatrimonialLabel = ComponentFactory.crearEtiqueta("Código Patrimonial", 350, 90, 200, 30, FUENTE_LABEL, COLOR_HOVER_SELECCIONADO1);
+        subPanelRegistro.add(lbCodigoPatrimonialLabel);
+
+        txtCodigoPatrimonial = new JTextField();
+        txtCodigoPatrimonial.setBounds(350, 120, 300, 30);
+        txtCodigoPatrimonial.setBorder(border1);
+        subPanelRegistro.add(txtCodigoPatrimonial);
+
+        btnAgregarEquipo = ComponentFactory.crearBotonAccion("AGREGAR", 700, 110, 150, 50);
+        btnModificarEquipo = ComponentFactory.crearBotonAccion("MODIFICAR", 870, 110, 150, 50);
+        btnEliminarEquipo = ComponentFactory.crearBotonAccion("ELIMINAR", 1040, 110, 150, 50);
+
+        panelRightConfig.add(btnAgregarEquipo);
+        panelRightConfig.add(btnModificarEquipo);
+        panelRightConfig.add(btnEliminarEquipo);
+
+        lbListaEquiposLabel = ComponentFactory.crearEtiqueta("LISTA DE EQUIPOS REGISTRADOS", 100, 360, 560, 50, FUENTE_SUBTITULO, COLOR_TEXTO_BLANCO);
+        lbListaEquiposLabel.setBackground(COLOR_HOVER_SELECCIONADO1);
+        lbListaEquiposLabel.setOpaque(true);
+        lbListaEquiposLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        panelRightConfig.add(lbListaEquiposLabel);
+
+        String[] columnasEquiposRegistrados = {"LAB", "TIPO", "COD. PATRIMONIAL", "NÚMERO DE SERIE", "ESTADO"};
+        modeloEquiposRegistrados = new DefaultTableModel(columnasEquiposRegistrados, 0);
+        tablaEquiposRegistrados = new JTable(modeloEquiposRegistrados);
+        scrollTablaEquiposRegistrados = new JScrollPane(tablaEquiposRegistrados);
+        scrollTablaEquiposRegistrados.setBounds(50, 420, 1150, 400);
+        scrollTablaEquiposRegistrados.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollTablaEquiposRegistrados.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+        panelRightConfig.add(scrollTablaEquiposRegistrados);
+    }
+    
+    
     // Clases internas para manejar eventos
     private class EstiloHoverMenuBoton extends MouseAdapter {
         private JButton boton;
@@ -465,8 +632,7 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
             listarUsuario();
             limpiarCampos();
         } else {
-            VentanaErrorEnBlanco vtn = new VentanaErrorEnBlanco();
-            vtn.setVisible(true);
+            JOptionPane.showMessageDialog(null, "Llena todos los campos 🐧!!");
         }
         
     }
@@ -592,7 +758,255 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
     public void setUser(String user) {
         lbNameUser.setText(user);
     }
+    
+    //==========================================================================
+    // TODO ESTO ES DE CONTROL DE EQUIPOS - CAMOTE MORADO
+    //==========================================================================
+    
+    private void manejarConfigurarEquipo(){
+        
+        // Cambia al panel de configuraciones de equipos
+        cardLayout.show(panelDerecho, "ConfigurarEquipos"); // Muestra el panel de configuración
 
+    } 
+    
+    private void manejarAgregarEquipo() {
+    try {
+        if (seLlenaronTodosLosCamposEquipo()) {
+            equipo = new EquipoModelo();
+
+            // Crear el objeto equipo y asignar los valores directamente
+            equipo.setTipoEquipo(cbTipoEquipo.getSelectedItem().toString());
+            equipo.setNumeroLab(Integer.parseInt(cbLaboratorio.getSelectedItem().toString()));
+            equipo.setEstado(cbEstado.getSelectedItem().toString());
+            equipo.setNumeroSerie(txtNumeroSerie.getText().trim());
+            equipo.setCodPatrimonial(txtCodigoPatrimonial.getText().trim()); // ID único
+
+            // Insertar el equipo y verificar el estado de la inserción
+            int estadoRegistro = equipoController.insertarEquipoController(equipo);
+            String mensaje = (estadoRegistro == 1) ? 
+                "Equipo agregado exitosamente 🐧!!" : 
+                "Error al agregar el equipo 🐧!!";
+            JOptionPane.showMessageDialog(null, mensaje);
+
+            // Verificar el estado del equipo para determinar en qué tabla mostrarlo
+            if (estadoRegistro == 1) {
+                if ("Operativo".equals(equipo.getEstado())) {
+                    listarEquiposDisponibles(); // Solo para "Operativo"
+                }
+                listarEquiposRegistrados(); // Muestra todos los equipos
+            }
+
+            limpiarCamposEquipo(); // Limpiar los campos de entrada
+        } else {
+            JOptionPane.showMessageDialog(null, "Llena todos los campos 🐧!!");
+        }
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(null, "El valor del laboratorio debe ser un número válido 🐧!!");
+    }
+}
+
+    
+    private boolean seLlenaronTodosLosCamposEquipo() {
+        String[] camposTexto = {
+            txtNumeroSerie.getText().trim(), 
+            txtCodigoPatrimonial.getText().trim()
+        };
+
+        // Verifica que todos los campos de texto no estén vacíos
+        for (String campo : camposTexto) {
+            if (campo.isEmpty()) {
+                return false;
+            }
+        }
+
+        // Verifica que los JComboBox no estén en su primer índice (vacío)
+        if (cbTipoEquipo.getSelectedIndex() == 0 ||
+            cbLaboratorio.getSelectedIndex() == 0 ||
+            cbEstado.getSelectedIndex() == 0) {
+            return false;
+        }
+
+        return true;
+    }
+    
+    private void manejarModificarEquipo() {
+    try {
+        // Verificar si se seleccionó una fila en la tabla
+        int filaSeleccionada = tablaEquiposRegistrados.getSelectedRow();
+        if (filaSeleccionada == -1) {
+            JOptionPane.showMessageDialog(null, "Seleccione un equipo para modificar 🐧!!");
+            return;
+        }
+
+        // Verificar si todos los campos están llenos
+        if (seLlenaronTodosLosCamposEquipo()) {
+            equipo = new EquipoModelo();
+
+            // Asignación de los valores directamente al objeto equipo
+            equipo.setTipoEquipo(cbTipoEquipo.getSelectedItem().toString());
+            equipo.setNumeroLab(Integer.parseInt(cbLaboratorio.getSelectedItem().toString()));
+            equipo.setEstado(cbEstado.getSelectedItem().toString());
+            equipo.setNumeroSerie(txtNumeroSerie.getText().trim());
+            equipo.setCodPatrimonial(txtCodigoPatrimonial.getText().trim()); // ID único para modificar
+
+            // Llamada al controlador para modificar el equipo
+            if (equipoController != null) {
+                int estado = equipoController.modificarEquipoController(equipo);
+
+                // Verificar si la modificación fue exitosa y mostrar el mensaje correspondiente
+                String mensaje = (estado == 1) ? 
+                    "Equipo modificado correctamente 🐧!!" : 
+                    "Error al modificar el equipo 🐧!!";
+                JOptionPane.showMessageDialog(null, mensaje);
+
+                // Actualizar las tablas y limpiar los campos de entrada
+                listarEquiposDisponibles();
+                listarEquiposRegistrados();
+                limpiarCamposEquipo();
+            } else {
+                JOptionPane.showMessageDialog(null, "Controlador no inicializado. Verifique la inicialización del controlador 🐧!!");
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Llena todos los campos 🐧!!");
+        }
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(null, "El valor del laboratorio debe ser un número válido 🐧!!");
+    }
+}
+    
+    private void manejarEliminarEquipo() {
+    // Verificar si hay un equipo seleccionado en alguna de las tablas
+    int filaSeleccionadaDisponibles = tablaEquiposDisponibles.getSelectedRow();
+    int filaSeleccionadaRegistrados = tablaEquiposRegistrados.getSelectedRow();
+    
+    // Identificar desde cuál tabla se intentará eliminar el equipo
+    JTable tablaSeleccionada;
+    DefaultTableModel modeloSeleccionado;
+    int filaSeleccionada;
+
+    if (filaSeleccionadaDisponibles != -1) {
+        tablaSeleccionada = tablaEquiposDisponibles;
+        modeloSeleccionado = modeloEquiposDisponibles;
+        filaSeleccionada = filaSeleccionadaDisponibles;
+    } else if (filaSeleccionadaRegistrados != -1) {
+        tablaSeleccionada = tablaEquiposRegistrados;
+        modeloSeleccionado = modeloEquiposRegistrados;
+        filaSeleccionada = filaSeleccionadaRegistrados;
+    } else {
+        JOptionPane.showMessageDialog(null, "Seleccione un equipo para eliminar 🐧!!");
+        return;
+    }
+
+    // Obtener el código patrimonial del equipo seleccionado
+    String codigoPatrimonial = modeloSeleccionado.getValueAt(filaSeleccionada, 2).toString();
+
+    // Verificar si el código patrimonial es válido
+    if (codigoPatrimonial != null && !codigoPatrimonial.isEmpty()) {
+        // Solicitar confirmación al usuario antes de eliminar
+        int confirmacion = JOptionPane.showConfirmDialog(null, "¿Está seguro de que desea eliminar este equipo?", "Confirmación", JOptionPane.YES_NO_OPTION);
+
+        if (confirmacion == JOptionPane.YES_OPTION) {
+            // Crear el objeto equipo y asignar el código patrimonial
+            equipo = new EquipoModelo();
+            equipo.setCodPatrimonial(codigoPatrimonial);
+
+            // Llamar al método eliminarEquipo de equipoController
+            int estado = equipoController.eliminarEquipoController(equipo);
+
+            // Comprobar si se eliminó correctamente
+            if (estado == 1) {
+                JOptionPane.showMessageDialog(null, "Equipo eliminado correctamente 🐧!!");
+            } else {
+                JOptionPane.showMessageDialog(null, "Error al eliminar el equipo 🐧!!");
+            }
+
+            listarEquiposDisponibles(); // Actualizar tabla de equipos operativos
+            listarEquiposRegistrados(); // Actualizar tabla de todos los equipos
+            limpiarCamposEquipo(); // Limpiar los campos de entrada
+        }
+    } else {
+        JOptionPane.showMessageDialog(null, "Código patrimonial inválido. No se puede eliminar el equipo 🐧!!");
+    }
+}
+    // Método para llenar campos desde la tabla
+    private void llenarCamposDesdeTablaEquipo() {
+    int filaSeleccionada = tablaEquiposRegistrados.getSelectedRow();
+    
+    if (filaSeleccionada != -1) {
+        cbLaboratorio.setSelectedItem(modeloEquiposRegistrados.getValueAt(filaSeleccionada, 0).toString());
+        cbTipoEquipo.setSelectedItem(modeloEquiposRegistrados.getValueAt(filaSeleccionada, 1).toString());
+        txtCodigoPatrimonial.setText(modeloEquiposRegistrados.getValueAt(filaSeleccionada, 2).toString());
+        txtNumeroSerie.setText(modeloEquiposRegistrados.getValueAt(filaSeleccionada, 3).toString());
+        cbEstado.setSelectedItem(modeloEquiposRegistrados.getValueAt(filaSeleccionada, 4).toString());
+        }
+    }  
+    
+    public void listarEquiposDisponibles() {
+        modeloEquiposDisponibles.setRowCount(0); // Limpia la tabla antes de agregar nuevos datos
+        listaEquipos = equipoController.enlistarEquipoPorEstadoController("Operativo"); // Obtiene solo equipos Operativo
+
+        for (EquipoModelo equipoTa : listaEquipos) {
+            modeloEquiposDisponibles.addRow(new Object[]{
+                equipoTa.getNumeroLab(),
+                equipoTa.getTipoEquipo(),
+                equipoTa.getCodPatrimonial(),
+                equipoTa.getNumeroSerie(),
+                equipoTa.getEstado(),
+            });
+        }
+    }
+    
+    public void listarEquiposRegistrados() {
+        modeloEquiposRegistrados.setRowCount(0); // Limpia la tabla antes de agregar nuevos datos
+        listaEquipos = equipoController.enlistarEquipoController(); // Obtiene todos los equipos
+
+        for (EquipoModelo equipoTa : listaEquipos) {
+            modeloEquiposRegistrados.addRow(new Object[]{
+                equipoTa.getNumeroLab(),
+                equipoTa.getTipoEquipo(),
+                equipoTa.getCodPatrimonial(),
+                equipoTa.getNumeroSerie(),
+                equipoTa.getEstado(),
+            });
+        }
+    }
+
+    
+    
+    // Método para listar equipos
+    public void listarEquipo() {
+        modeloEquiposDisponibles.setRowCount(0); // Limpia la tabla antes de agregar nuevos datos
+        listaEquipos = equipoController.enlistarEquipoController(); // Obtiene la lista de equipos desde la base de datos o lista local
+
+        for (EquipoModelo equipoTa : listaEquipos) {
+            modeloEquiposDisponibles.addRow(new Object[]{
+                equipoTa.getNumeroLab(),
+                equipoTa.getTipoEquipo(),
+                equipoTa.getCodPatrimonial(),
+                equipoTa.getNumeroSerie(),
+                equipoTa.getEstado(),
+            });
+        }
+    }
+
+    // Método para limpiar campos de equipo
+    private void limpiarCamposEquipo() {
+        txtNumeroSerie.setText("");
+        txtCodigoPatrimonial.setText("");
+        cbTipoEquipo.setSelectedIndex(0);
+        cbLaboratorio.setSelectedIndex(0);
+        cbEstado.setSelectedIndex(0);
+    }
+    
+    // Método para establecer el nombre del equipo o algún identificador en la interfaz
+    public void setEquipoLabel(String equipo) {
+        lbNameUser.setText(equipo); // Asigna el nombre o identificador del equipo al label
+    }
+    
+//=========================================================================================
+//=========================================================================================
+    
     // Método principal
     public static void main(String[] args) {
         Ventana01RegistrosDeUsuarios vtn = new Ventana01RegistrosDeUsuarios();

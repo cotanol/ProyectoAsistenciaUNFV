@@ -2,15 +2,14 @@ package Model;
 import java.sql.*;
 import java.util.ArrayList;
 import Util.Conexion_BD;
-import Util.Enums.EstadoEquipo;
 import View.Ventana01RegistrosDeUsuarios;
 
 public class EquipoModelo {
-    private int codPatrimonial;
+    private String codPatrimonial;
     private int numeroLaboratorio;
     private String tipoEquipo;
     private String numeroSerie;
-    private EstadoEquipo estado;
+    private String estado;
     
     Connection cn = null;
     PreparedStatement pt = null;
@@ -35,7 +34,7 @@ public class EquipoModelo {
             pt.setInt(1, equipoModelo.getNumeroLab());
             pt.setString(2, equipoModelo.getTipoEquipo());
             pt.setString(3, equipoModelo.getNumeroSerie());
-            pt.setString(4, equipoModelo.getEstado().name());
+            pt.setString(4, equipoModelo.getEstado());
             
             estado = pt.executeUpdate();
             
@@ -59,8 +58,8 @@ public class EquipoModelo {
             pt.setInt(1, equipoModelo.getNumeroLab());
             pt.setString(2, equipoModelo.getTipoEquipo());
             pt.setString(3, equipoModelo.getNumeroSerie());
-            pt.setString(4, equipoModelo.getEstado().name());
-            pt.setInt(5, equipoModelo.getCodPatrimonial());
+            pt.setString(4, equipoModelo.getEstado());
+            pt.setString(5, equipoModelo.getCodPatrimonial());
             
             estado = pt.executeUpdate();
             
@@ -81,7 +80,7 @@ public class EquipoModelo {
         try {
             cn = Conexion_BD.getConexionBD();
             pt = cn.prepareStatement("DELETE FROM equipo WHERE cod_patrimonial = ?;");
-            pt.setInt(1, equipoModelo.getCodPatrimonial());
+            pt.setString(1, equipoModelo.getCodPatrimonial());
             
             estado = pt.executeUpdate();
             
@@ -108,11 +107,11 @@ public class EquipoModelo {
             
             while (rs.next()) {
                 EquipoModelo equipoModelo = new EquipoModelo();
-                equipoModelo.setCodPatrimonial(rs.getInt("cod_patrimonial"));
+                equipoModelo.setCodPatrimonial(rs.getString("cod_patrimonial"));
                 equipoModelo.setNumeroLab(rs.getInt("numero_lab"));
                 equipoModelo.setTipoEquipo(rs.getString("tipo_equipo"));
-                equipoModelo.setNumeroSerie(rs.getString("numero_lab"));
-                equipoModelo.setEstado(EstadoEquipo.valueOf(rs.getString("estado")));
+                equipoModelo.setNumeroSerie(rs.getString("numero_serie"));
+                equipoModelo.setEstado(rs.getString("estado"));
                 
                 listaEquipos.add(equipoModelo);
             }
@@ -127,7 +126,40 @@ public class EquipoModelo {
         
         return listaEquipos;
     }
-public int ultimoId() {
+    
+    public ArrayList<EquipoModelo> enlistarEquiposPorEstado(String estado) {
+        ArrayList<EquipoModelo> listaEquipos = new ArrayList<>();
+        try {
+            cn = Conexion_BD.getConexionBD();
+            String query = "SELECT * FROM equipo WHERE estado = ?";
+            pt = cn.prepareStatement(query);
+            pt.setString(1, estado);
+            rs = pt.executeQuery();
+
+            while (rs.next()) {
+                EquipoModelo equipo = new EquipoModelo();
+                equipo.setCodPatrimonial(rs.getString("cod_patrimonial"));
+                equipo.setNumeroLab(rs.getInt("numero_lab"));
+                equipo.setTipoEquipo(rs.getString("tipo_equipo"));
+                equipo.setNumeroSerie(rs.getString("numero_serie"));
+                equipo.setEstado(rs.getString("estado"));
+                listaEquipos.add(equipo);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (pt != null) pt.close();
+                if (cn != null) cn.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+        return listaEquipos;
+    }
+    
+    public int ultimoId() {
         int id = 0;
         try {
             cn = Conexion_BD.getConexionBD();
@@ -147,13 +179,15 @@ public int ultimoId() {
 
         return id; 
     }
-    public int getCodPatrimonial() {
+
+    public String getCodPatrimonial() {
         return codPatrimonial;
     }
 
-    public void setCodPatrimonial(int codPatrimonial) {
+    public void setCodPatrimonial(String codPatrimonial) {
         this.codPatrimonial = codPatrimonial;
     }
+    
 
     public int getNumeroLab() {
         return numeroLaboratorio;
@@ -179,11 +213,13 @@ public int ultimoId() {
         this.numeroSerie = numeroSerie;
     }
 
-    public EstadoEquipo getEstado() {
+    public String getEstado() {
         return estado;
     }
 
-    public void setEstado(EstadoEquipo estado) {
+    public void setEstado(String estado) {
         this.estado = estado;
     }
+
+    
 }
