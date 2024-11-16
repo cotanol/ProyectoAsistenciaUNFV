@@ -31,6 +31,10 @@ public class EquipoController {
     public ArrayList<EquipoModelo> enlistarEquipoController () {
         return objEquipoModelo.enlistarEquipoModelo();
     }
+    
+    public ArrayList<EquipoModelo> enlistarEquipoPorEstadoController (String estado) {
+        return objEquipoModelo.enlistarEquiposPorEstado(estado);
+    }
             
     public int ultimoIdController () {
         return objEquipoModelo.ultimoId();
