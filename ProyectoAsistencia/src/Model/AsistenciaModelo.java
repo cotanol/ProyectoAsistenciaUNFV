@@ -4,6 +4,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import Util.Enums.EstadoAsistencia;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import View.Ventana01RegistrosDeUsuarios;
 
 public class AsistenciaModelo {
@@ -149,6 +150,35 @@ public class AsistenciaModelo {
 
         return id; 
     }    
+    
+    public ArrayList<AlumnoModelo> obtenerAlumnosPorLaboratorioYHorario(int numeroLab, String asignatura, LocalTime horarioInicio) {
+        ArrayList<AlumnoModelo> listaAlumnos = new ArrayList<>();
+        try (Connection cn = Conexion_BD.getConexionBD();
+             PreparedStatement pt = cn.prepareStatement(
+                 "SELECT a.codigo_alumno, a.nombres, a.apellidos " +
+                 "FROM alumno a " +
+                 "JOIN asistencia ass ON a.codigo_alumno = ass.codigo_alumno " +
+                 "JOIN horario_laboratorio hl ON ass.numero_lab = hl.numero_lab " +
+                 "WHERE hl.numero_lab = ? AND hl.asignatura = ? AND hl.horario_inicio = ?")) {
+
+            pt.setInt(1, numeroLab);
+            pt.setString(2, asignatura);
+            pt.setTime(3, java.sql.Time.valueOf(horarioInicio));
+            ResultSet rs = pt.executeQuery();
+
+            while (rs.next()) {
+                AlumnoModelo alumno = new AlumnoModelo();
+                alumno.setCodigoAlumno(rs.getInt("codigo_alumno"));
+                alumno.setNombres(rs.getString("nombres"));
+                alumno.setApellidos(rs.getString("apellidos"));
+                listaAlumnos.add(alumno);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return listaAlumnos;
+    }
+
     
     public int getIdAsistencia() {
         return idAsistencia;
