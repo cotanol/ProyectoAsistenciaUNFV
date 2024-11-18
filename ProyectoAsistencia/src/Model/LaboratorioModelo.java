@@ -49,7 +49,7 @@ public class LaboratorioModelo {
         
         try {
             cn = Conexion_BD.getConexionBD();
-            pt = cn.prepareStatement("UPDATE laboratorio SET capacidad = ? WHERE id_horario = ?;");
+            pt = cn.prepareStatement("UPDATE laboratorio SET capacidad = ? WHERE numero_lab = ?;");
             pt.setInt(1, laboratorioModelo.getCapacidad());
             pt.setInt(2, laboratorioModelo.getNumeroLab());
             

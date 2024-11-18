@@ -87,3 +87,25 @@ CREATE TABLE usuario_funcionalidad (
 INSERT INTO alumno (nombres, apellidos) VALUES
 ("Jorge", "Sacsa"),
 ("Marco", "Zarate");
+
+INSERT INTO laboratorio (numero_lab, capacidad)
+VALUES
+(1, 40), -- Laboratorio 1 con capacidad de 40
+(2, 30), -- Laboratorio 2 con capacidad de 30
+(3, 25), -- Laboratorio 3 con capacidad de 25
+(4, 35), -- Laboratorio 4 con capacidad de 35
+(5, 50); -- Laboratorio 5 con capacidad de 50
+
+-- Insertar horarios en la tabla horario_laboratorio
+INSERT INTO horario_laboratorio (numero_lab, asignatura, dia, horario_inicio, horario_fin, docente)
+VALUES
+(1, 'Matemáticas', 'LUNES', '08:00:00', '10:00:00', 'Juan Pérez'),
+(1, 'Física', 'MARTES', '10:00:00', '12:00:00', 'Ana González'),
+(2, 'Química', 'MIERCOLES', '14:00:00', '16:00:00', 'Carlos Ramírez'),
+(2, 'Programación', 'JUEVES', '16:00:00', '18:00:00', 'Lucía García'),
+(3, 'Estadística', 'VIERNES', '09:00:00', '11:00:00', 'María López'),
+(3, 'Algoritmos', 'SABADO', '11:00:00', '13:00:00', 'Luis Fernández'),
+(4, 'Bases de Datos', 'LUNES', '13:00:00', '15:00:00', 'Clara Martínez'),
+(4, 'Redes', 'MARTES', '15:00:00', '17:00:00', 'Pedro Castillo'),
+(5, 'Sistemas Operativos', 'MIERCOLES', '08:00:00', '10:00:00', 'Elena Vega'),
+(5, 'Diseño Gráfico', 'JUEVES', '10:00:00', '12:00:00', 'Fernando Solís');
