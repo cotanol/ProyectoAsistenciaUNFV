@@ -14,7 +14,7 @@ public class Conexion_BD {
             Class.forName("com.mysql.cj.jdbc.Driver"); 
             String url = "jdbc:mysql://localhost:3306/unfv_bd";
             String user = "root";
-            String password = "rafaelgatogordo"; 
+            String password = ""; 
 
             // Intentar conectar
             cn = DriverManager.getConnection(url, user, password);
