@@ -121,7 +121,7 @@ public class HorarioLaboratorioModelo {
                 horarioLaboratorioModelo.setAsignatura(rs.getString("asignatura"));
                 horarioLaboratorioModelo.setDia(Dia.valueOf(rs.getString("dia")));
                 horarioLaboratorioModelo.setHorarioInicio(rs.getTime("horario_inicio").toLocalTime());
-                horarioLaboratorioModelo.setHorarioInicio(rs.getTime("horario_fin").toLocalTime());
+                horarioLaboratorioModelo.setHorarioFin(rs.getTime("horario_fin").toLocalTime());
                 horarioLaboratorioModelo.setDocente(rs.getString("docente"));
             
                 listaHorarioLaboratorios.add(horarioLaboratorioModelo);
@@ -156,6 +156,37 @@ public class HorarioLaboratorioModelo {
         }
 
         return id; 
+    }
+    
+    public ArrayList<HorarioLaboratorioModelo> buscarHorarios(int numeroLab, String asignatura, String dia) {
+        ArrayList<HorarioLaboratorioModelo> listaHorarios = new ArrayList<>();
+        try {
+            cn = Conexion_BD.getConexionBD();
+            pt = cn.prepareStatement("SELECT * FROM horario_laboratorio WHERE numero_lab = ? AND asignatura = ? AND dia = ?");
+            pt.setInt(1, numeroLab);
+            pt.setString(2, asignatura);
+            pt.setString(3, dia);
+            rs = pt.executeQuery();
+
+            while (rs.next()) {
+                HorarioLaboratorioModelo horario = new HorarioLaboratorioModelo();
+                horario.setIdHorario(rs.getInt("id_horario"));
+                horario.setNumeroLab(rs.getInt("numero_lab"));
+                horario.setAsignatura(rs.getString("asignatura"));
+                horario.setDia(Dia.valueOf(rs.getString("dia")));
+                horario.setHorarioInicio(rs.getTime("horario_inicio").toLocalTime());
+                horario.setHorarioFin(rs.getTime("horario_fin").toLocalTime());
+                horario.setDocente(rs.getString("docente"));
+                listaHorarios.add(horario);
+            }
+
+            cn.close();
+            pt.close();
+            rs.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return listaHorarios;
     }
     
     public int getIdHorario() {

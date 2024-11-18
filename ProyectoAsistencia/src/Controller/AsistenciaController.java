@@ -1,7 +1,9 @@
 package Controller;
 import Model.AsistenciaModelo;
+import Model.AlumnoModelo;
 import View.Ventana01RegistrosDeUsuarios;
 import java.util.ArrayList;
+import java.time.LocalTime;
 
 public class AsistenciaController {
     AsistenciaModelo objAsistenciaModelo;
@@ -35,4 +37,8 @@ public class AsistenciaController {
     public int ultimoIdController () {
         return objAsistenciaModelo.ultimoId();
     }    
+    
+    public ArrayList<AlumnoModelo> obtenerAlumnosPorLaboratorioYHorario(int numeroLab, String asignatura, LocalTime horarioInicio) {
+        return objAsistenciaModelo.obtenerAlumnosPorLaboratorioYHorario(numeroLab, asignatura, horarioInicio);
+    }
 }

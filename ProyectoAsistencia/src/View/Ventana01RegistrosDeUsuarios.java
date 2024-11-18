@@ -78,6 +78,7 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
     private EquipoController equipoController;
     private HorarioLaboratorioController horarioLaboratorioController;
     private LaboratorioController laboratorioController;
+    private AsistenciaController asistenciaController;
     
     private EquipoModelo equipo;
 
@@ -112,6 +113,7 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
         equipoController = new EquipoController(this);
         horarioLaboratorioController = new HorarioLaboratorioController(this);
         laboratorioController = new LaboratorioController(this);
+        asistenciaController = new AsistenciaController(this);
 
         // Configuración de la ventana
         setSize(1600, 900);
@@ -329,13 +331,7 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
                 llenarCamposDesdeTablaEquipo();
             }
         });
-        //======================================================================
-        tablaLaboratorios.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                llenarCamposDesdeTablaLaboratorio();
-            }
-        });
+        
     }
 
     private void configurarPanelRight1() {
@@ -453,6 +449,8 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
     }
     
     private void configurarPanelRight2() {
+        
+        
         // Título
         lblControlAsistencia = ComponentFactory.crearEtiqueta("CONTROL DE ASISTENCIA", 50, 30, 590, 52, FUENTE_TITULO, COLOR_TEXTO_NEGRO);
         lblControlAsistencia.setBackground(Color.GREEN);
@@ -563,13 +561,13 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
         btnReporteGen.addMouseListener(new EstiloHoverAccionBoton(btnReporteGen));
 
         // Asignar eventos de clic
-        btnBuscar.addActionListener(e -> manejarCambioAPanelAsistencia());
+        btnBuscar.addActionListener(e -> manejarBuscarHorario());
         btnActuDatos.addActionListener(e -> manejarCambioAPanelActualizarLaboratorio());
 
         
     }
     
-    private void manejarCambioAPanelAsistencia() {
+    private void manejarCambioAPanelAsistencia(int numeroLab, String asignatura, LocalTime horarioInicio) {
         JPanel panelAsistencia = new JPanel(null);
         panelAsistencia.setBackground(COLOR_FONDO_PANEL);
 
@@ -586,25 +584,20 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
         lblSubTitulo.setHorizontalAlignment(SwingConstants.CENTER);
         panelAsistencia.add(lblSubTitulo);
 
-        // Información de la clase
-        lblInfoClase = new JLabel("<html>"
-            + "Nro. Laboratorio: 1<br>"
-            + "Docente: Ivan Carlo Peterlick Azabache<br>"
-            + "Asignatura: Programación Aplicada III<br>"
-            + "Horario: 10:00 – 13:00"
-            + "</html>");
+        // Información del horario seleccionado
+        lblInfoClase = new JLabel(String.format(
+            "<html>"
+            + "Nro. Laboratorio: %d<br>"
+            + "Asignatura: %s<br>"
+            + "Horario: %s<br>"
+            + "</html>",
+            numeroLab,
+            asignatura,
+            horarioInicio.toString()
+        ));
         lblInfoClase.setBounds(100, 180, 600, 100);
         lblInfoClase.setFont(FUENTE_LABEL);
         panelAsistencia.add(lblInfoClase);
-
-        // Campos de fecha
-        lblDia = ComponentFactory.crearEtiqueta("Día: XX", 800, 180, 100, 30, FUENTE_LABEL, COLOR_TEXTO_NEGRO);
-        lblMes = ComponentFactory.crearEtiqueta("Mes: XX", 950, 180, 100, 30, FUENTE_LABEL, COLOR_TEXTO_NEGRO);
-        lblAnio = ComponentFactory.crearEtiqueta("Año: XXXX", 1100, 180, 150, 30, FUENTE_LABEL, COLOR_TEXTO_NEGRO);
-
-        panelAsistencia.add(lblDia);
-        panelAsistencia.add(lblMes);
-        panelAsistencia.add(lblAnio);
 
         // Tabla para registrar la asistencia
         String[] columnasAsistencia = {"Código", "Nombres", "Apellidos", "Asistencia"};
@@ -615,23 +608,26 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
             }
         };
 
-        tablaAsistencia = new JTable(modeloTabla);
-        tablaAsistencia.setRowHeight(30); // Estilo: Aumentar la altura de las filas
-        tablaAsistencia.getTableHeader().setFont(FUENTE_LABEL); // Fuente para encabezados
-        tablaAsistencia.setFont(FUENTE_TEXTFIELD); // Fuente para datos
+        // Consultar alumnos registrados con los criterios seleccionados
+        ArrayList<AlumnoModelo> alumnos = asistenciaController.obtenerAlumnosPorLaboratorioYHorario(numeroLab, asignatura, horarioInicio);
 
-        // Añadir algunos datos de ejemplo
-        modeloTabla.addRow(new Object[]{"202369874", "Enzo", "Zamora", false});
-        modeloTabla.addRow(new Object[]{"202369874", "Marco", "Zarate", false});
-        modeloTabla.addRow(new Object[]{"202369874", "Neil", "Casavilca", false});
-        modeloTabla.addRow(new Object[]{"202369874", "Francisco", "Morales", false});
-        modeloTabla.addRow(new Object[]{"202369875", "Lucía", "Alvarez", false}); // Para probar scroll
-        modeloTabla.addRow(new Object[]{"202369876", "Sofía", "Gomez", false});
+        for (AlumnoModelo alumno : alumnos) {
+            modeloTabla.addRow(new Object[]{
+                alumno.getCodigoAlumno(),
+                alumno.getNombres(),
+                alumno.getApellidos(),
+                false // Inicializar asistencia como "no presente"
+            });
+        }
+
+        tablaAsistencia = new JTable(modeloTabla);
+        tablaAsistencia.setRowHeight(30);
+        tablaAsistencia.getTableHeader().setFont(FUENTE_LABEL);
+        tablaAsistencia.setFont(FUENTE_TEXTFIELD);
 
         JScrollPane scrollTabla = new JScrollPane(tablaAsistencia);
         scrollTabla.setBounds(100, 300, 1100, 400);
         scrollTabla.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        scrollTabla.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER); // Solo vertical
         panelAsistencia.add(scrollTabla);
 
         // Botones Guardar y Regresar
@@ -650,6 +646,25 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
         // Añadir el panel al CardLayout
         panelDerecho.add(panelAsistencia, "RegistroAsistencia");
         cardLayout.show(panelDerecho, "RegistroAsistencia");
+    }
+
+    private void manejarBuscarHorario() {
+        // Obtener valores seleccionados de los JComboBox
+        Integer numeroLab = (Integer) cboNroLab.getSelectedItem();
+        String asignatura = (String) cboAsignatura.getSelectedItem();
+        LocalTime horarioInicio = (LocalTime) cboHorario.getSelectedItem();
+
+        if (numeroLab == null || asignatura == null || horarioInicio == null) {
+            JOptionPane.showMessageDialog(null, "Por favor, seleccione todos los campos antes de buscar.");
+            return;
+        }
+
+        try {
+            // Consultar alumnos y cambiar al panel de asistencia
+            manejarCambioAPanelAsistencia(numeroLab, asignatura, horarioInicio);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Ocurrió un error al buscar los alumnos: " + e.getMessage());
+        }
     }
 
 
@@ -787,6 +802,46 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
         // Añadir el panel al CardLayout
         panelDerecho.add(panelActualizarLaboratorio, "ActualizarLaboratorio");
         cardLayout.show(panelDerecho, "ActualizarLaboratorio");
+    }
+    
+    private void actualizarCombosHorarioAsignatura() {
+        // Limpiar los items actuales
+        cboNroLab.removeAllItems();
+        cboHorario.removeAllItems();
+        cboAsignatura.removeAllItems();
+
+        // Consultar la lista actualizada desde el controlador
+        listaHorarioLaboratorio = horarioLaboratorioController.enlistarHorarioLaboratorioController();
+
+        // Agregar elementos al combo de laboratorios
+        Set<Integer> labsAgregados = new HashSet<>();
+        cboNroLab.addItem(null); // Para permitir selección nula
+        for (HorarioLaboratorioModelo horaLab : listaHorarioLaboratorio) {
+            if (!labsAgregados.contains(horaLab.getNumeroLab())) {
+                cboNroLab.addItem(horaLab.getNumeroLab());
+                labsAgregados.add(horaLab.getNumeroLab());
+            }
+        }
+
+        // Agregar elementos al combo de horarios
+        Set<LocalTime> horariosAgregados = new HashSet<>();
+        cboHorario.addItem(null); // Selección nula inicial
+        for (HorarioLaboratorioModelo horaLab : listaHorarioLaboratorio) {
+            if (!horariosAgregados.contains(horaLab.getHorarioInicio())) {
+                cboHorario.addItem(horaLab.getHorarioInicio());
+                horariosAgregados.add(horaLab.getHorarioInicio());
+            }
+        }
+
+        // Agregar elementos al combo de asignaturas
+        Set<String> asignaturasAgregadas = new HashSet<>();
+        cboAsignatura.addItem(""); // Selección nula inicial
+        for (HorarioLaboratorioModelo horaLab : listaHorarioLaboratorio) {
+            if (!asignaturasAgregadas.contains(horaLab.getAsignatura())) {
+                cboAsignatura.addItem(horaLab.getAsignatura());
+                asignaturasAgregadas.add(horaLab.getAsignatura());
+            }
+        }
     }
 
     
@@ -1438,6 +1493,7 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
 
             if (estado == 1) {
                 JOptionPane.showMessageDialog(null, "Laboratorio Modificado 🧪!!");
+                actualizarCombosHorarioAsignatura();
             } else {
                 JOptionPane.showMessageDialog(null, "Laboratorio no Modificado 🧪!!");
             }
@@ -1450,25 +1506,46 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
     }
 
     private void manejarEliminarLaboratorio() {
+        // Verificar si hay una fila seleccionada
         int filaSeleccionada = tablaLaboratorios.getSelectedRow();
-        if (filaSeleccionada != -1) {
-            int numeroLab = Integer.parseInt(modeloLaboratorio.getValueAt(filaSeleccionada, 0).toString());
+        if (filaSeleccionada == -1) {
+            JOptionPane.showMessageDialog(null, "Seleccione un laboratorio para eliminar 🧪!!");
+            return;
+        }
 
+        try {
+            // Obtener y validar el número de laboratorio desde el campo de texto
+            String numeroLabTexto = txtNumeroLab.getText().trim();
+
+            if (numeroLabTexto.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "El campo 'Número de Laboratorio' está vacío. Por favor, seleccione o ingrese un laboratorio.");
+                return;
+            }
+
+            int numeroLab = Integer.parseInt(numeroLabTexto);
+
+            // Crear el modelo del laboratorio
             LaboratorioModelo laboratorioModelo = new LaboratorioModelo();
             laboratorioModelo.setNumeroLab(numeroLab);
 
+            // Llamar al controlador para eliminar el laboratorio
             int estado = laboratorioController.eliminarLaboratorioController(laboratorioModelo);
 
             if (estado == 1) {
                 JOptionPane.showMessageDialog(null, "Laboratorio Eliminado 🧪!!");
+                actualizarCombosHorarioAsignatura(); // Actualizar combos relacionados
             } else {
                 JOptionPane.showMessageDialog(null, "Laboratorio no Eliminado 🧪!!");
             }
 
+            // Actualizar la tabla y limpiar los campos
             listarLaboratorios();
             limpiarCamposLaboratorio();
-        } else {
-            JOptionPane.showMessageDialog(null, "Seleccione un laboratorio para eliminar 🧪!!");
+
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "El número de laboratorio es inválido. Por favor, ingrese un número válido.");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Ocurrió un error inesperado: " + e.getMessage());
         }
     }
 

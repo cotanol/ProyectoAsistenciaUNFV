@@ -39,7 +39,7 @@ CREATE TABLE horario_laboratorio (
   horario_inicio TIME,
   horario_fin TIME,
   docente VARCHAR(100),
-  FOREIGN KEY (numero_lab) REFERENCES laboratorio(numero_lab)
+  FOREIGN KEY (numero_lab) REFERENCES laboratorio(numero_lab) ON DELETE CASCADE
 );
 
 -- 5. Crear la tabla equipo (depende de laboratorio)
@@ -49,7 +49,7 @@ CREATE TABLE equipo (
   tipo_equipo VARCHAR(100),
   numero_serie VARCHAR(50),
   estado ENUM('Operativo', 'No Operativo'),
-  FOREIGN KEY (numero_lab) REFERENCES laboratorio(numero_lab)
+  FOREIGN KEY (numero_lab) REFERENCES laboratorio(numero_lab) ON DELETE CASCADE
 );
 
 -- 6. Crear la tabla reporte (depende de laboratorio)
@@ -59,7 +59,7 @@ CREATE TABLE reporte (
   mes INT,
   asistencia_total INT,
   numero_lab INT,
-  FOREIGN KEY (numero_lab) REFERENCES laboratorio(numero_lab)
+  FOREIGN KEY (numero_lab) REFERENCES laboratorio(numero_lab) ON DELETE CASCADE
 );
 
 -- 7. Crear la tabla asistencia (depende de alumno y laboratorio)
@@ -69,7 +69,7 @@ CREATE TABLE asistencia (
   estado ENUM('PRESENTE', 'AUSENTE'),
   numero_lab INT,
   codigo_alumno INT,
-  FOREIGN KEY (numero_lab) REFERENCES laboratorio(numero_lab),
+  FOREIGN KEY (numero_lab) REFERENCES laboratorio(numero_lab) ON DELETE CASCADE,
   FOREIGN KEY (codigo_alumno) REFERENCES alumno(codigo_alumno)
 );
 
@@ -80,12 +80,27 @@ CREATE TABLE usuario_funcionalidad (
   numero_lab INT,
   funcionalidad VARCHAR(100),
   FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario),
-  FOREIGN KEY (numero_lab) REFERENCES laboratorio(numero_lab)
+  FOREIGN KEY (numero_lab) REFERENCES laboratorio(numero_lab) ON DELETE CASCADE
 );
 
 
 INSERT INTO alumno (nombres, apellidos) VALUES
 ("Jorge", "Sacsa"),
+("Carlos", "Pérez"),
+("Lucía", "Ramírez"),
+("Ana", "González"),
+("Pedro", "Martínez"),
+("Laura", "Gómez"),
+("Diego", "Hernández"),
+("Sofía", "López"),
+("María", "Torres"),
+("Luis", "Fernández"),
+("Clara", "Jiménez"),
+("Fernando", "Castillo"),
+("Daniela", "Morales"),
+("Javier", "Núñez"),
+("Elena", "Rojas"),
+("Andrés", "Cruz"),
 ("Marco", "Zarate");
 
 INSERT INTO laboratorio (numero_lab, capacidad)
@@ -109,3 +124,54 @@ VALUES
 (4, 'Redes', 'MARTES', '15:00:00', '17:00:00', 'Pedro Castillo'),
 (5, 'Sistemas Operativos', 'MIERCOLES', '08:00:00', '10:00:00', 'Elena Vega'),
 (5, 'Diseño Gráfico', 'JUEVES', '10:00:00', '12:00:00', 'Fernando Solís');
+
+INSERT INTO asistencia (fecha, estado, numero_lab, codigo_alumno) VALUES
+-- Laboratorio 1
+('2024-11-01', 'PRESENTE', 1, 1),  -- Jorge Sacsa
+('2024-11-01', 'PRESENTE', 1, 2),  -- Carlos Pérez
+('2024-11-01', 'AUSENTE', 1, 3),   -- Lucía Ramírez
+('2024-11-01', 'PRESENTE', 1, 4),  -- Ana González
+('2024-11-01', 'PRESENTE', 1, 5),  -- Pedro Martínez
+('2024-11-01', 'AUSENTE', 1, 6),   -- Laura Gómez
+('2024-11-01', 'PRESENTE', 1, 7),  -- Diego Hernández
+('2024-11-01', 'PRESENTE', 1, 8),  -- Sofía López
+
+-- Laboratorio 2
+('2024-11-02', 'PRESENTE', 2, 9),  -- María Torres
+('2024-11-02', 'AUSENTE', 2, 10),  -- Luis Fernández
+('2024-11-02', 'PRESENTE', 2, 11), -- Clara Jiménez
+('2024-11-02', 'PRESENTE', 2, 12), -- Fernando Castillo
+('2024-11-02', 'PRESENTE', 2, 13), -- Daniela Morales
+('2024-11-02', 'AUSENTE', 2, 14),  -- Javier Núñez
+('2024-11-02', 'PRESENTE', 2, 15), -- Elena Rojas
+('2024-11-02', 'PRESENTE', 2, 16), -- Andrés Cruz
+
+-- Laboratorio 3
+('2024-11-03', 'AUSENTE', 3, 1),   -- Jorge Sacsa
+('2024-11-03', 'PRESENTE', 3, 2),  -- Carlos Pérez
+('2024-11-03', 'PRESENTE', 3, 3),  -- Lucía Ramírez
+('2024-11-03', 'PRESENTE', 3, 4),  -- Ana González
+('2024-11-03', 'AUSENTE', 3, 5),   -- Pedro Martínez
+('2024-11-03', 'PRESENTE', 3, 6),  -- Laura Gómez
+('2024-11-03', 'PRESENTE', 3, 7),  -- Diego Hernández
+('2024-11-03', 'AUSENTE', 3, 8),   -- Sofía López
+
+-- Laboratorio 4
+('2024-11-04', 'PRESENTE', 4, 9),  -- María Torres
+('2024-11-04', 'AUSENTE', 4, 10),  -- Luis Fernández
+('2024-11-04', 'PRESENTE', 4, 11), -- Clara Jiménez
+('2024-11-04', 'PRESENTE', 4, 12), -- Fernando Castillo
+('2024-11-04', 'AUSENTE', 4, 13),  -- Daniela Morales
+('2024-11-04', 'PRESENTE', 4, 14), -- Javier Núñez
+('2024-11-04', 'PRESENTE', 4, 15), -- Elena Rojas
+('2024-11-04', 'AUSENTE', 4, 16),  -- Andrés Cruz
+
+-- Laboratorio 5
+('2024-11-05', 'PRESENTE', 5, 1),  -- Jorge Sacsa
+('2024-11-05', 'AUSENTE', 5, 2),   -- Carlos Pérez
+('2024-11-05', 'PRESENTE', 5, 3),  -- Lucía Ramírez
+('2024-11-05', 'PRESENTE', 5, 4),  -- Ana González
+('2024-11-05', 'AUSENTE', 5, 5),   -- Pedro Martínez
+('2024-11-05', 'PRESENTE', 5, 6),  -- Laura Gómez
+('2024-11-05', 'PRESENTE', 5, 7),  -- Diego Hernández
+('2024-11-05', 'AUSENTE', 5, 8);   -- Sofía López
