@@ -676,8 +676,7 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
             String apellido = modelo.getValueAt(i, 2).toString();
             boolean asistencia = (boolean) modelo.getValueAt(i, 3);
 
-            // Aquí puedes guardar la asistencia en la base de datos o realizar otra acción
-            System.out.println("Código: " + codigo + ", Nombre: " + nombre + ", Asistencia: " + asistencia);
+           
         }
         JOptionPane.showMessageDialog(null, "Asistencia guardada exitosamente.");
     }
@@ -703,45 +702,31 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
         panelActualizarLaboratorio.add(lblSubTitulo);
 
         // Panel para ingresar datos
-        int panelAncho = 1100; 
-        int panelX = (1300 - panelAncho) / 2; 
         JPanel subPanelDatos = new JPanel(null);
-        subPanelDatos.setBounds(panelX, 180, panelAncho, 120);
+        subPanelDatos.setBounds(100, 180, 1100, 120);
         subPanelDatos.setBackground(Color.WHITE);
         subPanelDatos.setBorder(border);
         panelActualizarLaboratorio.add(subPanelDatos);
 
         // Etiquetas y Campos en una Sola Línea
-        int campoAncho = 250; 
-        int campoAlto = 35;
-        int separacion = 80; 
-        int totalAncho = (campoAncho * 2) + separacion; 
-        int inicioX = (panelAncho - totalAncho) / 2;
-
-        JLabel lblNroLaboratorio = ComponentFactory.crearEtiqueta("Nro. Laboratorio", inicioX, 30, campoAncho, campoAlto, FUENTE_LABEL, COLOR_HOVER_SELECCIONADO1);
+        JLabel lblNroLaboratorio = ComponentFactory.crearEtiqueta("Nro. Laboratorio", 200, 30, 250, 35, FUENTE_LABEL, COLOR_HOVER_SELECCIONADO1);
         subPanelDatos.add(lblNroLaboratorio);
         txtNumeroLab = new JTextField();
-        txtNumeroLab.setBounds(inicioX, 70, campoAncho, campoAlto);
+        txtNumeroLab.setBounds(200, 70, 250, 35);
         txtNumeroLab.setBorder(border1);
         subPanelDatos.add(txtNumeroLab);
 
-        JLabel lblCapacidad = ComponentFactory.crearEtiqueta("Capacidad", inicioX + campoAncho + separacion, 30, campoAncho, campoAlto, FUENTE_LABEL, COLOR_HOVER_SELECCIONADO1);
+        JLabel lblCapacidad = ComponentFactory.crearEtiqueta("Capacidad", 530, 30, 250, 35, FUENTE_LABEL, COLOR_HOVER_SELECCIONADO1);
         subPanelDatos.add(lblCapacidad);
         txtCapacidad = new JTextField();
-        txtCapacidad.setBounds(inicioX + campoAncho + separacion, 70, campoAncho, campoAlto);
+        txtCapacidad.setBounds(530, 70, 250, 35);
         txtCapacidad.setBorder(border1);
         subPanelDatos.add(txtCapacidad);
 
         // Botones de Acción
-        int btnWidth = 180; 
-        int btnHeight = 60; 
-        int spacing = 60; 
-        int totalWidth = (btnWidth * 3) + (spacing * 2); 
-        int startX = (panelAncho - totalWidth) / 2;
-
-        JButton btnAgregarLab = ComponentFactory.crearBotonAccion("Agregar", panelX + startX, 350, btnWidth, btnHeight);
-        JButton btnModificarLab = ComponentFactory.crearBotonAccion("Modificar", panelX + startX + btnWidth + spacing, 350, btnWidth, btnHeight);
-        JButton btnEliminarLab = ComponentFactory.crearBotonAccion("Eliminar", panelX + startX + (btnWidth + spacing) * 2, 350, btnWidth, btnHeight);
+        JButton btnAgregarLab = ComponentFactory.crearBotonAccion("Agregar", 300, 350, 180, 60);
+        JButton btnModificarLab = ComponentFactory.crearBotonAccion("Modificar", 500, 350, 180, 60);
+        JButton btnEliminarLab = ComponentFactory.crearBotonAccion("Eliminar", 700, 350, 180, 60);
 
         btnAgregarLab.addMouseListener(new EstiloHoverAccionBoton(btnAgregarLab));
         btnModificarLab.addMouseListener(new EstiloHoverAccionBoton(btnModificarLab));
@@ -757,7 +742,7 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
 
         // Imagen del Pingüino
         JLabel lblPinguino = new JLabel();
-        lblPinguino.setBounds(panelX, 450, (panelAncho / 3) - 20, 300); 
+        lblPinguino.setBounds(100, 450, 350, 300); 
         lblPinguino.setHorizontalAlignment(SwingConstants.CENTER);
         ImageIcon iconoPinguino = new ImageIcon("Images/pinguinoLab.png");
         Image imageEscalada = iconoPinguino.getImage().getScaledInstance(-1, 300, Image.SCALE_SMOOTH); 
@@ -766,7 +751,7 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
 
         // Tabla para mostrar los laboratorios
         JPanel subPanelTabla = new JPanel(null);
-        subPanelTabla.setBounds(panelX + (panelAncho / 3), 450, (panelAncho * 2 / 3) - 20, 300); 
+        subPanelTabla.setBounds(500, 450, 700, 300); 
         subPanelTabla.setBackground(Color.WHITE);
         subPanelTabla.setBorder(border);
         panelActualizarLaboratorio.add(subPanelTabla);
@@ -784,7 +769,7 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
         tablaLaboratorios.setSelectionForeground(Color.WHITE);
 
         JScrollPane scrollTabla = new JScrollPane(tablaLaboratorios);
-        scrollTabla.setBounds(10, 10, (panelAncho * 2 / 3) - 40, 280);
+        scrollTabla.setBounds(10, 10, 680, 280);
         scrollTabla.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         subPanelTabla.add(scrollTabla);
 
