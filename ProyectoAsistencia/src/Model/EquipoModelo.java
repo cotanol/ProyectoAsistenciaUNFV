@@ -28,24 +28,28 @@ public class EquipoModelo {
     public int insertarEquipoModelo(EquipoModelo equipoModelo) {
         int estado = 0;
         try {
-            
             cn = Conexion_BD.getConexionBD();
-            pt = cn.prepareStatement("INSERT INTO equipo (numero_lab, tipo_equipo, numero_serie, estado) VALUES (?,?,?,?);");
-            pt.setInt(1, equipoModelo.getNumeroLab());
-            pt.setString(2, equipoModelo.getTipoEquipo());
-            pt.setString(3, equipoModelo.getNumeroSerie());
-            pt.setString(4, equipoModelo.getEstado());
+
             
-            estado = pt.executeUpdate();
-            
+            pt = cn.prepareStatement("INSERT INTO equipo (cod_patrimonial, numero_lab, tipo_equipo, numero_serie, estado) VALUES (?,?,?,?,?);");
+
+            // Establecer los valores correspondientes
+            pt.setString(1, equipoModelo.getCodPatrimonial()); // Código Patrimonial
+            pt.setInt(2, equipoModelo.getNumeroLab());         // Número de laboratorio
+            pt.setString(3, equipoModelo.getTipoEquipo());     // Tipo de equipo
+            pt.setString(4, equipoModelo.getNumeroSerie());    // Número de serie
+            pt.setString(5, equipoModelo.getEstado());         // Estado
+
+            estado = pt.executeUpdate(); // Ejecutar la consulta
+
+            // Cerrar recursos
             cn.close();
             pt.close();
-            rs.close();
-            
-        } catch (Exception e){
-            
+
+        } catch (Exception e) {
+            e.printStackTrace(); // Imprimir el error en caso de problemas
         }
-        
+
         return estado;
     }
     
