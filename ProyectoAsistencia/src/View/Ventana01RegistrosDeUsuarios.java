@@ -91,12 +91,12 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
     private static final Color COLOR_FONDO_PANEL = new Color(238, 238, 238);
 
     // Fuentes
-    private static final Font FUENTE_TITULO = new Font("Poppins", Font.BOLD, 50);
-    private static final Font FUENTE_SUBTITULO = new Font("Poppins", Font.BOLD, 30);
-    private static final Font FUENTE_LABEL = new Font("Poppins", Font.BOLD, 20);
-    private static final Font FUENTE_TEXTFIELD = new Font("Poppins", Font.PLAIN, 18);
-    private static final Font FUENTE_BOTON = new Font("Poppins", Font.BOLD, 20);
-    private static final Font FUENTE_MENU = new Font("Poppins", Font.PLAIN, 22);
+    private static final Font FUENTE_TITULO = new Font("arial", Font.BOLD, 50);
+    private static final Font FUENTE_SUBTITULO = new Font("arial", Font.BOLD, 30);
+    private static final Font FUENTE_LABEL = new Font("arial", Font.BOLD, 20);
+    private static final Font FUENTE_TEXTFIELD = new Font("arial", Font.PLAIN, 18);
+    private static final Font FUENTE_BOTON = new Font("arial", Font.BOLD, 20);
+    private static final Font FUENTE_MENU = new Font("arial", Font.PLAIN, 22);
 
     // Bordes
     private Border border = BorderFactory.createLineBorder(Color.BLACK, 2);
@@ -336,8 +336,7 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
 
     private void configurarPanelRight1() {
         // Título
-        lbRegistrosUsuarios = ComponentFactory.crearEtiqueta("REGISTRO DE USUARIOS", 50, 30, 590, 52, FUENTE_TITULO, COLOR_TEXTO_NEGRO);
-        lbRegistrosUsuarios.setBackground(Color.GREEN);
+        lbRegistrosUsuarios = ComponentFactory.crearEtiqueta("REGISTRO DE USUARIOS", 50, 30, 630, 52, FUENTE_TITULO, COLOR_TEXTO_NEGRO);
         lbRegistrosUsuarios.setOpaque(true);
         panelRight1.add(lbRegistrosUsuarios);
 
@@ -452,8 +451,7 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
         
         
         // Título
-        lblControlAsistencia = ComponentFactory.crearEtiqueta("CONTROL DE ASISTENCIA", 50, 30, 590, 52, FUENTE_TITULO, COLOR_TEXTO_NEGRO);
-        lblControlAsistencia.setBackground(Color.GREEN);
+        lblControlAsistencia = ComponentFactory.crearEtiqueta("CONTROL DE ASISTENCIA", 50, 30, 670, 52, FUENTE_TITULO, COLOR_TEXTO_NEGRO);
         lblControlAsistencia.setOpaque(true);
         panelRight2.add(lblControlAsistencia);
         
@@ -573,7 +571,6 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
 
         // Título
         lblTituloAsistencia = ComponentFactory.crearEtiqueta("CONTROL DE ASISTENCIA", 50, 30, 590, 52, FUENTE_TITULO, COLOR_TEXTO_NEGRO);
-        lblTituloAsistencia.setBackground(Color.GREEN);
         lblTituloAsistencia.setOpaque(true);
         panelAsistencia.add(lblTituloAsistencia);
 
@@ -689,7 +686,6 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
 
         // Título
         lblTitulo = ComponentFactory.crearEtiqueta("CONTROL DE ASISTENCIA", 50, 30, 1200, 52, FUENTE_TITULO, COLOR_TEXTO_NEGRO);
-        lblTitulo.setBackground(Color.GREEN);
         lblTitulo.setOpaque(true);
         lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
         panelActualizarLaboratorio.add(lblTitulo);
@@ -834,7 +830,6 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
         //Tirulo
         // Título
         lbTituloPantalla1 = ComponentFactory.crearEtiqueta("CONTROL DE EQUIPOS", 50, 30, 590, 52, FUENTE_TITULO, COLOR_TEXTO_NEGRO);
-        lbTituloPantalla1.setBackground(Color.GREEN);
         lbTituloPantalla1.setOpaque(true);
         panelRight3.add(lbTituloPantalla1);
             
@@ -863,7 +858,6 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
     
     private void configurarPanelRightConfig() {
         lbTituloPantalla2 = ComponentFactory.crearEtiqueta("CONFIGURACIÓN DE EQUIPOS", 50, 30, 765, 52, FUENTE_TITULO, COLOR_TEXTO_NEGRO);
-        lbTituloPantalla2.setBackground(Color.GREEN);
         lbTituloPantalla2.setOpaque(true);
         panelRightConfig.add(lbTituloPantalla2);
 
@@ -1056,15 +1050,21 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
             int estado = usuarioControlador.insertarUsuarioController(usuarioModelo);
 
             if (estado == 1) {
-                JOptionPane.showMessageDialog(null, "Registro Insertado 🐧!!");
+                VentanaConfirmacionCrudRegistroInsertado vtn = new VentanaConfirmacionCrudRegistroInsertado();
+                vtn.setVisible(true);
+                //JOptionPane.showMessageDialog(null, "Registro Insertado 🐧!!");
             } else {
-                JOptionPane.showMessageDialog(null, "Registro no Insertado 🐧!!");
+                VentanaErrorCrudRegistroNoInsertado vtn = new VentanaErrorCrudRegistroNoInsertado();
+                vtn.setVisible(true);
+                //JOptionPane.showMessageDialog(null, "Registro no Insertado 🐧!!");
             }
 
             listarUsuario();
             limpiarCampos();
         } else {
-            JOptionPane.showMessageDialog(null, "Llena todos los campos 🐧!!");
+            VentanaErrorEnBlanco vtn = new VentanaErrorEnBlanco();
+            vtn.setVisible(true);
+            //JOptionPane.showMessageDialog(null, "Llena todos los campos 🐧!!");
         }
         
     }
@@ -1109,9 +1109,13 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
         int estado = usuarioControlador.modificarUsuarioController(usuarioModelo);
 
         if (estado == 1) {
-            JOptionPane.showMessageDialog(null, "Registro Modificado 🐧!!");
+            VentanaConfirmacionCrudRegistroModificado vtn = new VentanaConfirmacionCrudRegistroModificado();
+            vtn.setVisible(true);
+            //JOptionPane.showMessageDialog(null, "Registro Modificado 🐧!!");
         } else {
-            JOptionPane.showMessageDialog(null, "Registro no Modificado 🐧!!");
+            VentanaErrorCrudRegistroNoModificado vtn = new VentanaErrorCrudRegistroNoModificado();
+            vtn.setVisible(true);
+            //JOptionPane.showMessageDialog(null, "Registro no Modificado 🐧!!");
         }
 
         listarUsuario();
@@ -1126,9 +1130,13 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
         int estado = usuarioControlador.eliminarUsuarioController(usuarioModelo);
 
         if (estado == 1) {
-            JOptionPane.showMessageDialog(null, "Registro Eliminado 🐧!!");
+            VentanaConfirmacionCrudRegistroEliminado vtn = new VentanaConfirmacionCrudRegistroEliminado();
+            vtn.setVisible(true);        
+            //JOptionPane.showMessageDialog(null, "Registro Eliminado 🐧!!");
         } else {
-            JOptionPane.showMessageDialog(null, "Registro no Eliminado 🐧!!");
+            VentanaErrorCrudRegistroNoEliminado vtn = new VentanaErrorCrudRegistroNoEliminado();
+            vtn.setVisible(true);      
+            //JOptionPane.showMessageDialog(null, "Registro no Eliminado 🐧!!");
         }
 
         listarUsuario();
@@ -1216,10 +1224,17 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
 
             // Insertar el equipo y verificar el estado de la inserción
             int estadoRegistro = equipoController.insertarEquipoController(equipo);
-            String mensaje = (estadoRegistro == 1) ? 
+            if(estadoRegistro == 1){
+                VentanaConfirmacionCrudRegistroInsertado vtn = new VentanaConfirmacionCrudRegistroInsertado();
+                vtn.setVisible(true);
+            }else{
+                VentanaErrorCrudRegistroNoInsertado vtn = new VentanaErrorCrudRegistroNoInsertado();
+                vtn.setVisible(true);
+            }
+            /*String mensaje = (estadoRegistro == 1) ? 
                 "Equipo agregado exitosamente 🐧!!" : 
                 "Error al agregar el equipo 🐧!!";
-            JOptionPane.showMessageDialog(null, mensaje);
+            JOptionPane.showMessageDialog(null, mensaje);*/
 
             // Verificar el estado del equipo para determinar en qué tabla mostrarlo
             if (estadoRegistro == 1) {
@@ -1231,7 +1246,9 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
 
             limpiarCamposEquipo(); // Limpiar los campos de entrada
         } else {
-            JOptionPane.showMessageDialog(null, "Llena todos los campos 🐧!!");
+            VentanaErrorEnBlanco vtn = new VentanaErrorEnBlanco();
+            vtn.setVisible(true);
+            //JOptionPane.showMessageDialog(null, "Llena todos los campos 🐧!!");
         }
     } catch (NumberFormatException e) {
         JOptionPane.showMessageDialog(null, "El valor del laboratorio debe ser un número válido 🐧!!");
@@ -1267,7 +1284,9 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
         // Verificar si se seleccionó una fila en la tabla
         int filaSeleccionada = tablaEquiposRegistrados.getSelectedRow();
         if (filaSeleccionada == -1) {
-            JOptionPane.showMessageDialog(null, "Seleccione un equipo para modificar 🐧!!");
+            VentanaErrorCrudRegistroNoModificado vtn = new VentanaErrorCrudRegistroNoModificado();
+            vtn.setVisible(true);
+            //JOptionPane.showMessageDialog(null, "Seleccione un equipo para modificar 🐧!!");
             return;
         }
 
@@ -1287,11 +1306,19 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
                 int estado = equipoController.modificarEquipoController(equipo);
 
                 // Verificar si la modificación fue exitosa y mostrar el mensaje correspondiente
+                if(estado == 1){
+                    VentanaConfirmacionCrudRegistroModificado vtn = new VentanaConfirmacionCrudRegistroModificado();
+                    vtn.setVisible(true);
+                } else {
+                    VentanaErrorCrudRegistroNoModificado vtn = new VentanaErrorCrudRegistroNoModificado();
+                    vtn.setVisible(true);
+                }
+                /*
                 String mensaje = (estado == 1) ? 
                     "Equipo modificado correctamente 🐧!!" : 
                     "Error al modificar el equipo 🐧!!";
                 JOptionPane.showMessageDialog(null, mensaje);
-
+                */
                 // Actualizar las tablas y limpiar los campos de entrada
                 listarEquiposDisponibles();
                 listarEquiposRegistrados();
@@ -1300,7 +1327,9 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
                 JOptionPane.showMessageDialog(null, "Controlador no inicializado. Verifique la inicialización del controlador 🐧!!");
             }
         } else {
-            JOptionPane.showMessageDialog(null, "Llena todos los campos 🐧!!");
+            VentanaErrorEnBlanco vtn = new VentanaErrorEnBlanco();
+            vtn.setVisible(true);
+            //JOptionPane.showMessageDialog(null, "Llena todos los campos 🐧!!");
         }
     } catch (NumberFormatException e) {
         JOptionPane.showMessageDialog(null, "El valor del laboratorio debe ser un número válido 🐧!!");
@@ -1326,7 +1355,9 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
         modeloSeleccionado = modeloEquiposRegistrados;
         filaSeleccionada = filaSeleccionadaRegistrados;
     } else {
-        JOptionPane.showMessageDialog(null, "Seleccione un equipo para eliminar 🐧!!");
+        VentanaErrorCrudRegistroNoEliminado vtn = new VentanaErrorCrudRegistroNoEliminado();
+        vtn.setVisible(true);
+        //JOptionPane.showMessageDialog(null, "Seleccione un equipo para eliminar 🐧!!");
         return;
     }
 
@@ -1347,12 +1378,17 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
             int estado = equipoController.eliminarEquipoController(equipo);
 
             // Comprobar si se eliminó correctamente
-            if (estado == 1) {
-                JOptionPane.showMessageDialog(null, "Equipo eliminado correctamente 🐧!!");
+            
+            if (estado == 1){
+                VentanaConfirmacionCrudRegistroEliminado vtn = new VentanaConfirmacionCrudRegistroEliminado();
+                vtn.setVisible(true);        
+                //JOptionPane.showMessageDialog(null, "Equipo eliminado correctamente 🐧!!");
             } else {
-                JOptionPane.showMessageDialog(null, "Error al eliminar el equipo 🐧!!");
-            }
-
+                VentanaErrorCrudRegistroNoEliminado vtn = new VentanaErrorCrudRegistroNoEliminado();
+                vtn.setVisible(true);      
+                //JOptionPane.showMessageDialog(null, "Error al eliminar el equipo 🐧!!");
+            } 
+           
             listarEquiposDisponibles(); // Actualizar tabla de equipos operativos
             listarEquiposRegistrados(); // Actualizar tabla de todos los equipos
             limpiarCamposEquipo(); // Limpiar los campos de entrada
@@ -1452,15 +1488,21 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
             int estado = laboratorioController.insertarLaboratorioController(laboratorioModelo);
 
             if (estado == 1) {
-                JOptionPane.showMessageDialog(null, "Laboratorio Insertado 🧪!!");
+                VentanaConfirmacionCrudRegistroInsertado vtn = new VentanaConfirmacionCrudRegistroInsertado();
+                vtn.setVisible(true);
+                //JOptionPane.showMessageDialog(null, "Laboratorio Insertado 🧪!!");
             } else {
-                JOptionPane.showMessageDialog(null, "Laboratorio no Insertado 🧪!!");
+                VentanaErrorCrudRegistroNoInsertado vtn  = new VentanaErrorCrudRegistroNoInsertado();
+                vtn.setVisible(true);
+                //JOptionPane.showMessageDialog(null, "Laboratorio no Insertado 🧪!!");
             }
 
             listarLaboratorios();
             limpiarCamposLaboratorio();
         } else {
-            JOptionPane.showMessageDialog(null, "Llena todos los campos 🧪!!");
+            VentanaErrorEnBlanco vtn = new VentanaErrorEnBlanco();
+            vtn.setVisible(true);
+            //JOptionPane.showMessageDialog(null, "Llena todos los campos 🧪!!");
         }
     }
 
@@ -1477,16 +1519,22 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
             int estado = laboratorioController.modificarLaboratorioController(laboratorioModelo);
 
             if (estado == 1) {
-                JOptionPane.showMessageDialog(null, "Laboratorio Modificado 🧪!!");
+                VentanaConfirmacionCrudRegistroModificado vtn = new VentanaConfirmacionCrudRegistroModificado();
+                vtn.setVisible(true);
+                //JOptionPane.showMessageDialog(null, "Laboratorio Modificado 🧪!!");
                 actualizarCombosHorarioAsignatura();
             } else {
-                JOptionPane.showMessageDialog(null, "Laboratorio no Modificado 🧪!!");
+                VentanaErrorCrudRegistroNoModificado vtn = new VentanaErrorCrudRegistroNoModificado();
+                vtn.setVisible(true);
+                //JOptionPane.showMessageDialog(null, "Laboratorio no Modificado 🧪!!");
             }
 
             listarLaboratorios();
             limpiarCamposLaboratorio();
         } else {
-            JOptionPane.showMessageDialog(null, "Llena todos los campos 🧪!!");
+            VentanaErrorEnBlanco vtn = new VentanaErrorEnBlanco();
+            vtn.setVisible(true);
+            //JOptionPane.showMessageDialog(null, "Llena todos los campos 🧪!!");
         }
     }
 
@@ -1494,7 +1542,9 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
         // Verificar si hay una fila seleccionada
         int filaSeleccionada = tablaLaboratorios.getSelectedRow();
         if (filaSeleccionada == -1) {
-            JOptionPane.showMessageDialog(null, "Seleccione un laboratorio para eliminar 🧪!!");
+            VentanaErrorCrudRegistroNoEliminado vtn = new VentanaErrorCrudRegistroNoEliminado();
+            vtn.setVisible(true);
+            //JOptionPane.showMessageDialog(null, "Seleccione un laboratorio para eliminar 🧪!!");
             return;
         }
 
@@ -1517,10 +1567,14 @@ public class Ventana01RegistrosDeUsuarios extends JFrame {
             int estado = laboratorioController.eliminarLaboratorioController(laboratorioModelo);
 
             if (estado == 1) {
-                JOptionPane.showMessageDialog(null, "Laboratorio Eliminado 🧪!!");
+                VentanaConfirmacionCrudRegistroEliminado vtn = new VentanaConfirmacionCrudRegistroEliminado();
+                vtn.setVisible(true);
+                //JOptionPane.showMessageDialog(null, "Laboratorio Eliminado 🧪!!");
                 actualizarCombosHorarioAsignatura(); // Actualizar combos relacionados
             } else {
-                JOptionPane.showMessageDialog(null, "Laboratorio no Eliminado 🧪!!");
+                VentanaErrorCrudRegistroNoEliminado vtn = new VentanaErrorCrudRegistroNoEliminado();
+                vtn.setVisible(true);
+                //JOptionPane.showMessageDialog(null, "Laboratorio no Eliminado 🧪!!");
             }
 
             // Actualizar la tabla y limpiar los campos
