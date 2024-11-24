@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import Util.Conexion_BD;
 import Util.Enums.Dia;
 import java.time.LocalTime;
-import View.Ventana01RegistrosDeUsuarios;
+import View.VentanaPrincipal;
 
 public class HorarioLaboratorioModelo {
     
@@ -16,13 +16,13 @@ public class HorarioLaboratorioModelo {
     private LocalTime horarioFin;
     private String docente;
     
-    Ventana01RegistrosDeUsuarios objVentReg;
+    VentanaPrincipal objVentReg;
     
     Connection cn = null;
     PreparedStatement pt = null;
     ResultSet rs = null;
     
-    public HorarioLaboratorioModelo(Ventana01RegistrosDeUsuarios objventReg) {
+    public HorarioLaboratorioModelo(VentanaPrincipal objventReg) {
         this.objVentReg = objVentReg;
     }
     public HorarioLaboratorioModelo(){

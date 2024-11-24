@@ -1,14 +1,14 @@
 package Controller;
 import Model.HorarioLaboratorioModelo;
-import View.Ventana01RegistrosDeUsuarios;
+import View.VentanaPrincipal;
 import java.util.ArrayList;
 
 public class HorarioLaboratorioController {
     
     HorarioLaboratorioModelo objHorarioLaboratorioModelo;
-    Ventana01RegistrosDeUsuarios objVentReg;
+    VentanaPrincipal objVentReg;
     
-    public HorarioLaboratorioController(Ventana01RegistrosDeUsuarios objVentReg) {
+    public HorarioLaboratorioController(VentanaPrincipal objVentReg) {
         this.objVentReg = objVentReg;
         objHorarioLaboratorioModelo = new HorarioLaboratorioModelo(objVentReg);
     }

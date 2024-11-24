@@ -1,13 +1,13 @@
 package Controller;
 import Model.ReporteModelo;
-import View.Ventana01RegistrosDeUsuarios;
+import View.VentanaPrincipal;
 import java.util.ArrayList;
 
 public class ReporteController {
     ReporteModelo objReporteModelo;
-    Ventana01RegistrosDeUsuarios objVentReg;
+    VentanaPrincipal objVentReg;
     
-    public ReporteController(Ventana01RegistrosDeUsuarios objVentReg) {
+    public ReporteController(VentanaPrincipal objVentReg) {
         this.objVentReg = objVentReg;
         objReporteModelo = new ReporteModelo(objVentReg);
     }

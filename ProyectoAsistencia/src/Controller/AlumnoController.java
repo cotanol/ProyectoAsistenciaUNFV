@@ -1,14 +1,14 @@
 package Controller;
 import Model.AlumnoModelo;
-import View.Ventana01RegistrosDeUsuarios;
+import View.VentanaPrincipal;
 import java.util.ArrayList;
 
 public class AlumnoController {
     
     AlumnoModelo objAlumnoModelo;
-    Ventana01RegistrosDeUsuarios objVentReg;
+    VentanaPrincipal objVentReg;
     
-    public AlumnoController(Ventana01RegistrosDeUsuarios objVentReg) {
+    public AlumnoController(VentanaPrincipal objVentReg) {
         this.objVentReg = objVentReg;
         objAlumnoModelo = new AlumnoModelo(objVentReg);
     }

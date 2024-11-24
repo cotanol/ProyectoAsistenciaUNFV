@@ -1,14 +1,14 @@
 package Controller;
 import Model.LaboratorioModelo;
-import View.Ventana01RegistrosDeUsuarios;
+import View.VentanaPrincipal;
 import java.util.ArrayList;
 
 public class LaboratorioController {
     
     LaboratorioModelo objLaboratorioModelo;
-    Ventana01RegistrosDeUsuarios objVentReg;
+    VentanaPrincipal objVentReg;
     
-    public LaboratorioController(Ventana01RegistrosDeUsuarios objVentReg) {
+    public LaboratorioController(VentanaPrincipal objVentReg) {
         this.objVentReg = objVentReg;
         objLaboratorioModelo = new LaboratorioModelo(objVentReg);
     }

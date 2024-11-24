@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import Util.Enums.EstadoAsistencia;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import View.Ventana01RegistrosDeUsuarios;
+import View.VentanaPrincipal;
 
 public class AsistenciaModelo {
     
@@ -19,13 +19,13 @@ public class AsistenciaModelo {
     PreparedStatement pt = null;
     ResultSet rs = null;
     
-    Ventana01RegistrosDeUsuarios objVentReg;
+    VentanaPrincipal objVentReg;
     
     public AsistenciaModelo(){
         
     }
     
-    public AsistenciaModelo(Ventana01RegistrosDeUsuarios objventReg) {
+    public AsistenciaModelo(VentanaPrincipal objventReg) {
         this.objVentReg = objVentReg;
     }
     
