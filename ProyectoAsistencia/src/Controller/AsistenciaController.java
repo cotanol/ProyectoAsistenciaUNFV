@@ -1,15 +1,15 @@
 package Controller;
 import Model.AsistenciaModelo;
 import Model.AlumnoModelo;
-import View.Ventana01RegistrosDeUsuarios;
+import View.VentanaPrincipal;
 import java.util.ArrayList;
 import java.time.LocalTime;
 
 public class AsistenciaController {
     AsistenciaModelo objAsistenciaModelo;
-    Ventana01RegistrosDeUsuarios objVentReg;
+    VentanaPrincipal objVentReg;
     
-    public AsistenciaController(Ventana01RegistrosDeUsuarios objVentReg) {
+    public AsistenciaController(VentanaPrincipal objVentReg) {
         this.objVentReg = objVentReg;
         objAsistenciaModelo = new AsistenciaModelo(objVentReg);
     }

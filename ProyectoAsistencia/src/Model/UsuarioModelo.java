@@ -2,7 +2,7 @@ package Model;
 import Util.Conexion_BD;
 import java.sql.*;
 import java.util.ArrayList;
-import View.Ventana01RegistrosDeUsuarios;
+import View.VentanaPrincipal;
 
 public class UsuarioModelo {
     private int idUsuario;
@@ -16,13 +16,13 @@ public class UsuarioModelo {
     private String contrasena;
     private String email;
     
-    Ventana01RegistrosDeUsuarios objVentReg;
+    VentanaPrincipal objVentReg;
     
     Connection cn = null;
     PreparedStatement pt = null;
     ResultSet rs = null;
     
-    public UsuarioModelo(Ventana01RegistrosDeUsuarios objventReg) {
+    public UsuarioModelo(VentanaPrincipal objventReg) {
         this.objVentReg = objVentReg;
     }
     

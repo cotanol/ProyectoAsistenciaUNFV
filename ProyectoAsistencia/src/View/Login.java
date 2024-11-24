@@ -1,234 +1,159 @@
-
 package View;
 
 import Controller.UsuarioController;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseAdapter;
+import java.awt.event.*;
 import javax.swing.*;
-
+import Util.ComponentFactory;
+import Util.Constantes;
+import Util.EstiloHover;
 import Model.UsuarioModelo;
 import java.util.ArrayList;
 
-public class Login extends JFrame implements ActionListener {
+public class Login extends JFrame {
 
-    //TODAS LAS ETIQUETAS
-    
-    String user;
-    JPanel panelHeader, panelMenu, panelImg;
-    ImageIcon logo;
-    JLabel imageLabel;
-    
-    JLabel lbUsuario, lbPassword;
-    JTextField txtUsuario;
-    JPasswordField txtPassword;
-    JButton btnEntrar, btnSalir;
-    
-    
-    public Login(){
-        UIManager.put("Button.select", new Color(0, 0, 0, 0)); // Foco transparente de seleccion
-        //CARACTERISTICAS DE LA VENTANA
-        setSize(1000,600);
+    // Componentes de la interfaz
+    private JPanel panelHeader, panelMenu, panelImg;
+    private JLabel imageLabel, lbTitulo, lbUsuario, lbPassword;
+    private JTextField txtUsuario;
+    private JPasswordField txtPassword;
+    private JButton btnEntrar, btnSalir;
+
+    public Login() {
+        // Configuración de la ventana principal
+        setSize(1000, 600);
         setTitle("Login del Gestionador");
         setResizable(false);
         setLocationRelativeTo(null);
         setLayout(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        //----------------------------------------------------------------------
-        
-        //PANEL HEADER - CARACTERISTICAS
-        panelHeader = new JPanel();
-        panelHeader.setLayout(null);
-        panelHeader.setBounds(0,0,700,130);
-        panelHeader.setBackground(new Color(233,113,50));
+
+        // Inicializar componentes
+        inicializarComponentes();
+        agregarEventos();
+    }
+
+    private void inicializarComponentes() {
+        // Panel Header
+        panelHeader = new JPanel(null);
+        panelHeader.setBounds(0, 0, 700, 130);
+        panelHeader.setBackground(Constantes.COLOR_HOVER_SELECCIONADO1);
         add(panelHeader);
 
-        //POSICIONAMIENTO DEL LOGO DE LA VILLARREAL
-        logo = new ImageIcon(getClass().getResource("/Imagenes/logo_villarreal.png"));
-        Image logoImage = logo.getImage(); // Obtener la imagen del ImageIcon
-        Image scaledLogoImage = logoImage.getScaledInstance(240, 100, Image.SCALE_SMOOTH); // Escalar la imagen a 240x100
-        ImageIcon scaledLogoIcon = new ImageIcon(scaledLogoImage); // Crear un nuevo ImageIcon con la imagen escalada
-
-
-        imageLabel = new JLabel(scaledLogoIcon); // Usar el ImageIcon escalado
-        imageLabel.setLayout(null);
-        imageLabel.setBounds(30, 15, 240, 100); // Posicionar el JLabel dentro del pane
+        // Logo de la universidad
+        ImageIcon logo = new ImageIcon(getClass().getResource("/Imagenes/logo_villarreal.png"));
+        Image scaledLogoImage = logo.getImage().getScaledInstance(240, 100, Image.SCALE_SMOOTH);
+        imageLabel = new JLabel(new ImageIcon(scaledLogoImage));
+        imageLabel.setBounds(30, 15, 240, 100);
         panelHeader.add(imageLabel);
-        //---------------------------------------------------
-        
-        //PANEL MENU - PANEL COLOR GRIS CLARO - CARACTERISTICAS
-        panelMenu = new JPanel();
-        panelMenu.setLayout(null);
-        panelMenu.setBounds(0,130,700,570);
-        panelMenu.setBackground(new Color(238,238,238));
+
+        // Panel de menú
+        panelMenu = new JPanel(null);
+        panelMenu.setBounds(0, 130, 700, 570);
+        panelMenu.setBackground(Constantes.COLOR_FONDO_PANEL);
         add(panelMenu);
-        
-        lbUsuario = new JLabel("INICIAR SESIÓN");
-        lbUsuario.setBounds(50,40,230,45);
-        lbUsuario.setOpaque(true);
-        lbUsuario.setFont(new Font("poppins",1,30));
+
+        // Etiqueta de título
+        lbTitulo = ComponentFactory.crearEtiqueta("INICIAR SESIÓN", 50, 40, 300, 45, Constantes.FUENTE_TITULO, Constantes.COLOR_TEXTO_NEGRO);
+        panelMenu.add(lbTitulo);
+
+        // Etiqueta y campo de texto para usuario
+        lbUsuario = ComponentFactory.crearEtiqueta("USUARIO", 50, 95, 200, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_TEXTO_NEGRO);
         panelMenu.add(lbUsuario);
-        
-        lbUsuario = new JLabel("USUARIO");
-        lbUsuario.setBounds(50,95,200,26);
-        lbUsuario.setFont(new Font("poppins",0,26));
-        panelMenu.add(lbUsuario);
-        
-        txtUsuario = new JTextField();
-        txtUsuario.setBounds(50,130,230,35);
-        txtUsuario.setFont(new Font("arial",0,20));
-        txtUsuario.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2)); // Borde negro de 2 píxeles
+
+        txtUsuario = ComponentFactory.crearCampoTexto(50, 130, 300, 35, Constantes.BORDER_NEGRO);
         panelMenu.add(txtUsuario);
-        
-        lbPassword = new JLabel("CONTRASEÑA");
-        lbPassword.setBounds(50,180,200,30);
-        lbPassword.setFont(new Font("poppins",0,26));
+
+        // Etiqueta y campo de texto para contraseña
+        lbPassword = ComponentFactory.crearEtiqueta("CONTRASEÑA", 50, 180, 200, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_TEXTO_NEGRO);
         panelMenu.add(lbPassword);
-        
+
         txtPassword = new JPasswordField();
-        txtPassword.setBounds(50,215,230,35);
-        txtPassword.setFont(new Font("arial",0,26));
-        txtPassword.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2)); // Borde negro de 2 píxeles
+        txtPassword.setBounds(50, 215, 300, 35);
+        txtPassword.setFont(Constantes.FUENTE_TEXTFIELD);
+        txtPassword.setBorder(Constantes.BORDER_NEGRO);
         panelMenu.add(txtPassword);
-        
-        btnEntrar = new JButton("ENTRAR");
-        btnEntrar.setBounds(50,280,150,60);
-        btnEntrar.setBackground(new Color(233,113,50));
-        btnEntrar.setForeground(Color.white);
-        btnEntrar.setFont(new Font("poppins",0,20));
-        btnEntrar.setBorderPainted(false); // marco del boton no seleccionado (aspecto visula de seleccion anular)
-        btnEntrar.setFocusPainted(false); // nombre del boton no seleccionado (aspecto visula de seleccion anular)
-        btnEntrar.addActionListener(this);
+
+        // Botones de acción
+        btnEntrar = ComponentFactory.crearBotonAccion("ENTRAR", 50, 280, 150, 60);
         panelMenu.add(btnEntrar);
-        
-        btnEntrar.addMouseListener(new MouseAdapter() {
-        @Override
-        public void mouseEntered(MouseEvent e) {
-            btnEntrar.setCursor(new Cursor(Cursor.HAND_CURSOR)); // Cambia el cursor a mano
-        }
 
-        @Override
-        public void mouseExited(MouseEvent e) {
-            btnEntrar.setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); // Restaura el cursor
-        }
-        });
-        
-        btnSalir = new JButton("SALIR");
-        btnSalir.setBounds(220,280,150,60);
-        btnSalir.setBackground(new Color(233,113,50));
-        btnSalir.setForeground(Color.white);
-        btnSalir.setFont(new Font("poppins",0,20));
-        btnSalir.setBorderPainted(false); // marco del boton no seleccionado (aspecto visula de seleccion anular)
-        btnSalir.setFocusPainted(false); // nombre del boton no seleccionado (aspecto visula de seleccion anular)
-        btnSalir.addActionListener(this);
+        btnSalir = ComponentFactory.crearBotonAccion("SALIR", 220, 280, 150, 60);
         panelMenu.add(btnSalir);
-        
-        btnSalir.addMouseListener(new MouseAdapter() {
-        @Override
-        public void mouseEntered(MouseEvent e) {
-        
-                btnSalir.setCursor(new Cursor(Cursor.HAND_CURSOR)); // Cambia el cursor a mano
-         }
 
-        @Override
-        public void mouseExited(MouseEvent e) {
-                btnSalir.setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); // Restaura el cursor
-            }
-        });
-        
-        //----------------------------------------------------------------------
-        
-        //PANEL IMG- PANEL DE LA IMAGEN DE LA SEDE VILLARREAL
-        panelImg = new JPanel();
-        panelImg.setLayout(null);
-        panelImg.setBounds(700,0,300,700);
-        panelImg.setBackground(Color.green);
+        // Panel de imagen
+        panelImg = new JPanel(null);
+        panelImg.setBounds(700, 0, 300, 700); // Ajustamos la altura a 700
         add(panelImg);
-        
-        // Cargar la imagen de la universidad y escalarla para el panel
-        ImageIcon imageIcon1 = new ImageIcon(getClass().getResource("/Imagenes/central_villarreal.jpg")); // Asegúrate que la ruta sea correcta
+
+        // Imagen de la universidad
+        ImageIcon imageIcon1 = new ImageIcon(getClass().getResource("/Imagenes/central_villarreal.jpg"));
         Image image = imageIcon1.getImage();
-
-        // Obtener la parte central de la imagen
-        // Aquí puedes usar la imagen original y cortarla, pero si solo quieres escalar toda la imagen y que se enfoque en el centro:
-        Image scaledImage1 = image.getScaledInstance(1000, 700, Image.SCALE_SMOOTH); // Escalar la imagen para que cubra el panel
-
-        // Crear un nuevo ImageIcon con la imagen escalada
+        Image scaledImage1 = image.getScaledInstance(1000, 700, Image.SCALE_SMOOTH);
         ImageIcon scaledImageIcon1 = new ImageIcon(scaledImage1);
 
-        // Añadir la imagen al JLabel
         JLabel imageLabel1 = new JLabel(scaledImageIcon1);
-        imageLabel1.setBounds(0, 0, 300, 700); // La imagen cubrirá todo el panel
-
-        // Añadir el JLabel al panel
+        imageLabel1.setBounds(0, 0, 300, 700);
         panelImg.add(imageLabel1);
     }
-    
-    
-    
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == btnSalir){
-            QuieresSalirDelPrograma vtn = new QuieresSalirDelPrograma();
-            vtn.setVisible(true);
-        }
-        if(e.getSource() == btnEntrar){
-            Entrar();
-        }
+
+    private void agregarEventos() {
+        // Eventos de hover
+        btnEntrar.addMouseListener(new EstiloHover.HoverAccionBoton(btnEntrar));
+        btnSalir.addMouseListener(new EstiloHover.HoverAccionBoton(btnSalir));
+
+        // Eventos de acción
+        btnEntrar.addActionListener(e -> Entrar());
+        btnSalir.addActionListener(e -> {
+            int confirmacion = JOptionPane.showConfirmDialog(null, "¿Está seguro de que desea salir?", "Confirmación", JOptionPane.YES_NO_OPTION);
+            if (confirmacion == JOptionPane.YES_OPTION) {
+                System.exit(0);
+            }
+        });
     }
-    
-    public void Entrar(){
+
+    private void Entrar() {
         UsuarioController usuarioControlador = new UsuarioController();
         ArrayList<String> usu = new ArrayList<>();
         ArrayList<String> pass = new ArrayList<>();
-        
-        for (UsuarioModelo usuario: usuarioControlador.enlistarUsuarioController ()) {
+
+        for (UsuarioModelo usuario : usuarioControlador.enlistarUsuarioController()) {
             usu.add(usuario.getNombreUsuario());
             pass.add(usuario.getContrasena());
         }
-        
-        String admin = "admin";
-        String passAdmin = "123";
-        
-        usu.add(admin);
-        pass.add(passAdmin);
-        
-        
-        boolean estado = false;
-        String usuario = txtUsuario.getText();
-        String clave = new String(txtPassword.getPassword());
-        if(usuario.isBlank() || clave.isBlank()){
-            VentanaErrorEnBlanco error = new VentanaErrorEnBlanco();
-            error.setVisible(true);
-        }else{
-            
-            for(int i=0;i<usu.size();i++){
-                if(usu.get(i).equals(usuario) && pass.get(i).equals(clave)){
-                    estado = true;
-                    break;
-                }
-            }
-            
-            if(estado == false){
-              VentanaErrorUserNoRegistrado error1 = new VentanaErrorUserNoRegistrado();
-              error1.setVisible(true);  
-            }
-            
-            if(estado == true){
-                this.dispose();
-                Ventana01RegistrosDeUsuarios vtn = new Ventana01RegistrosDeUsuarios();
-                vtn.setUser(usuario);
-                vtn.setVisible(true);
-            }
-            
+
+        // Agregar usuario administrador por defecto
+        usu.add("admin");
+        pass.add("123");
+
+        String usuario = txtUsuario.getText().trim();
+        String clave = new String(txtPassword.getPassword()).trim();
+
+        if (usuario.isEmpty() || clave.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Por favor, complete todos los campos.");
+            return;
         }
-        
-        
-        
+
+        boolean autenticado = false;
+        for (int i = 0; i < usu.size(); i++) {
+            if (usu.get(i).equals(usuario) && pass.get(i).equals(clave)) {
+                autenticado = true;
+                break;
+            }
+        }
+
+        if (autenticado) {
+            this.dispose();
+            VentanaPrincipal vtn = new VentanaPrincipal();
+            vtn.setUser(usuario);
+            vtn.setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos.");
+        }
     }
 
-
+    public static void main(String[] args) {
+        Login ventanaLogin = new Login();
+        ventanaLogin.setVisible(true);
+    }
 }

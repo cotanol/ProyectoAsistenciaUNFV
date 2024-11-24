@@ -1,14 +1,14 @@
 package Controller;
 import Model.UsuarioFuncionalidadModelo;
-import View.Ventana01RegistrosDeUsuarios;
+import View.VentanaPrincipal;
 import java.util.ArrayList;
 
 public class UsuarioFuncionalidadController {
     
     UsuarioFuncionalidadModelo objUsuarioFuncionalidadModelo;
-    Ventana01RegistrosDeUsuarios objVentReg;
+    VentanaPrincipal objVentReg;
     
-    public UsuarioFuncionalidadController(Ventana01RegistrosDeUsuarios objVentReg) {
+    public UsuarioFuncionalidadController(VentanaPrincipal objVentReg) {
         this.objVentReg = objVentReg;
         objUsuarioFuncionalidadModelo = new UsuarioFuncionalidadModelo(objVentReg);
     }

@@ -2,7 +2,7 @@ package Model;
 import java.sql.*;
 import java.util.ArrayList;
 import Util.Conexion_BD;
-import View.Ventana01RegistrosDeUsuarios;
+import View.VentanaPrincipal;
 
 public class ReporteModelo{
     
@@ -12,13 +12,13 @@ public class ReporteModelo{
     private int asistenciaTotal;
     private int numeroLab;
     
-    Ventana01RegistrosDeUsuarios objVentReg;
+    VentanaPrincipal objVentReg;
     
     Connection cn = null;
     PreparedStatement pt = null;
     ResultSet rs = null;
     
-    public ReporteModelo(Ventana01RegistrosDeUsuarios objventReg) {
+    public ReporteModelo(VentanaPrincipal objventReg) {
         this.objVentReg = objVentReg;
     }
     public ReporteModelo(){

@@ -2,7 +2,7 @@ package Model;
 import java.sql.*;
 import java.util.ArrayList;
 import Util.Conexion_BD;
-import View.Ventana01RegistrosDeUsuarios;
+import View.VentanaPrincipal;
 
 public class EquipoModelo {
     private String codPatrimonial;
@@ -15,9 +15,9 @@ public class EquipoModelo {
     PreparedStatement pt = null;
     ResultSet rs = null;
     
-    Ventana01RegistrosDeUsuarios objVentReg;
+    VentanaPrincipal objVentReg;
     
-    public EquipoModelo(Ventana01RegistrosDeUsuarios objventReg) {
+    public EquipoModelo(VentanaPrincipal objventReg) {
         this.objVentReg = objVentReg;
     }
     

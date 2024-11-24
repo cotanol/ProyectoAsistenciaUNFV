@@ -110,7 +110,7 @@ public class QuieresCerrarSession extends JFrame implements ActionListener, Mous
         
         if(e.getSource() == btnNo){
             this.dispose();
-            Ventana01RegistrosDeUsuarios vtn = new Ventana01RegistrosDeUsuarios();
+            VentanaPrincipal vtn = new VentanaPrincipal();
             vtn.setVisible(true);
         }
     }

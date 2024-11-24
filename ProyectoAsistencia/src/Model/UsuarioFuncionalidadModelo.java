@@ -2,7 +2,7 @@ package Model;
 import java.sql.*;
 import java.util.ArrayList;
 import Util.Conexion_BD;
-import View.Ventana01RegistrosDeUsuarios;
+import View.VentanaPrincipal;
 
 public class UsuarioFuncionalidadModelo {
     
@@ -15,9 +15,9 @@ public class UsuarioFuncionalidadModelo {
     PreparedStatement pt = null;
     ResultSet rs = null;
     
-    Ventana01RegistrosDeUsuarios objVentReg;
+    VentanaPrincipal objVentReg;
     
-    public UsuarioFuncionalidadModelo(Ventana01RegistrosDeUsuarios objventReg) {
+    public UsuarioFuncionalidadModelo(VentanaPrincipal objventReg) {
         this.objVentReg = objVentReg;
     }
     public UsuarioFuncionalidadModelo(){

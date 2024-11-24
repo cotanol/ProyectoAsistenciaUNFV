@@ -2,7 +2,7 @@ package Model;
 import java.util.ArrayList;
 import java.sql.*;
 import Util.Conexion_BD;
-import View.Ventana01RegistrosDeUsuarios;
+import View.VentanaPrincipal;
 
 public class LaboratorioModelo {
     
@@ -13,9 +13,9 @@ public class LaboratorioModelo {
     PreparedStatement pt = null;
     ResultSet rs = null;
     
-    Ventana01RegistrosDeUsuarios objVentReg;
+    VentanaPrincipal objVentReg;
     
-    public LaboratorioModelo(Ventana01RegistrosDeUsuarios objventReg) {
+    public LaboratorioModelo(VentanaPrincipal objventReg) {
         this.objVentReg = objVentReg;
     }
     

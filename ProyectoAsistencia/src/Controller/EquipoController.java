@@ -1,13 +1,13 @@
 package Controller;
 import Model.EquipoModelo;
-import View.Ventana01RegistrosDeUsuarios;
+import View.VentanaPrincipal;
 import java.util.ArrayList;
 
 public class EquipoController {
     EquipoModelo objEquipoModelo;
-    Ventana01RegistrosDeUsuarios objVentReg;
+    VentanaPrincipal objVentReg;
     
-    public EquipoController(Ventana01RegistrosDeUsuarios objVentReg) {
+    public EquipoController(VentanaPrincipal objVentReg) {
         this.objVentReg = objVentReg;
         objEquipoModelo = new EquipoModelo(objVentReg);
     }
