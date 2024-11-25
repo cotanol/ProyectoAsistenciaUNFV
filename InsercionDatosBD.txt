@@ -1,0 +1,105 @@
+USE unfv_bd;
+
+INSERT INTO alumno (codigo_alumno, nombres, apellidos) VALUES
+(20180001, 'Carlos', 'González'),
+(20180002, 'María', 'Fernández'),
+(20180003, 'Luis', 'Pérez'),
+(20180004, 'Ana', 'Rodríguez'),
+(20180005, 'Jorge', 'López'),
+(20180006, 'Lucía', 'Martínez'),
+(20180007, 'Diego', 'García'),
+(20180008, 'Sofía', 'Sánchez'),
+(20180009, 'Miguel', 'Romero'),
+(20180010, 'Elena', 'Torres');
+
+-- Insertar Administrador
+INSERT INTO usuario (nombres, apellidos, tipo_documento, nro_documento, numero, tipo_usuario, nombre_usuario, contrasena, email) VALUES
+('Administrador', 'Principal', 'DNI', '00000001', '999999999', 'ADMIN', 'admin', 'adminpass', 'admin@universidad.edu');
+
+-- Insertar Docentes
+INSERT INTO usuario (nombres, apellidos, tipo_documento, nro_documento, numero, tipo_usuario, nombre_usuario, contrasena, email) VALUES
+('Juan', 'Pérez', 'DNI', '12345678', '987654321', 'DOCENTE', 'jperez', 'pass123', 'juan.perez@universidad.edu'),
+('María', 'López', 'DNI', '87654321', '987654322', 'DOCENTE', 'mlopez', 'pass123', 'maria.lopez@universidad.edu'),
+('Carlos', 'Ramírez', 'DNI', '11223344', '987654323', 'DOCENTE', 'cramirez', 'pass123', 'carlos.ramirez@universidad.edu');
+
+
+INSERT INTO laboratorio (numero_lab, capacidad) VALUES
+(1, 30),
+(2, 25),
+(3, 35),
+(4, 40),
+(5, 20);
+
+
+INSERT INTO asignatura (nombre, codigo) VALUES
+('Matemáticas I', 'MAT101'),
+('Física I', 'FIS101'),
+('Química I', 'QUI101'),
+('Programación I', 'PROG101'),
+('Estadística I', 'EST101');
+
+
+-- Insertar Horarios de Laboratorio
+INSERT INTO horario_laboratorio (id_laboratorio, id_asignatura, dia, horario_inicio, horario_fin, id_docente) VALUES
+(1, 1, 'LUNES', '08:00:00', '10:00:00', 2), -- Juan Pérez enseña Matemáticas I en Laboratorio 1
+(2, 2, 'MARTES', '10:00:00', '12:00:00', 3), -- María López enseña Física I en Laboratorio 2
+(3, 3, 'MIERCOLES', '14:00:00', '16:00:00', 4), -- Carlos Ramírez enseña Química I en Laboratorio 3
+(4, 4, 'JUEVES', '16:00:00', '18:00:00', 2), -- Juan Pérez enseña Programación I en Laboratorio 4
+(5, 5, 'VIERNES', '09:00:00', '11:00:00', 3); -- María López enseña Estadística I en Laboratorio 5
+
+
+INSERT INTO equipo (cod_patrimonial, id_laboratorio, tipo_equipo, numero_serie, estado) VALUES
+('EQ-001', 1, 'Computadora', 'SN12345', 'OPERATIVO'),
+('EQ-002', 1, 'Proyector', 'SN12346', 'OPERATIVO'),
+('EQ-003', 2, 'Computadora', 'SN12347', 'OPERATIVO'),
+('EQ-004', 2, 'Proyector', 'SN12348', 'NO_OPERATIVO'),
+('EQ-005', 3, 'Computadora', 'SN12349', 'OPERATIVO'),
+('EQ-006', 3, 'Microscopio', 'SN12350', 'OPERATIVO'),
+('EQ-007', 4, 'Computadora', 'SN12351', 'OPERATIVO'),
+('EQ-008', 4, 'Osciloscopio', 'SN12352', 'NO_OPERATIVO'),
+('EQ-009', 5, 'Computadora', 'SN12353', 'OPERATIVO'),
+('EQ-010', 5, 'Impresora 3D', 'SN12354', 'OPERATIVO');
+
+
+-- Insertar Asistencias de Alumnos
+-- Asistencias para el horario 1 (Matemáticas I)
+INSERT INTO asistencia (fecha, estado, id_alumno, id_horario) VALUES
+('2023-10-02', 'PRESENTE', 1, 1),
+('2023-10-02', 'PRESENTE', 2, 1),
+('2023-10-02', 'AUSENTE', 3, 1),
+('2023-10-02', 'PRESENTE', 4, 1),
+('2023-10-02', 'PRESENTE', 5, 1);
+
+-- Asistencias para el horario 2 (Física I)
+INSERT INTO asistencia (fecha, estado, id_alumno, id_horario) VALUES
+('2023-10-03', 'PRESENTE', 6, 2),
+('2023-10-03', 'PRESENTE', 7, 2),
+('2023-10-03', 'AUSENTE', 8, 2),
+('2023-10-03', 'PRESENTE', 9, 2),
+('2023-10-03', 'PRESENTE', 10, 2);
+
+-- Asistencias para el horario 3 (Química I)
+INSERT INTO asistencia (fecha, estado, id_alumno, id_horario) VALUES
+('2023-10-04', 'PRESENTE', 1, 3),
+('2023-10-04', 'AUSENTE', 2, 3),
+('2023-10-04', 'PRESENTE', 3, 3),
+('2023-10-04', 'PRESENTE', 4, 3),
+('2023-10-04', 'AUSENTE', 5, 3);
+
+-- Asistencias para el horario 4 (Programación I)
+INSERT INTO asistencia (fecha, estado, id_alumno, id_horario) VALUES
+('2023-10-05', 'PRESENTE', 6, 4),
+('2023-10-05', 'AUSENTE', 7, 4),
+('2023-10-05', 'PRESENTE', 8, 4),
+('2023-10-05', 'PRESENTE', 9, 4),
+('2023-10-05', 'PRESENTE', 10, 4);
+
+-- Asistencias para el horario 5 (Estadística I)
+INSERT INTO asistencia (fecha, estado, id_alumno, id_horario) VALUES
+('2023-10-06', 'PRESENTE', 1, 5),
+('2023-10-06', 'PRESENTE', 2, 5),
+('2023-10-06', 'AUSENTE', 3, 5),
+('2023-10-06', 'PRESENTE', 4, 5),
+('2023-10-06', 'PRESENTE', 5, 5);
+
+
