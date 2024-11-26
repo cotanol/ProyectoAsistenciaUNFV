@@ -20,7 +20,7 @@ public class VentanaPrincipal extends JFrame {
     private VentanaRight1 ventanaRight1;
     private VentanaRight2 ventanaRight2;
     private VentanaRight3 ventanaRight3;
-
+    private VentanaRight4 ventanaRight4;
     // Botones del menú
     private JButton btnRegistroUsuarios, btnControlAsistencia, btnControlEquipos, btnHorariosLaboratorio, btnCerrarSesion;
 
@@ -57,7 +57,7 @@ public class VentanaPrincipal extends JFrame {
         panelLeft.setBounds(0, 0, 300, 900);
         panelLeft.setBackground(Constantes.COLOR_BASE_BOTONES);
         add(panelLeft);
-
+        
         // Panel logo
         JPanel panelLogo = new JPanel(null);
         panelLogo.setBounds(0, 0, 300, 150);
@@ -107,11 +107,12 @@ public class VentanaPrincipal extends JFrame {
         ventanaRight1 = new VentanaRight1(usuarioController);
         ventanaRight2 = new VentanaRight2(laboratorioController, asistenciaController, horarioController);
         ventanaRight3 = new VentanaRight3(equipoController);
-
+        ventanaRight4 = new VentanaRight4(horarioController);
         // Agregar ventanas al CardLayout
         panelDerecho.add(ventanaRight1, "RegistroUsuarios");
         panelDerecho.add(ventanaRight2, "ControlAsistencia");
         panelDerecho.add(ventanaRight3, "ControlEquipos");
+        panelDerecho.add(ventanaRight4, "Horarios");
     }
 
     private void configurarMenu() {
@@ -137,8 +138,7 @@ public class VentanaPrincipal extends JFrame {
 
         // Asignar eventos de hover y clic directamente
         JButton[] botones = {btnRegistroUsuarios, btnControlAsistencia, btnControlEquipos, btnHorariosLaboratorio};
-        String[] nombresPaneles = {"RegistroUsuarios", "ControlAsistencia", "ControlEquipos", "HorariosLaboratorio"};
-
+        String[] nombresPaneles = {"RegistroUsuarios", "ControlAsistencia", "ControlEquipos", "Horarios"};
         for (int i = 0; i < botones.length; i++) {
             JButton boton = botones[i];
             String nombrePanel = nombresPaneles[i];
