@@ -148,7 +148,7 @@ public class VentanaRight3 extends JPanel {
         lbEstadoLabel = ComponentFactory.crearEtiqueta("Estado", 670, 20, 200, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_HOVER_SELECCIONADO1);
         subPanel.add(lbEstadoLabel);
 
-        cbEstado = ComponentFactory.crearComboBoxString(new String[]{"", "Operativo", "Inoperativo", "Mantenimiento"}, 670, 50, 300, 30, Constantes.BORDER_HOVER);
+        cbEstado = ComponentFactory.crearComboBoxString(new String[]{"", "Operativo", "Inoperativo"}, 670, 50, 300, 30, Constantes.BORDER_HOVER);
         subPanel.add(cbEstado);
 
         // Etiqueta y Campo de Texto para Número de Serie

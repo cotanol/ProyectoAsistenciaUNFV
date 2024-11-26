@@ -128,6 +128,7 @@ public class VentanaRight2 extends JPanel {
     }
 
     private void cargarComboNroLab() {
+        cboNroLab.removeAllItems();
         cboNroLab.addItem(null);
         Set<Integer> labsAgregados = new HashSet<>();
         for (HorarioLaboratorioModelo horaLab : listaHorarioLaboratorio) {
@@ -138,6 +139,7 @@ public class VentanaRight2 extends JPanel {
     }
 
     private void cargarComboHorario() {
+        cboHorario.removeAllItems();
         cboHorario.addItem(null);
         Set<LocalTime> horariosAgregados = new HashSet<>();
         for (HorarioLaboratorioModelo horaLab : listaHorarioLaboratorio) {
@@ -148,6 +150,7 @@ public class VentanaRight2 extends JPanel {
     }
 
     private void cargarComboAsignatura() {
+        cboAsignatura.removeAllItems();
         cboAsignatura.addItem("");
         Set<String> asignaturasAgregadas = new HashSet<>();
         for (HorarioLaboratorioModelo horaLab : listaHorarioLaboratorio) {
@@ -215,6 +218,23 @@ public class VentanaRight2 extends JPanel {
     }
 
     private void manejarCambioAPanelAsistencia(int numeroLab, String asignatura, LocalTime horarioInicio) {
+        
+        // Buscar el horario seleccionado
+        HorarioLaboratorioModelo horarioSeleccionado = null;
+        for (HorarioLaboratorioModelo horario : listaHorarioLaboratorio) {
+            if (horario.getNumeroLab() == numeroLab && horario.getAsignatura().equals(asignatura) && horario.getHorarioInicio().equals(horarioInicio)) {
+                horarioSeleccionado = horario;
+                break;
+            }
+        }
+
+        if (horarioSeleccionado == null) {
+            JOptionPane.showMessageDialog(null, "No se encontró el horario seleccionado.");
+            return;
+        }
+
+        String docente = horarioSeleccionado.getDocente(); 
+        
         panelAsistencia = new JPanel(null);
         panelAsistencia.setBackground(Constantes.COLOR_FONDO_PANEL);
 
@@ -231,8 +251,8 @@ public class VentanaRight2 extends JPanel {
 
         // Información del horario
         lblInfoClase = new JLabel(String.format(
-                "<html>Nro. Laboratorio: %d<br>Asignatura: %s<br>Horario: %s<br></html>",
-                numeroLab, asignatura, horarioInicio.toString()));
+                "<html>Nro. Laboratorio: %d<br>Asignatura: %s<br>Horario: %s<br> Docente: %s<br></html>",
+                numeroLab, asignatura, horarioInicio.toString(), horarioSeleccionado.getDocente()));
         lblInfoClase.setBounds(100, 180, 600, 100);
         lblInfoClase.setFont(Constantes.FUENTE_LABEL);
         panelAsistencia.add(lblInfoClase);
@@ -477,6 +497,7 @@ public class VentanaRight2 extends JPanel {
     }
 
     private void actualizarCombosHorarioAsignatura() {
+        listaHorarioLaboratorio = horarioLaboratorioController.enlistarHorarioLaboratorioController();
         // Limpiar y recargar los combos
         cargarComboNroLab();
         cargarComboHorario();
