@@ -55,4 +55,26 @@ public class EstiloHover {
             boton.setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); // Restaurar cursor predeterminado
         }
     }
+    
+    public static class HoverAccionBotonExcel extends MouseAdapter {
+        private final JButton boton;
+
+        public HoverAccionBotonExcel(JButton boton) {
+            this.boton = boton;
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+            boton.setBackground(Constantes.COLOR_HOVER_SELECCIONADO2);
+            boton.setForeground(Constantes.COLOR_TEXTO_NEGRO);
+            boton.setCursor(new Cursor(Cursor.HAND_CURSOR)); // Cambiar cursor a mano
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+            boton.setBackground(Constantes.COLOR_BOTON_EXCEL);
+            boton.setForeground(Constantes.COLOR_TEXTO_BLANCO);
+            boton.setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); // Restaurar cursor predeterminado
+        }
+    }
 }

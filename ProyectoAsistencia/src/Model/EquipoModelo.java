@@ -3,10 +3,18 @@ import java.sql.*;
 import java.util.ArrayList;
 import Util.Conexion_BD;
 import View.VentanaPrincipal;
+import java.awt.Desktop;
+import java.io.File;
+import java.io.FileOutputStream;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class EquipoModelo {
     private String codPatrimonial;
-    private int numeroLaboratorio;
+    private int numeroLab;
     private String tipoEquipo;
     private String numeroSerie;
     private String estado;
@@ -100,6 +108,77 @@ public class EquipoModelo {
         return estado;
     }
     
+    //============================================================================
+    //              CARGAR DE TABLA (BASE DE DATOS) A EXCEL
+    //============================================================================
+
+    public static void cargarBD_Excel() {
+        Workbook libro = new XSSFWorkbook();
+        Sheet hoja = libro.createSheet("ReporteEquipos");
+
+        Conexion_BD cn = new Conexion_BD();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        String[] cabeceras = new String[]{"Nro Laboratorio", "Tipo Equipo", "Código Patrimonial", "Nro Serie", "Estado"};
+
+        Row filaCabeceras = hoja.createRow(0); // Fila Cabeceras de las columnas
+        for (int i = 0; i < cabeceras.length; i++) {
+            Cell celda = filaCabeceras.createCell(i);
+            celda.setCellValue(cabeceras[i]);
+            
+        }
+
+        int numFila = 1;
+
+        try {
+            Connection conexion = cn.getConexionBD();
+      
+            ps = conexion.prepareStatement("SELECT numero_lab, tipo_equipo, cod_patrimonial, numero_serie, estado FROM equipo WHERE estado = 'Operativo';");
+
+
+            rs = ps.executeQuery();
+
+            int numCol = rs.getMetaData().getColumnCount();
+
+            while (rs.next()) {
+                Row filaDatos = hoja.createRow(numFila);
+
+                for (int i = 0; i < numCol; i++) {
+                    Cell celda = filaDatos.createCell(i);
+                    celda.setCellValue(rs.getString(i + 1));
+                }
+
+                numFila++;
+            }
+
+            rs.close();
+            ps.close();
+            conexion.close();
+            
+            for (int i = 0; i < cabeceras.length; i++) {
+            hoja.setColumnWidth(i, 30 * 256); // Forzamos ancho de 30 caracteres
+        }
+            // Guarda el archivo Excel
+            String filePath = "ReporteEquiposLaboratorio.xlsx";
+            FileOutputStream archivo = new FileOutputStream(filePath);
+            libro.write(archivo);
+            archivo.close();
+
+            // Abre el archivo Excel automáticamente
+            File archivoExcel = new File(filePath);
+            if (Desktop.isDesktopSupported()) {
+                Desktop.getDesktop().open(archivoExcel);
+            } else {
+                System.out.println("No se pudo abrir automáticamente el archivo Excel. Verifica tu sistema.");
+            }
+
+        } catch (Exception ex) {
+            System.err.println("Error: " + ex);
+        }
+    }
+    //=================================================================================
+    
     public ArrayList<EquipoModelo> enlistarEquipoModelo () {
         
         ArrayList<EquipoModelo> listaEquipos = new ArrayList<>();
@@ -130,6 +209,57 @@ public class EquipoModelo {
         
         return listaEquipos;
     }
+    
+    //======================================================================
+    
+         //============================================================================
+    //                     METODO DE USUARIO DAO PARA BUSCAR
+    //============================================================================
+    public ArrayList<EquipoModelo> buscarResgistroEquipos(String buscar) {
+    ArrayList<EquipoModelo> listaEquipos = new ArrayList<>();
+
+    try {
+        // Consulta segura con parámetros preparados
+        String sql = "SELECT * FROM equipo WHERE "
+                   + "cod_patrimonial LIKE ? OR "
+                   + "CAST(numero_lab AS CHAR) LIKE ? OR "
+                   + "tipo_equipo LIKE ? OR "
+                   + "numero_serie LIKE ? OR "
+                   + "estado LIKE ?"; // Corregido: Se añadió "LIKE" faltante en "numero_serie"
+
+        cn = Conexion_BD.getConexionBD();
+        pt = cn.prepareStatement(sql);
+
+        for (int i = 1; i <= 5; i++) {
+            pt.setString(i, "%" + buscar + "%");
+        }
+
+        rs = pt.executeQuery();
+
+        // Itera sobre los resultados y agrega los equipos a la lista
+        while (rs.next()) {
+            EquipoModelo equipoModelo = new EquipoModelo();
+            equipoModelo.setCodPatrimonial(rs.getString("cod_patrimonial"));
+            equipoModelo.setNumeroLab(rs.getInt("numero_lab"));
+            equipoModelo.setTipoEquipo(rs.getString("tipo_equipo"));
+            equipoModelo.setNumeroSerie(rs.getString("numero_serie"));
+            equipoModelo.setEstado(rs.getString("estado"));
+
+            listaEquipos.add(equipoModelo);
+        }
+
+        rs.close();
+        pt.close();
+        cn.close();
+
+    } catch (Exception e) {
+        System.err.println("Error: " + e);
+    }
+
+    return listaEquipos;
+}
+
+
     
     public ArrayList<EquipoModelo> enlistarEquiposPorEstado(String estado) {
         ArrayList<EquipoModelo> listaEquipos = new ArrayList<>();
@@ -191,14 +321,13 @@ public class EquipoModelo {
     public void setCodPatrimonial(String codPatrimonial) {
         this.codPatrimonial = codPatrimonial;
     }
-    
 
     public int getNumeroLab() {
-        return numeroLaboratorio;
+        return numeroLab; // Ajustado para ser consistente
     }
 
-    public void setNumeroLab(int numeroLaboratorio) {
-        this.numeroLaboratorio = numeroLaboratorio;
+    public void setNumeroLab(int numeroLab) {
+        this.numeroLab = numeroLab; // Ajustado para ser consistente
     }
 
     public String getTipoEquipo() {

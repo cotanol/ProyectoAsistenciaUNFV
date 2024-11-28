@@ -32,7 +32,15 @@ public class UsuarioController {
     public ArrayList<UsuarioModelo> enlistarUsuarioController () {
         return objUsuarioModelo.enlistarUsuarioModelo();
     }
-            
+    
+    public ArrayList<UsuarioModelo> buscarResgistroUsuarios(String buscar) {
+        return objUsuarioModelo.buscarResgistroUsuarios(buscar);
+    }
+    
+    public void exportarUsuariosAExcel() {
+        objUsuarioModelo.cargarBD_Excel();
+    }
+    
     public int ultimoIdController () {
         return objUsuarioModelo.ultimoId();
     }

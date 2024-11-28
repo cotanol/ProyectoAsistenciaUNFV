@@ -29,7 +29,18 @@ public class ComponentFactory {
         boton.setFocusPainted(false);
         return boton;
     }
-
+    
+    public static JButton crearBotonReporteExcel(String texto, int x, int y, int ancho, int alto){
+        JButton boton = new JButton(texto);
+        boton.setBounds(x, y, ancho, alto);
+        boton.setBackground(Constantes.COLOR_BOTON_EXCEL);
+        boton.setForeground(Constantes.COLOR_TEXTO_BLANCO);
+        boton.setFont(Constantes.FUENTE_BOTON);
+        boton.setBorderPainted(false);
+        boton.setFocusPainted(false);
+        return boton;
+    }
+    
     public static JLabel crearEtiqueta(String texto, int x, int y, int ancho, int alto, Font fuente, Color colorTexto) {
         JLabel etiqueta = new JLabel(texto);
         etiqueta.setBounds(x, y, ancho, alto);
