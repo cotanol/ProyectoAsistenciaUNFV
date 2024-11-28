@@ -12,7 +12,7 @@ import Model.UsuarioModelo;
 import Controller.UsuarioController;
 
 public class VentanaRight1 extends JPanel {
-
+    
     // Controlador
     private UsuarioController usuarioControlador;
 
@@ -22,10 +22,10 @@ public class VentanaRight1 extends JPanel {
     // Componentes principales
     private JLabel lbRegistrosUsuarios, nombreSubPanel1_1, nombreSubPanel1_2;
     private JPanel subPanel1;
-    private JLabel lbNombres, lbApellidos, lbUsuario, lbTipoDeDocumento, lbNumeroDeContacto, lbContraseña, lbNumeroDeDocumento, lbCargo, lbEmail;
-    private JTextField txtNombres, txtApellidos, txtUsuario, txtNumeroDeContacto, txtContraseña, txtNumeroDeDocumento, txtEmail;
+    private JLabel lbNombres, lbApellidos, lbUsuario, lbTipoDeDocumento, lbNumeroDeContacto, lbContraseña, lbNumeroDeDocumento, lbCargo, lbEmail, lbBuscar;
+    private JTextField txtNombres, txtApellidos, txtUsuario, txtNumeroDeContacto, txtContraseña, txtNumeroDeDocumento, txtEmail, txtBuscar;
     private JComboBox<String> cbTipoDeDocumento, cbCargo;
-    private JButton btnAgregar, btnModificar, btnEliminar;
+    private JButton btnAgregar, btnModificar, btnEliminar, btnExportarExcel;
     private JTable tablaUsuarios;
     private DefaultTableModel modeloUsuario;
 
@@ -41,6 +41,16 @@ public class VentanaRight1 extends JPanel {
         inicializarComponentes();
         agregarEventos();
         listarUsuario();
+        
+        txtBuscar.addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                Filtrar(txtBuscar.getText()); // Llama al método de filtro
+            }
+        });
+        
+        
+
     }
 
     private void inicializarComponentes() {
@@ -54,7 +64,7 @@ public class VentanaRight1 extends JPanel {
         nombreSubPanel1_1.setOpaque(true);
         nombreSubPanel1_1.setHorizontalAlignment(SwingConstants.CENTER);
         add(nombreSubPanel1_1);
-
+        
         // Subpanel para datos del registro
         subPanel1 = new JPanel(null);
         subPanel1.setBounds(100, 180, 1090, 270);
@@ -89,6 +99,25 @@ public class VentanaRight1 extends JPanel {
 
         JScrollPane scrollTabla = ComponentFactory.crearScrollTabla(tablaUsuarios, 100, 560, 1090, 270);
         add(scrollTabla);
+        
+        // Implementación del Label y TextField Buscar
+        lbBuscar = ComponentFactory.crearEtiqueta("Buscar: ", 700, 500, 100, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_TEXTO_NEGRO);
+        add(lbBuscar);
+        
+        txtBuscar = ComponentFactory.crearCampoTexto(810, 500, 300, 30, Constantes.BORDER_NEGRO);
+        add(txtBuscar);
+            
+        btnExportarExcel = ComponentFactory.crearBotonReporteExcel("EXPORTAR A EXCEL", 940, 40, 250, 50);
+        add(btnExportarExcel);
+        
+        btnExportarExcel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                UsuarioModelo.cargarBD_Excel();
+                JOptionPane.showMessageDialog(null, "Datos exportados a Excel correctamente 🐧!!", "Exportación Exitosa", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+               
     }
 
     private void inicializarCamposRegistro() {
@@ -136,7 +165,7 @@ public class VentanaRight1 extends JPanel {
         lbEmail = ComponentFactory.crearEtiqueta("Email", 730, 180, 250, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_HOVER_SELECCIONADO1);
         subPanel1.add(lbEmail);
         txtEmail = ComponentFactory.crearCampoTexto(730, 210, 300, 30, Constantes.BORDER_HOVER);
-        subPanel1.add(txtEmail);
+        subPanel1.add(txtEmail);   
     }
 
     private void agregarEventos() {
@@ -149,7 +178,8 @@ public class VentanaRight1 extends JPanel {
         btnAgregar.addMouseListener(new EstiloHover.HoverAccionBoton(btnAgregar));
         btnModificar.addMouseListener(new EstiloHover.HoverAccionBoton(btnModificar));
         btnEliminar.addMouseListener(new EstiloHover.HoverAccionBoton(btnEliminar));
-
+        btnExportarExcel.addMouseListener(new EstiloHover.HoverAccionBotonExcel(btnExportarExcel));
+        
         // Evento de selección en la tabla
         tablaUsuarios.addMouseListener(new MouseAdapter() {
             @Override
@@ -283,7 +313,29 @@ public class VentanaRight1 extends JPanel {
             });
         }
     }
+    
+    public void Filtrar(String buscar) {
+        listaUsuarios = usuarioControlador.buscarResgistroUsuarios(buscar); // Llama al método Buscar del DAO
+        modeloUsuario.setRowCount(0); // Limpia la tabla
 
+        for (UsuarioModelo obj : listaUsuarios) {
+            Object[] fila = {
+                obj.getIdUsuario(),
+                obj.getNombres(),
+                obj.getApellidos(),
+                obj.getNombreUsuario(),
+                obj.getTipoDocumento(),
+                obj.getNroDocumento(),
+                obj.getNumero(),
+                obj.getCargo(),
+                obj.getContrasena(),
+                obj.getEmail()
+                
+            };
+            modeloUsuario.addRow(fila); // Agrega cada registro filtrado a la tabla
+        }
+    }
+    
     private void limpiarCampos() {
         txtNombres.setText("");
         txtApellidos.setText("");

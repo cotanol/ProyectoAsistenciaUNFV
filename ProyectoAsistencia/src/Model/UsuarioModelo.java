@@ -3,6 +3,14 @@ import Util.Conexion_BD;
 import java.sql.*;
 import java.util.ArrayList;
 import View.VentanaPrincipal;
+import java.awt.Desktop;
+import java.io.File;
+import java.io.FileOutputStream;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class UsuarioModelo {
     private int idUsuario;
@@ -59,7 +67,7 @@ public class UsuarioModelo {
         
         return estado;
     }
-    
+
     public int modificarUsuarioModelo(UsuarioModelo usuarioModelo) {
         int estado = 0;
         
@@ -149,6 +157,129 @@ public class UsuarioModelo {
         return listaUsuarios;
     }
     
+     //============================================================================
+    //                     METODO DE USUARIO DAO PARA BUSCAR
+    //============================================================================
+public ArrayList<UsuarioModelo> buscarResgistroUsuarios(String buscar) {
+    ArrayList<UsuarioModelo> listaUsuarios = new ArrayList<>();
+
+    try {
+        // Consulta segura con parámetros preparados
+        String sql = "SELECT * FROM usuario WHERE "
+                   + "nombres LIKE ? OR "
+                   + "apellidos LIKE ? OR "
+                   + "tipo_documento LIKE ? OR "
+                   + "nro_documento LIKE ? OR "
+                   + "numero LIKE ? OR "
+                   + "cargo LIKE ? OR "
+                   + "nombre_usuario LIKE ? OR "
+                   + "contrasena LIKE ? OR "
+                   + "email LIKE ?;";
+        cn = Conexion_BD.getConexionBD();
+        pt = cn.prepareStatement(sql);
+
+        for (int i = 1; i <= 9; i++) {
+            pt.setString(i, "%" + buscar + "%");
+        }
+
+        rs = pt.executeQuery();
+
+        // Itera sobre los resultados y agrega los usuarios a la lista
+        while (rs.next()) {
+            UsuarioModelo usuarioModelo = new UsuarioModelo();
+            usuarioModelo.setIdUsuario(rs.getInt("id_usuario"));
+            usuarioModelo.setNombres(rs.getString("nombres"));
+            usuarioModelo.setApellidos(rs.getString("apellidos"));
+            usuarioModelo.setTipoDocumento(rs.getString("tipo_documento"));
+            usuarioModelo.setNroDocumento(rs.getString("nro_documento"));
+            usuarioModelo.setNumero(rs.getString("numero"));
+            usuarioModelo.setCargo(rs.getString("cargo"));
+            usuarioModelo.setNombreUsuario(rs.getString("nombre_usuario"));
+            usuarioModelo.setContrasena(rs.getString("contrasena"));
+            usuarioModelo.setEmail(rs.getString("email"));
+
+            listaUsuarios.add(usuarioModelo);
+        }
+
+        rs.close();
+        pt.close();
+        cn.close();
+
+    } catch (Exception e) {
+        System.err.println("Error: " + e);
+    }
+
+    return listaUsuarios;
+}
+
+    //============================================================================
+    //              CARGAR DE TABLA (BASE DE DATOS) A EXCEL
+    //============================================================================
+
+    public static void cargarBD_Excel() {
+        Workbook libro = new XSSFWorkbook();
+        Sheet hoja = libro.createSheet("ReporteUsuarios");
+
+        Conexion_BD cn = new Conexion_BD();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        String[] cabeceras = new String[]{"Nombres", "Apellidos", "Tipo Documento", "Nro Documento", "Nro Celular", "Tipo Usuario", "Nombre Usuario", "Contraseña", "Correo"};
+
+        Row filaCabeceras = hoja.createRow(0); // Fila Cabeceras de las columnas
+        for (int i = 0; i < cabeceras.length; i++) {
+            Cell celda = filaCabeceras.createCell(i);
+            celda.setCellValue(cabeceras[i]);
+            
+        }
+
+        int numFila = 1;
+
+        try {
+            Connection conexion = cn.getConexionBD();
+
+            ps = conexion.prepareStatement("select nombres, apellidos, tipo_documento, nro_documento, numero, cargo, nombre_usuario, contrasena, email from usuario");
+            rs = ps.executeQuery();
+
+            int numCol = rs.getMetaData().getColumnCount();
+
+            while (rs.next()) {
+                Row filaDatos = hoja.createRow(numFila);
+
+                for (int i = 0; i < numCol; i++) {
+                    Cell celda = filaDatos.createCell(i);
+                    celda.setCellValue(rs.getString(i + 1));
+                }
+
+                numFila++;
+            }
+
+            rs.close();
+            ps.close();
+            conexion.close();
+            
+            for (int i = 0; i < cabeceras.length; i++) {
+            hoja.setColumnWidth(i, 30 * 256); // Forzamos ancho de 30 caracteres
+        }
+            // Guarda el archivo Excel
+            String filePath = "ReporteRegistrosUsuarios.xlsx";
+            FileOutputStream archivo = new FileOutputStream(filePath);
+            libro.write(archivo);
+            archivo.close();
+
+            // Abre el archivo Excel automáticamente
+            File archivoExcel = new File(filePath);
+            if (Desktop.isDesktopSupported()) {
+                Desktop.getDesktop().open(archivoExcel);
+            } else {
+                System.out.println("No se pudo abrir automáticamente el archivo Excel. Verifica tu sistema.");
+            }
+
+        } catch (Exception ex) {
+            System.err.println("Error: " + ex);
+        }
+    }
+    //=================================================================================
     public int ultimoId() {
         int id = 0;
         try {

@@ -12,17 +12,18 @@ import Model.EquipoModelo;
 import Controller.EquipoController;
 
 public class VentanaRight3 extends JPanel {
-
+    
+    
     // Controlador
     private EquipoController equipoController;
 
     // Componentes principales
     private JLabel lbTituloPantalla1, lbEquiposDisponiblesLabel;
     private JLabel lbTituloPantalla2, lbRegistroEquiposLabel, lbListaEquiposLabel;
-    private JLabel lbTipoEquipoLabel, lbLaboratorioLabel, lbEstadoLabel, lbNumeroSerieLabel, lbCodigoPatrimonialLabel;
-    private JTextField txtNumeroSerie, txtCodigoPatrimonial;
+    private JLabel lbTipoEquipoLabel, lbLaboratorioLabel, lbEstadoLabel, lbNumeroSerieLabel, lbCodigoPatrimonialLabel, lbBuscar;
+    private JTextField txtNumeroSerie, txtCodigoPatrimonial, txtBuscar;
     private JComboBox<String> cbTipoEquipo, cbLaboratorio, cbEstado;
-    private JButton btnAgregarEquipo, btnModificarEquipo, btnEliminarEquipo, btnConfiguracion, btnRegresar;
+    private JButton btnAgregarEquipo, btnModificarEquipo, btnEliminarEquipo, btnConfiguracion, btnRegresar, btnExportarExcel;
     private JTable tablaEquiposDisponibles, tablaEquiposRegistrados;
     private DefaultTableModel modeloEquiposDisponibles, modeloEquiposRegistrados;
 
@@ -45,6 +46,13 @@ public class VentanaRight3 extends JPanel {
         inicializarComponentes();
         agregarEventos();
         listarEquiposDisponibles();
+        
+        txtBuscar.addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                Filtrar(txtBuscar.getText()); // Llama al método de filtro
+            }
+        });
     }
 
     private void inicializarComponentes() {
@@ -77,18 +85,31 @@ public class VentanaRight3 extends JPanel {
         panel.add(lbEquiposDisponiblesLabel);
 
         // Botón de Configuración
-        btnConfiguracion = ComponentFactory.crearBotonAccion("CONFIGURACIÓN", 870, 110, 250, 50);
+        btnConfiguracion = ComponentFactory.crearBotonAccion("CONFIGURACIÓN", 970, 170, 250, 50);
         panel.add(btnConfiguracion);
 
+        // Botón Exportar a Excel 
+        btnExportarExcel = ComponentFactory.crearBotonReporteExcel("EXPORTAR A EXCEL", 680, 170, 250, 50); 
+        panel.add(btnExportarExcel);
+        
+        btnExportarExcel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                EquipoModelo.cargarBD_Excel();
+                JOptionPane.showMessageDialog(null, "Datos exportados a Excel correctamente 🐧!!", "Exportación Exitosa", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+        
         // Tabla de Equipos Disponibles
         String[] columnasEquipoDisponible = {"LAB", "TIPO", "Código Patrimonial", "Número de Serie", "Estado"};
         modeloEquiposDisponibles = new DefaultTableModel(columnasEquipoDisponible, 0);
         tablaEquiposDisponibles = ComponentFactory.crearTabla(columnasEquipoDisponible);
         tablaEquiposDisponibles.setModel(modeloEquiposDisponibles);
 
-        JScrollPane scrollTablaEquiposDisponibles = ComponentFactory.crearScrollTabla(tablaEquiposDisponibles, 50, 170, 1150, 600);
+        JScrollPane scrollTablaEquiposDisponibles = ComponentFactory.crearScrollTabla(tablaEquiposDisponibles, 70, 250, 1150, 550); // Ajustado para no solaparse
         panel.add(scrollTablaEquiposDisponibles);
     }
+
 
     private void configurarPanelRightConfig() {
         // Panel de configuración
@@ -124,7 +145,15 @@ public class VentanaRight3 extends JPanel {
         subPanelRegistro.setBackground(Color.WHITE);
         subPanelRegistro.setBorder(Constantes.BORDER_NEGRO);
         panel.add(subPanelRegistro);
-
+        
+        lbBuscar = ComponentFactory.crearEtiqueta("Buscar: ", 700, 370, 100, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_TEXTO_NEGRO);
+        panel.add(lbBuscar);
+        
+        txtBuscar = ComponentFactory.crearCampoTexto(810, 370, 300, 30, Constantes.BORDER_NEGRO);
+        panel.add(txtBuscar);
+        
+        
+        
         // Componentes dentro del subpanel
         inicializarComponentesRegistroEquipos(subPanelRegistro);
     }
@@ -148,7 +177,7 @@ public class VentanaRight3 extends JPanel {
         lbEstadoLabel = ComponentFactory.crearEtiqueta("Estado", 670, 20, 200, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_HOVER_SELECCIONADO1);
         subPanel.add(lbEstadoLabel);
 
-        cbEstado = ComponentFactory.crearComboBoxString(new String[]{"", "Operativo", "Inoperativo"}, 670, 50, 300, 30, Constantes.BORDER_HOVER);
+        cbEstado = ComponentFactory.crearComboBoxString(new String[]{"Operativo", "Inoperativo"}, 670, 50, 300, 30, Constantes.BORDER_HOVER);
         subPanel.add(cbEstado);
 
         // Etiqueta y Campo de Texto para Número de Serie
@@ -172,7 +201,7 @@ public class VentanaRight3 extends JPanel {
         btnModificarEquipo = ComponentFactory.crearBotonAccion("MODIFICAR", 870, 110, 150, 50);
         btnEliminarEquipo = ComponentFactory.crearBotonAccion("ELIMINAR", 1040, 110, 150, 50);
         btnRegresar = ComponentFactory.crearBotonAccion("REGRESAR", 1040, 30, 150, 50);
-
+        
         panel.add(btnAgregarEquipo);
         panel.add(btnModificarEquipo);
         panel.add(btnEliminarEquipo);
@@ -193,7 +222,7 @@ public class VentanaRight3 extends JPanel {
         tablaEquiposRegistrados = ComponentFactory.crearTabla(columnasEquiposRegistrados);
         tablaEquiposRegistrados.setModel(modeloEquiposRegistrados);
 
-        JScrollPane scrollTablaEquiposRegistrados = ComponentFactory.crearScrollTabla(tablaEquiposRegistrados, 50, 420, 1150, 400);
+        JScrollPane scrollTablaEquiposRegistrados = ComponentFactory.crearScrollTabla(tablaEquiposRegistrados, 50, 430, 1150, 400);
         panel.add(scrollTablaEquiposRegistrados);
 
         // Listar equipos registrados al iniciar
@@ -207,7 +236,8 @@ public class VentanaRight3 extends JPanel {
         btnEliminarEquipo.addMouseListener(new EstiloHover.HoverAccionBoton(btnEliminarEquipo));
         btnConfiguracion.addMouseListener(new EstiloHover.HoverAccionBoton(btnConfiguracion));
         btnRegresar.addMouseListener(new EstiloHover.HoverAccionBoton(btnRegresar));
-
+        btnExportarExcel.addMouseListener(new EstiloHover.HoverAccionBotonExcel(btnExportarExcel));
+        
         // Eventos de acción
         btnConfiguracion.addActionListener(e -> manejarConfigurarEquipo());
         btnAgregarEquipo.addActionListener(e -> manejarAgregarEquipo());
@@ -326,7 +356,24 @@ public class VentanaRight3 extends JPanel {
             JOptionPane.showMessageDialog(null, "Código patrimonial inválido. No se puede eliminar el equipo 🐧!!");
         }
     }
+    
+    public void Filtrar(String buscar) {
+        listaEquipos = equipoController.buscarResgistroEquipos(buscar); // Llama al método Buscar del DAO
+        modeloEquiposRegistrados.setRowCount(0); // Limpia la tabla
 
+        for (EquipoModelo obj : listaEquipos) {
+            Object[] fila = {
+                obj.getNumeroLab(),
+                obj.getTipoEquipo(),
+                obj.getCodPatrimonial(),
+                obj.getNumeroSerie(),
+                obj.getEstado()
+                
+            };
+            modeloEquiposRegistrados.addRow(fila); // Agrega cada registro filtrado a la tabla
+        }
+    }
+    
     private void mostrarMensaje(int estado, String mensajeExito, String mensajeError) {
         if (estado == 1) {
             JOptionPane.showMessageDialog(null, mensajeExito);
@@ -348,11 +395,11 @@ public class VentanaRight3 extends JPanel {
         }
 
         if (cbTipoEquipo.getSelectedIndex() == 0 ||
-            cbLaboratorio.getSelectedIndex() == 0 ||
-            cbEstado.getSelectedIndex() == 0) {
+            cbLaboratorio.getSelectedIndex() == 0) {
             return false;
         }
 
+        
         return true;
     }
 

@@ -35,7 +35,15 @@ public class EquipoController {
     public ArrayList<EquipoModelo> enlistarEquipoPorEstadoController (String estado) {
         return objEquipoModelo.enlistarEquiposPorEstado(estado);
     }
-            
+    
+    public ArrayList<EquipoModelo> buscarResgistroEquipos(String buscar) {
+        return objEquipoModelo.buscarResgistroEquipos(buscar);
+    }
+    
+    public void exportarUsuariosAExcel() {
+        objEquipoModelo.cargarBD_Excel();
+    }
+    
     public int ultimoIdController () {
         return objEquipoModelo.ultimoId();
     }

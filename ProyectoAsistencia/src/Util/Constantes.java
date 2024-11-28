@@ -19,6 +19,7 @@ public class Constantes {
     public static final Color COLOR_TEXTO_BLANCO = Color.WHITE;
     public static final Color COLOR_TEXTO_NEGRO = Color.BLACK;
     public static final Color COLOR_FONDO_PANEL = new Color(238, 238, 238);
+    public static final Color COLOR_BOTON_EXCEL = new Color(0, 176, 80);
 
     // Fuentes
     public static final Font FUENTE_TITULO = new Font("arial", Font.BOLD, 50);
