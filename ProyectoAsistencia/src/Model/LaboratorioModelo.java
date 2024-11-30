@@ -6,6 +6,7 @@ import View.VentanaPrincipal;
 
 public class LaboratorioModelo {
     
+    private int id_laboratorio;
     private int numeroLab;
     private int capacidad;
     
@@ -28,8 +29,9 @@ public class LaboratorioModelo {
         try {
             
             cn = Conexion_BD.getConexionBD();
-            pt = cn.prepareStatement("INSERT INTO laboratorio (capacidad) VALUES (?);");
-            pt.setInt(1, laboratorioModelo.getCapacidad());
+            pt = cn.prepareStatement("INSERT INTO laboratorio (numero_lab ,capacidad) VALUES (?,?);");
+            pt.setInt(1, laboratorioModelo.getNumeroLab());
+            pt.setInt(2, laboratorioModelo.getCapacidad());
             
             estado = pt.executeUpdate();
             
@@ -49,9 +51,11 @@ public class LaboratorioModelo {
         
         try {
             cn = Conexion_BD.getConexionBD();
-            pt = cn.prepareStatement("UPDATE laboratorio SET capacidad = ? WHERE numero_lab = ?;");
-            pt.setInt(1, laboratorioModelo.getCapacidad());
-            pt.setInt(2, laboratorioModelo.getNumeroLab());
+            pt = cn.prepareStatement("UPDATE laboratorio SET numero_lab = ?, capacidad = ? WHERE numero_lab = ?;");
+            pt.setInt(1, laboratorioModelo.getNumeroLab());
+            pt.setInt(2, laboratorioModelo.getCapacidad());
+            pt.setInt(3, laboratorioModelo.getNumeroLab());
+            
             
             estado = pt.executeUpdate();
             
@@ -99,6 +103,8 @@ public class LaboratorioModelo {
             
             while (rs.next()) {
                 LaboratorioModelo laboratorioModelo = new LaboratorioModelo();
+                
+                laboratorioModelo.setNumeroLab(rs.getInt("id_laboratorio"));
                 laboratorioModelo.setNumeroLab(rs.getInt("numero_lab"));
                 laboratorioModelo.setCapacidad(rs.getInt("capacidad"));
             
@@ -137,7 +143,15 @@ public class LaboratorioModelo {
 
         return id; 
     }
-    
+
+    public int getId_laboratorio() {
+        return id_laboratorio;
+    }
+
+    public void setId_laboratorio(int id_laboratorio) {
+        this.id_laboratorio = id_laboratorio;
+    }
+
     public int getNumeroLab() {
         return numeroLab;
     }
@@ -153,4 +167,6 @@ public class LaboratorioModelo {
     public void setCapacidad(int capacidad) {
         this.capacidad = capacidad;
     }
+    
+    
 }

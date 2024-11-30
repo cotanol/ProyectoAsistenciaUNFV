@@ -13,8 +13,9 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class EquipoModelo {
+    private int id_equipo;
     private String codPatrimonial;
-    private int numeroLab;
+    private int idLaboratorio;
     private String tipoEquipo;
     private String numeroSerie;
     private String estado;
@@ -39,11 +40,11 @@ public class EquipoModelo {
             cn = Conexion_BD.getConexionBD();
 
             
-            pt = cn.prepareStatement("INSERT INTO equipo (cod_patrimonial, numero_lab, tipo_equipo, numero_serie, estado) VALUES (?,?,?,?,?);");
+            pt = cn.prepareStatement("INSERT INTO equipo (cod_patrimonial, id_laboratorio, tipo_equipo, numero_serie, estado) VALUES (?,?,?,?,?);");
 
             // Establecer los valores correspondientes
             pt.setString(1, equipoModelo.getCodPatrimonial()); // Código Patrimonial
-            pt.setInt(2, equipoModelo.getNumeroLab());         // Número de laboratorio
+            pt.setInt(2, equipoModelo.getIdLaboratorio());         // Número de laboratorio
             pt.setString(3, equipoModelo.getTipoEquipo());     // Tipo de equipo
             pt.setString(4, equipoModelo.getNumeroSerie());    // Número de serie
             pt.setString(5, equipoModelo.getEstado());         // Estado
@@ -66,12 +67,13 @@ public class EquipoModelo {
         
         try {
             cn = Conexion_BD.getConexionBD();
-            pt = cn.prepareStatement("UPDATE equipo SET numero_lab = ?, tipo_equipo = ?, numero_serie = ?, estado = ? WHERE cod_patrimonial = ?;");
-            pt.setInt(1, equipoModelo.getNumeroLab());
-            pt.setString(2, equipoModelo.getTipoEquipo());
-            pt.setString(3, equipoModelo.getNumeroSerie());
-            pt.setString(4, equipoModelo.getEstado());
-            pt.setString(5, equipoModelo.getCodPatrimonial());
+            pt = cn.prepareStatement("UPDATE equipo SET cod_patrimonial = ?, id_laboratorio = ?, tipo_equipo = ?, numero_serie = ?, estado = ? WHERE cod_patrimonial = ?;");
+            pt.setString(1, equipoModelo.getCodPatrimonial());
+            pt.setInt(2, equipoModelo.getIdLaboratorio());
+            pt.setString(3, equipoModelo.getTipoEquipo());
+            pt.setString(4, equipoModelo.getNumeroSerie());
+            pt.setString(5, equipoModelo.getEstado());
+            pt.setString(6, equipoModelo.getCodPatrimonial());
             
             estado = pt.executeUpdate();
             
@@ -191,7 +193,7 @@ public class EquipoModelo {
             while (rs.next()) {
                 EquipoModelo equipoModelo = new EquipoModelo();
                 equipoModelo.setCodPatrimonial(rs.getString("cod_patrimonial"));
-                equipoModelo.setNumeroLab(rs.getInt("numero_lab"));
+                equipoModelo.setIdLaboratorio(rs.getInt("id_laboratorio"));
                 equipoModelo.setTipoEquipo(rs.getString("tipo_equipo"));
                 equipoModelo.setNumeroSerie(rs.getString("numero_serie"));
                 equipoModelo.setEstado(rs.getString("estado"));
@@ -222,7 +224,7 @@ public class EquipoModelo {
         // Consulta segura con parámetros preparados
         String sql = "SELECT * FROM equipo WHERE "
                    + "cod_patrimonial LIKE ? OR "
-                   + "CAST(numero_lab AS CHAR) LIKE ? OR "
+                   + "CAST(id_laboratorio AS CHAR) LIKE ? OR "
                    + "tipo_equipo LIKE ? OR "
                    + "numero_serie LIKE ? OR "
                    + "estado LIKE ?"; // Corregido: Se añadió "LIKE" faltante en "numero_serie"
@@ -240,7 +242,7 @@ public class EquipoModelo {
         while (rs.next()) {
             EquipoModelo equipoModelo = new EquipoModelo();
             equipoModelo.setCodPatrimonial(rs.getString("cod_patrimonial"));
-            equipoModelo.setNumeroLab(rs.getInt("numero_lab"));
+            equipoModelo.setIdLaboratorio(rs.getInt("id_laboratorio"));
             equipoModelo.setTipoEquipo(rs.getString("tipo_equipo"));
             equipoModelo.setNumeroSerie(rs.getString("numero_serie"));
             equipoModelo.setEstado(rs.getString("estado"));
@@ -273,7 +275,7 @@ public class EquipoModelo {
             while (rs.next()) {
                 EquipoModelo equipo = new EquipoModelo();
                 equipo.setCodPatrimonial(rs.getString("cod_patrimonial"));
-                equipo.setNumeroLab(rs.getInt("numero_lab"));
+                equipo.setIdLaboratorio(rs.getInt("id_laboratorio"));
                 equipo.setTipoEquipo(rs.getString("tipo_equipo"));
                 equipo.setNumeroSerie(rs.getString("numero_serie"));
                 equipo.setEstado(rs.getString("estado"));
@@ -314,6 +316,14 @@ public class EquipoModelo {
         return id; 
     }
 
+    public int getId_equipo() {
+        return id_equipo;
+    }
+
+    public void setId_equipo(int id_equipo) {
+        this.id_equipo = id_equipo;
+    }
+
     public String getCodPatrimonial() {
         return codPatrimonial;
     }
@@ -322,12 +332,12 @@ public class EquipoModelo {
         this.codPatrimonial = codPatrimonial;
     }
 
-    public int getNumeroLab() {
-        return numeroLab; // Ajustado para ser consistente
+    public int getIdLaboratorio() {
+        return idLaboratorio;
     }
 
-    public void setNumeroLab(int numeroLab) {
-        this.numeroLab = numeroLab; // Ajustado para ser consistente
+    public void setIdLaboratorio(int idLaboratorio) {
+        this.idLaboratorio = idLaboratorio;
     }
 
     public String getTipoEquipo() {
@@ -353,6 +363,8 @@ public class EquipoModelo {
     public void setEstado(String estado) {
         this.estado = estado;
     }
+
+    
 
     
 }

@@ -123,19 +123,24 @@ public class VentanaRight4 extends JPanel {
     private void manejarAgregarHorario() {
         DialogoHorario dialogo = new DialogoHorario(this);
         dialogo.setVisible(true);
-        
+
         if(dialogo.isGuardadoExitoso()) {
             HorarioLaboratorioModelo horario = new HorarioLaboratorioModelo();
             String[] datos = dialogo.getDatosHorario();
-            
-            // Mapear los datos del diálogo al modelo
-            horario.setAsignatura(datos[0]);
-            horario.setNumeroLab(Integer.parseInt(datos[1]));
-            horario.setDia(Dia.valueOf(datos[2].toUpperCase()));
+
+            // Convertir nombres a IDs
+            int idAsignatura = horarioControlador.obtenerIdAsignaturaPorNombreController(datos[0]);
+            int idLaboratorio = Integer.parseInt(datos[1]);
+            int idUsuario = horarioControlador.obtenerIdUsuarioPorNombreController(datos[5]);
+
+            // Mapear los datos al modelo
+            horario.setIdAsignatura(idAsignatura);
+            horario.setIdLaboratorio(idLaboratorio);
+            horario.setDia(datos[2]);
             horario.setHorarioInicio(LocalTime.parse(datos[3]));
             horario.setHorarioFin(LocalTime.parse(datos[4]));
-            horario.setDocente(datos[5]);
-            
+            horario.setIdUsuario(idUsuario);
+
             int estado = horarioControlador.insertarHorarioLaboratorioController(horario);
             mostrarMensaje(estado, "Horario Agregado 🐧!!", "Horario no Agregado 🐧!!");
 
@@ -160,12 +165,12 @@ public class VentanaRight4 extends JPanel {
                 String[] datos = dialogo.getDatosHorario();
 
                 // Mapear los datos del diálogo al modelo
-                horario.setAsignatura(datos[0]);
-                horario.setNumeroLab(Integer.parseInt(datos[1]));
-                horario.setDia(Dia.valueOf(datos[2].toUpperCase()));
+                horario.setIdAsignatura(Integer.parseInt(datos[0]));
+                horario.setIdLaboratorio(Integer.parseInt(datos[1]));
+                horario.setDia(datos[2]);
                 horario.setHorarioInicio(LocalTime.parse(datos[3]));
                 horario.setHorarioFin(LocalTime.parse(datos[4]));
-                horario.setDocente(datos[5]);
+                horario.setIdUsuario(Integer.parseInt(datos[5]));
 
                 int estado = horarioControlador.modificarHorarioLaboratorioController(horario);
                 mostrarMensaje(estado, "Horario Modificado 🐧!!", "Horario no Modificado 🐧!!");
@@ -183,7 +188,7 @@ public class VentanaRight4 extends JPanel {
         if (filaSeleccionada >= 0) {
             String asignatura = tablaHorarios.getValueAt(filaSeleccionada, 0).toString();
             HorarioLaboratorioModelo horario = new HorarioLaboratorioModelo();
-            horario.setAsignatura(asignatura);
+            horario.setIdAsignatura(Integer.parseInt(asignatura));
 
             int estado = horarioControlador.eliminarHorarioLaboratorioController(horario);
             mostrarMensaje(estado, "Horario Eliminado 🐧!!", "Horario no Eliminado 🐧!!");
@@ -207,19 +212,19 @@ public class VentanaRight4 extends JPanel {
         String busqueda = txtBuscarLaboratorio.getText().trim().toLowerCase();
         if (!busqueda.isEmpty()) {
             modeloHorarios.setRowCount(0);
-            
+
             try {
                 int numeroLab = Integer.parseInt(busqueda);
-                listaHorarios = horarioControlador.buscarHorarios(numeroLab, "", "");
+                listaHorarios = horarioControlador.buscarHorarios(numeroLab, -1, "");
 
                 for (HorarioLaboratorioModelo horario : listaHorarios) {
                     modeloHorarios.addRow(new Object[]{
-                        horario.getAsignatura(),
-                        horario.getNumeroLab(),
+                        horarioControlador.obtenerNombreAsignaturaPorIdController(horario.getIdAsignatura()),
+                        horario.getIdLaboratorio(),
                         horario.getDia(),
                         horario.getHorarioInicio(),
                         horario.getHorarioFin(),
-                        horario.getDocente()
+                        horarioControlador.obtenerNombreUsuarioPorIdController(horario.getIdUsuario())
                     });
                 }
             } catch (NumberFormatException e) {
@@ -236,12 +241,12 @@ public class VentanaRight4 extends JPanel {
 
         for (HorarioLaboratorioModelo horario : listaHorarios) {
             modeloHorarios.addRow(new Object[]{
-                horario.getAsignatura(),
-                horario.getNumeroLab(),
+                horarioControlador.obtenerNombreAsignaturaPorIdController(horario.getIdAsignatura()),
+                horario.getIdLaboratorio(),
                 horario.getDia(),
                 horario.getHorarioInicio(),
                 horario.getHorarioFin(),
-                horario.getDocente()
+                horarioControlador.obtenerNombreUsuarioPorIdController(horario.getIdUsuario())
             });
         }
     }
@@ -370,6 +375,8 @@ public class VentanaRight4 extends JPanel {
                     JOptionPane.ERROR_MESSAGE);
             }
         }
+        
+        
         
         public boolean isGuardadoExitoso() {
             return guardadoExitoso;

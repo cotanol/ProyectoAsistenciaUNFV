@@ -9,12 +9,13 @@ import View.VentanaPrincipal;
 public class HorarioLaboratorioModelo {
     
     private int idHorario;
-    private int numeroLab;
-    private String asignatura;
-    private Dia dia;
+    private int idLaboratorio;
+    private int idAsignatura;
+    private String dia;
     private LocalTime horarioInicio;
     private LocalTime horarioFin;
-    private String docente;
+    private int idUsuario;
+    private String codigoHorario;
     
     VentanaPrincipal objVentReg;
     
@@ -34,13 +35,13 @@ public class HorarioLaboratorioModelo {
         try {
             
             cn = Conexion_BD.getConexionBD();
-            pt = cn.prepareStatement("INSERT INTO horario_laboratorio (numero_lab, asignatura, dia, horario_inicio, horario_fin, docente) VALUES (?,?,?,?,?,?);");
-            pt.setInt(1, horarioLaboratorioModelo.getNumeroLab());
-            pt.setString(2, horarioLaboratorioModelo.getAsignatura());
-            pt.setString(3, horarioLaboratorioModelo.getDia().name());
+            pt = cn.prepareStatement("INSERT INTO horario_laboratorio (id_laboratorio, id_asignatura, dia, horario_inicio, horario_fin, id_usuario) VALUES (?,?,?,?,?,?);");
+            pt.setInt(1, horarioLaboratorioModelo.getIdLaboratorio());
+            pt.setInt(2, horarioLaboratorioModelo.getIdAsignatura());
+            pt.setString(3, horarioLaboratorioModelo.getDia());
             pt.setTime(4, java.sql.Time.valueOf(horarioLaboratorioModelo.getHorarioInicio()));
             pt.setTime(5, java.sql.Time.valueOf(horarioLaboratorioModelo.getHorarioFin()));
-            pt.setString(2, horarioLaboratorioModelo.getDocente());
+            pt.setInt(2, horarioLaboratorioModelo.getIdUsuario());
             
             estado = pt.executeUpdate();
             
@@ -60,14 +61,15 @@ public class HorarioLaboratorioModelo {
         
         try {
             cn = Conexion_BD.getConexionBD();
-            pt = cn.prepareStatement("UPDATE horario_laboratorio SET numero_lab = ?, asignatura = ?, dia = ?, horario_inicio = ?, horario_fin = ?, docente = ? WHERE id_horario = ?;");
-            pt.setInt(1, horarioLaboratorioModelo.getNumeroLab());
-            pt.setString(2, horarioLaboratorioModelo.getAsignatura());
-            pt.setString(3, horarioLaboratorioModelo.getDia().name());
+            pt = cn.prepareStatement("UPDATE horario_laboratorio SET id_laboratorio = ?, id_asignatura = ?, dia = ?, horario_inicio = ?, horario_fin = ?, id_usuario = ?, codigo_horario = ? WHERE codigo_horario = ?;");
+            pt.setInt(1, horarioLaboratorioModelo.getIdLaboratorio());
+            pt.setInt(2, horarioLaboratorioModelo.getIdAsignatura());
+            pt.setString(3, horarioLaboratorioModelo.getDia());
             pt.setTime(4, java.sql.Time.valueOf(horarioLaboratorioModelo.getHorarioInicio()));
             pt.setTime(5, java.sql.Time.valueOf(horarioLaboratorioModelo.getHorarioFin()));
-            pt.setString(6, horarioLaboratorioModelo.getDocente());
-            pt.setInt(7, horarioLaboratorioModelo.getIdHorario());
+            pt.setInt(6, horarioLaboratorioModelo.getIdUsuario());
+            pt.setString(7, horarioLaboratorioModelo.getCodigoHorario());
+            pt.setString(8, horarioLaboratorioModelo.getCodigoHorario());
             
             
             estado = pt.executeUpdate();
@@ -88,8 +90,8 @@ public class HorarioLaboratorioModelo {
         int estado = 0;
         try {
             cn = Conexion_BD.getConexionBD();
-            pt = cn.prepareStatement("DELETE FROM horario_laboratorio WHERE id_horario = ?;");
-            pt.setInt(1, horarioLaboratorioModelo.getIdHorario());
+            pt = cn.prepareStatement("DELETE FROM horario_laboratorio WHERE codigo_horario = ?;");
+            pt.setString(1, horarioLaboratorioModelo.getCodigoHorario());
             
             estado = pt.executeUpdate();
             
@@ -117,12 +119,13 @@ public class HorarioLaboratorioModelo {
             while (rs.next()) {
                 HorarioLaboratorioModelo horarioLaboratorioModelo = new HorarioLaboratorioModelo();
                 horarioLaboratorioModelo.setIdHorario(rs.getInt("id_horario"));
-                horarioLaboratorioModelo.setNumeroLab(rs.getInt("numero_lab"));
-                horarioLaboratorioModelo.setAsignatura(rs.getString("asignatura"));
-                horarioLaboratorioModelo.setDia(Dia.valueOf(rs.getString("dia")));
+                horarioLaboratorioModelo.setIdLaboratorio(rs.getInt("id_laboratorio"));
+                horarioLaboratorioModelo.setIdAsignatura(rs.getInt("id_asignatura"));
+                horarioLaboratorioModelo.setDia((rs.getString("dia")));
                 horarioLaboratorioModelo.setHorarioInicio(rs.getTime("horario_inicio").toLocalTime());
                 horarioLaboratorioModelo.setHorarioFin(rs.getTime("horario_fin").toLocalTime());
-                horarioLaboratorioModelo.setDocente(rs.getString("docente"));
+                horarioLaboratorioModelo.setIdUsuario(rs.getInt("id_usuario"));
+                horarioLaboratorioModelo.setCodigoHorario(rs.getString("id_usuario"));
             
                 listaHorarioLaboratorios.add(horarioLaboratorioModelo);
             }
@@ -158,25 +161,26 @@ public class HorarioLaboratorioModelo {
         return id; 
     }
     
-    public ArrayList<HorarioLaboratorioModelo> buscarHorarios(int numeroLab, String asignatura, String dia) {
+    public ArrayList<HorarioLaboratorioModelo> buscarHorarios(int numeroLab, int asignatura, String dia) {
         ArrayList<HorarioLaboratorioModelo> listaHorarios = new ArrayList<>();
         try {
             cn = Conexion_BD.getConexionBD();
-            pt = cn.prepareStatement("SELECT * FROM horario_laboratorio WHERE numero_lab = ? AND asignatura = ? AND dia = ?");
+            pt = cn.prepareStatement("SELECT * FROM horario_laboratorio WHERE id_laboratorio = ? AND id_asignatura = ? AND dia = ?");
             pt.setInt(1, numeroLab);
-            pt.setString(2, asignatura);
+            pt.setInt(2, asignatura);
             pt.setString(3, dia);
             rs = pt.executeQuery();
 
             while (rs.next()) {
                 HorarioLaboratorioModelo horario = new HorarioLaboratorioModelo();
                 horario.setIdHorario(rs.getInt("id_horario"));
-                horario.setNumeroLab(rs.getInt("numero_lab"));
-                horario.setAsignatura(rs.getString("asignatura"));
-                horario.setDia(Dia.valueOf(rs.getString("dia")));
+                horario.setIdLaboratorio(rs.getInt("id_laboratorio"));
+                horario.setIdAsignatura(rs.getInt("id_asignatura"));
+                horario.setDia((rs.getString("dia")));
                 horario.setHorarioInicio(rs.getTime("horario_inicio").toLocalTime());
                 horario.setHorarioFin(rs.getTime("horario_fin").toLocalTime());
-                horario.setDocente(rs.getString("docente"));
+                horario.setIdUsuario(rs.getInt("id_usuario"));
+                horario.setCodigoHorario(rs.getString("codigo_horario"));
                 listaHorarios.add(horario);
             }
 
@@ -189,6 +193,87 @@ public class HorarioLaboratorioModelo {
         return listaHorarios;
     }
     
+    public int obtenerIdAsignaturaPorNombre(String nombreAsignatura) {
+        int idAsignatura = -1;
+        try {
+            Connection cn = Conexion_BD.getConexionBD();
+            String sql = "SELECT id_asignatura FROM asignatura WHERE nombre_asignatura = ?";
+            PreparedStatement pst = cn.prepareStatement(sql);
+            pst.setString(1, nombreAsignatura);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                idAsignatura = rs.getInt("id_asignatura");
+            }
+            rs.close();
+            pst.close();
+            cn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return idAsignatura;
+    }
+
+    public int obtenerIdUsuarioPorNombre(String nombreUsuario) {
+        int idUsuario = -1;
+        try {
+            Connection cn = Conexion_BD.getConexionBD();
+            String sql = "SELECT id_usuario FROM usuario WHERE nombre_usuario = ?";
+            PreparedStatement pst = cn.prepareStatement(sql);
+            pst.setString(1, nombreUsuario);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                idUsuario = rs.getInt("id_usuario");
+            }
+            rs.close();
+            pst.close();
+            cn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return idUsuario;
+    }
+    
+    public String obtenerNombreAsignaturaPorId(int idAsignatura) {
+        String nombreAsignatura = "Desconocida";
+        try {
+            Connection cn = Conexion_BD.getConexionBD();
+            String sql = "SELECT nombre_asignatura FROM asignatura WHERE id_asignatura = ?";
+            PreparedStatement pst = cn.prepareStatement(sql);
+            pst.setInt(1, idAsignatura);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                nombreAsignatura = rs.getString("nombre_asignatura");
+            }
+            rs.close();
+            pst.close();
+            cn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return nombreAsignatura;
+    }
+
+    public String obtenerNombreUsuarioPorId(int idUsuario) {
+        String nombreUsuario = "Desconocido";
+        try {
+            Connection cn = Conexion_BD.getConexionBD();
+            String sql = "SELECT nombre_usuario FROM usuario WHERE id_usuario = ?";
+            PreparedStatement pst = cn.prepareStatement(sql);
+            pst.setInt(1, idUsuario);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                nombreUsuario = rs.getString("nombre_usuario");
+            }
+            rs.close();
+            pst.close();
+            cn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return nombreUsuario;
+    }
+
+    
     public int getIdHorario() {
         return idHorario;
     }
@@ -197,27 +282,27 @@ public class HorarioLaboratorioModelo {
         this.idHorario = idHorario;
     }
 
-    public int getNumeroLab() {
-        return numeroLab;
+    public int getIdLaboratorio() {
+        return idLaboratorio;
     }
 
-    public void setNumeroLab(int numeroLab) {
-        this.numeroLab = numeroLab;
+    public void setIdLaboratorio(int idLaboratorio) {
+        this.idLaboratorio = idLaboratorio;
     }
 
-    public String getAsignatura() {
-        return asignatura;
+    public int getIdAsignatura() {
+        return idAsignatura;
     }
 
-    public void setAsignatura(String asignatura) {
-        this.asignatura = asignatura;
+    public void setIdAsignatura(int idAsignatura) {
+        this.idAsignatura = idAsignatura;
     }
 
-    public Dia getDia() {
+    public String getDia() {
         return dia;
     }
 
-    public void setDia(Dia dia) {
+    public void setDia(String dia) {
         this.dia = dia;
     }
 
@@ -237,12 +322,22 @@ public class HorarioLaboratorioModelo {
         this.horarioFin = horarioFin;
     }
 
-    public String getDocente() {
-        return docente;
+    public int getIdUsuario() {
+        return idUsuario;
     }
 
-    public void setDocente(String docente) {
-        this.docente = docente;
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
     }
+
+    public String getCodigoHorario() {
+        return codigoHorario;
+    }
+
+    public void setCodigoHorario(String codigoHorario) {
+        this.codigoHorario = codigoHorario;
+    }
+    
+    
     
 }
