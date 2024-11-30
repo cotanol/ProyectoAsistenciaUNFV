@@ -19,7 +19,7 @@ public class UsuarioModelo {
     private String tipoDocumento;
     private String nroDocumento;
     private String numero;
-    private String Cargo;
+    private String tipoUsuario;
     private String nombreUsuario;
     private String contrasena;
     private String email;
@@ -43,13 +43,13 @@ public class UsuarioModelo {
         try {
             
             cn = Conexion_BD.getConexionBD();
-            pt = cn.prepareStatement("INSERT INTO usuario (nombres, apellidos, tipo_documento, nro_documento, numero, cargo, nombre_usuario, contrasena, email)  VALUES (?,?,?,?,?,?,?,?,?);");
+            pt = cn.prepareStatement("INSERT INTO usuario (nombres, apellidos, tipo_documento, nro_documento, numero, tipo_usuario, nombre_usuario, contrasena, email)  VALUES (?,?,?,?,?,?,?,?,?);");
             pt.setString(1, usuarioModelo.getNombres());
             pt.setString(2, usuarioModelo.getApellidos());
             pt.setString(3, usuarioModelo.getTipoDocumento());
             pt.setString(4, usuarioModelo.getNroDocumento());
             pt.setString(5, usuarioModelo.getNumero());
-            pt.setString(6, usuarioModelo.getCargo());
+            pt.setString(6, usuarioModelo.getTipoUsuario());
             pt.setString(7, usuarioModelo.getNombreUsuario());
             pt.setString(8, usuarioModelo.getContrasena());
             pt.setString(9, usuarioModelo.getEmail());
@@ -73,17 +73,17 @@ public class UsuarioModelo {
         
         try {
             cn = Conexion_BD.getConexionBD();
-            pt = cn.prepareStatement("UPDATE usuario SET nombres = ?, apellidos = ?, tipo_documento = ?, nro_documento = ?, numero = ?, cargo = ?, nombre_usuario = ?, contrasena = ?, email = ? WHERE id_usuario = ?;");
+            pt = cn.prepareStatement("UPDATE usuario SET nombres = ?, apellidos = ?, tipo_documento = ?, nro_documento = ?, numero = ?, tipo_usuario = ?, nombre_usuario = ?, contrasena = ?, email = ? WHERE email = ?;");
             pt.setString(1, usuarioModelo.getNombres());
             pt.setString(2, usuarioModelo.getApellidos());
             pt.setString(3, usuarioModelo.getTipoDocumento());
             pt.setString(4, usuarioModelo.getNroDocumento());
             pt.setString(5, usuarioModelo.getNumero());
-            pt.setString(6, usuarioModelo.getCargo());
+            pt.setString(6, usuarioModelo.getTipoUsuario());
             pt.setString(7, usuarioModelo.getNombreUsuario());
             pt.setString(8, usuarioModelo.getContrasena());
             pt.setString(9, usuarioModelo.getEmail());
-            pt.setInt(10, usuarioModelo.getIdUsuario());
+            pt.setString(10, usuarioModelo.getEmail());
             
             
             estado = pt.executeUpdate();
@@ -104,8 +104,8 @@ public class UsuarioModelo {
         int estado = 0;
         try {
             cn = Conexion_BD.getConexionBD();
-            pt = cn.prepareStatement("DELETE FROM usuario WHERE id_usuario = ?;");
-            pt.setInt(1, usuarioModelo.getIdUsuario());
+            pt = cn.prepareStatement("DELETE FROM usuario WHERE email = ?;");
+            pt.setString(1, usuarioModelo.getEmail());
             
             estado = pt.executeUpdate();
             
@@ -138,7 +138,7 @@ public class UsuarioModelo {
                 usuarioModelo.setTipoDocumento(rs.getString("tipo_documento"));
                 usuarioModelo.setNroDocumento(rs.getString("nro_documento"));
                 usuarioModelo.setNumero(rs.getString("numero"));
-                usuarioModelo.setCargo(rs.getString("cargo"));
+                usuarioModelo.setTipoUsuario(rs.getString("tipo_usuario"));
                 usuarioModelo.setNombreUsuario(rs.getString("nombre_usuario"));
                 usuarioModelo.setContrasena(rs.getString("contrasena"));
                 usuarioModelo.setEmail(rs.getString("email"));
@@ -171,7 +171,7 @@ public ArrayList<UsuarioModelo> buscarResgistroUsuarios(String buscar) {
                    + "tipo_documento LIKE ? OR "
                    + "nro_documento LIKE ? OR "
                    + "numero LIKE ? OR "
-                   + "cargo LIKE ? OR "
+                   + "tipo_usuario LIKE ? OR "
                    + "nombre_usuario LIKE ? OR "
                    + "contrasena LIKE ? OR "
                    + "email LIKE ?;";
@@ -193,7 +193,7 @@ public ArrayList<UsuarioModelo> buscarResgistroUsuarios(String buscar) {
             usuarioModelo.setTipoDocumento(rs.getString("tipo_documento"));
             usuarioModelo.setNroDocumento(rs.getString("nro_documento"));
             usuarioModelo.setNumero(rs.getString("numero"));
-            usuarioModelo.setCargo(rs.getString("cargo"));
+            usuarioModelo.setTipoUsuario(rs.getString("tipo_usuario"));
             usuarioModelo.setNombreUsuario(rs.getString("nombre_usuario"));
             usuarioModelo.setContrasena(rs.getString("contrasena"));
             usuarioModelo.setEmail(rs.getString("email"));
@@ -238,7 +238,7 @@ public ArrayList<UsuarioModelo> buscarResgistroUsuarios(String buscar) {
         try {
             Connection conexion = cn.getConexionBD();
 
-            ps = conexion.prepareStatement("select nombres, apellidos, tipo_documento, nro_documento, numero, cargo, nombre_usuario, contrasena, email from usuario");
+            ps = conexion.prepareStatement("select nombres, apellidos, tipo_documento, nro_documento, numero, tipo_usuario, nombre_usuario, contrasena, email from usuario");
             rs = ps.executeQuery();
 
             int numCol = rs.getMetaData().getColumnCount();
@@ -280,6 +280,8 @@ public ArrayList<UsuarioModelo> buscarResgistroUsuarios(String buscar) {
         }
     }
     //=================================================================================
+    
+    
     public int ultimoId() {
         int id = 0;
         try {
@@ -309,7 +311,7 @@ public ArrayList<UsuarioModelo> buscarResgistroUsuarios(String buscar) {
     public void setIdUsuario(int idUsuario) {
         this.idUsuario = idUsuario;
     }
-    
+
     public String getNombres() {
         return nombres;
     }
@@ -350,12 +352,12 @@ public ArrayList<UsuarioModelo> buscarResgistroUsuarios(String buscar) {
         this.numero = numero;
     }
 
-    public String getCargo() {
-        return Cargo;
+    public String getTipoUsuario() {
+        return tipoUsuario;
     }
 
-    public void setCargo(String Cargo) {
-        this.Cargo = Cargo;
+    public void setTipoUsuario(String tipoUsuario) {
+        this.tipoUsuario = tipoUsuario;
     }
 
     public String getNombreUsuario() {
@@ -380,5 +382,8 @@ public ArrayList<UsuarioModelo> buscarResgistroUsuarios(String buscar) {
 
     public void setEmail(String email) {
         this.email = email;
-    } 
+    }
+    
+    
+    
 }

@@ -38,7 +38,7 @@ public class AsistenciaController {
         return objAsistenciaModelo.ultimoId();
     }    
     
-    public ArrayList<AlumnoModelo> obtenerAlumnosPorLaboratorioYHorario(int numeroLab, String asignatura, LocalTime horarioInicio) {
+    public ArrayList<AlumnoModelo> obtenerAlumnosPorLaboratorioYHorario(int numeroLab, int asignatura, LocalTime horarioInicio) {
         return objAsistenciaModelo.obtenerAlumnosPorLaboratorioYHorario(numeroLab, asignatura, horarioInicio);
     }
 }

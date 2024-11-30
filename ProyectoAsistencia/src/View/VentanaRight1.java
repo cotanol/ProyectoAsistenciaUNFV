@@ -159,7 +159,7 @@ public class VentanaRight1 extends JPanel {
 
         lbCargo = ComponentFactory.crearEtiqueta("Cargo", 730, 100, 250, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_HOVER_SELECCIONADO1);
         subPanel1.add(lbCargo);
-        cbCargo = ComponentFactory.crearComboBoxString(new String[]{"", "ADMINISTRADOR", "DOCENTE"}, 730, 130, 300, 30, Constantes.BORDER_HOVER);
+        cbCargo = ComponentFactory.crearComboBoxString(new String[]{"", "ADMIN", "DOCENTE"}, 730, 130, 300, 30, Constantes.BORDER_HOVER);
         subPanel1.add(cbCargo);
 
         lbEmail = ComponentFactory.crearEtiqueta("Email", 730, 180, 250, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_HOVER_SELECCIONADO1);
@@ -200,9 +200,8 @@ public class VentanaRight1 extends JPanel {
             usuarioModelo.setNumero(txtNumeroDeContacto.getText());
             usuarioModelo.setContrasena(txtContraseña.getText());
             usuarioModelo.setNroDocumento(txtNumeroDeDocumento.getText());
-            usuarioModelo.setCargo(cbCargo.getSelectedItem().toString());
+            usuarioModelo.setTipoUsuario(cbCargo.getSelectedItem().toString());
             usuarioModelo.setEmail(txtEmail.getText());
-            usuarioModelo.setIdUsuario(usuarioControlador.ultimoIdController() + 1);
 
             int estado = usuarioControlador.insertarUsuarioController(usuarioModelo);
 
@@ -225,9 +224,9 @@ public class VentanaRight1 extends JPanel {
         usuarioModelo.setNumero(txtNumeroDeContacto.getText());
         usuarioModelo.setContrasena(txtContraseña.getText());
         usuarioModelo.setNroDocumento(txtNumeroDeDocumento.getText());
-        usuarioModelo.setCargo(cbCargo.getSelectedItem().toString());
+        usuarioModelo.setTipoUsuario(cbCargo.getSelectedItem().toString());
         usuarioModelo.setEmail(txtEmail.getText());
-        usuarioModelo.setIdUsuario(idUsuario);
+        
 
         int estado = usuarioControlador.modificarUsuarioController(usuarioModelo);
 
@@ -239,7 +238,7 @@ public class VentanaRight1 extends JPanel {
 
     private void manejarEliminarUsuario() {
         UsuarioModelo usuarioModelo = new UsuarioModelo();
-        usuarioModelo.setIdUsuario(idUsuario);
+        usuarioModelo.setEmail(txtEmail.getText());
 
         int estado = usuarioControlador.eliminarUsuarioController(usuarioModelo);
 
@@ -306,7 +305,7 @@ public class VentanaRight1 extends JPanel {
                 usuarioTa.getTipoDocumento(),
                 usuarioTa.getNroDocumento(),
                 usuarioTa.getNumero(),
-                usuarioTa.getCargo(),
+                usuarioTa.getTipoUsuario(),
                 usuarioTa.getNombreUsuario(),
                 usuarioTa.getContrasena(),
                 usuarioTa.getEmail()
@@ -327,7 +326,7 @@ public class VentanaRight1 extends JPanel {
                 obj.getTipoDocumento(),
                 obj.getNroDocumento(),
                 obj.getNumero(),
-                obj.getCargo(),
+                obj.getTipoUsuario(),
                 obj.getContrasena(),
                 obj.getEmail()
                 

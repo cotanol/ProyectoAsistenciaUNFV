@@ -9,6 +9,7 @@ import java.time.LocalTime;
 public class ComponentFactory {
     
     public static JButton crearBotonMenu(String texto) {
+        UIManager.put("Button.select", new Color(0, 0, 0, 0));
         JButton boton = new JButton(texto);
         boton.setBackground(Constantes.COLOR_BASE_BOTONES);
         boton.setForeground(Constantes.COLOR_TEXTO_NEGRO);
@@ -20,6 +21,7 @@ public class ComponentFactory {
     }
 
     public static JButton crearBotonAccion(String texto, int x, int y, int ancho, int alto) {
+        UIManager.put("Button.select", new Color(0, 0, 0, 0));
         JButton boton = new JButton(texto);
         boton.setBounds(x, y, ancho, alto);
         boton.setBackground(Constantes.COLOR_HOVER_SELECCIONADO1);

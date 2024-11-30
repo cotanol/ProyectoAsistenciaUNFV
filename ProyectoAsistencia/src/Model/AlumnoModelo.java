@@ -5,7 +5,8 @@ import java.util.ArrayList;
 import View.VentanaPrincipal;
 
 public class AlumnoModelo {
-    private int codigoAlumno;
+    private int id_alumno;
+    private String codigoAlumno;
     private String nombres;
     private String apellidos;
     
@@ -22,14 +23,16 @@ public class AlumnoModelo {
     public AlumnoModelo(){
         
     }
+    
     public int insertarAlumnoModelo(AlumnoModelo alumnoModelo) {
         int estado = 0;
         try {
             
             cn = Conexion_BD.getConexionBD();
-            pt = cn.prepareStatement("INSERT INTO alumno (nombres, apellidos) VALUES (?,?);");
-            pt.setString(1, alumnoModelo.getNombres());
-            pt.setString(2, alumnoModelo.getApellidos());
+            pt = cn.prepareStatement("INSERT INTO alumno (codigo_alumno, nombres, apellidos) VALUES (?,?,?);");
+            pt.setString(1, alumnoModelo.getCodigoAlumno());
+            pt.setString(2, alumnoModelo.getNombres());
+            pt.setString(3, alumnoModelo.getApellidos());
             
             estado = pt.executeUpdate();
             
@@ -49,10 +52,11 @@ public class AlumnoModelo {
         
         try {
             cn = Conexion_BD.getConexionBD();
-            pt = cn.prepareStatement("UPDATE alumno SET nombres = ?, apellidos = ? WHERE codigo_alumno = ?;");
-            pt.setString(1, alumnoModelo.getNombres());
-            pt.setString(2, alumnoModelo.getApellidos());
-            pt.setInt(3, alumnoModelo.getCodigoAlumno());
+            pt = cn.prepareStatement("UPDATE alumno SET codigo_alumno = ?, nombres = ?, apellidos = ? WHERE codigo_alumno = ?;");
+            pt.setString(1, alumnoModelo.getCodigoAlumno());
+            pt.setString(2, alumnoModelo.getNombres());
+            pt.setString(3, alumnoModelo.getApellidos());
+            pt.setString(4, alumnoModelo.getCodigoAlumno());
             
             estado = pt.executeUpdate();
             
@@ -73,7 +77,7 @@ public class AlumnoModelo {
         try {
             cn = Conexion_BD.getConexionBD();
             pt = cn.prepareStatement("DELETE FROM alumno WHERE codigo_alumno = ?;");
-            pt.setInt(1, alumnoModelo.getCodigoAlumno());
+            pt.setString(1, alumnoModelo.getCodigoAlumno());
             
             estado = pt.executeUpdate();
             
@@ -100,7 +104,8 @@ public class AlumnoModelo {
             
             while (rs.next()) {
                 AlumnoModelo alumnoModelo = new AlumnoModelo();
-                alumnoModelo.setCodigoAlumno(rs.getInt("codigo_alumno"));
+                alumnoModelo.setId_alumno(rs.getInt("id_alumno"));
+                alumnoModelo.setCodigoAlumno(rs.getString("codigo_alumno"));
                 alumnoModelo.setNombres(rs.getString("nombres"));
                 alumnoModelo.setApellidos(rs.getString("apellidos"));
                 listaAlumnos.add(alumnoModelo);
@@ -139,15 +144,23 @@ public class AlumnoModelo {
 
         return id; 
     }
-    
-    public int getCodigoAlumno() {
+
+    public int getId_alumno() {
+        return id_alumno;
+    }
+
+    public void setId_alumno(int id_alumno) {
+        this.id_alumno = id_alumno;
+    }
+
+    public String getCodigoAlumno() {
         return codigoAlumno;
     }
 
-    public void setCodigoAlumno(int codigoAlumno) {
+    public void setCodigoAlumno(String codigoAlumno) {
         this.codigoAlumno = codigoAlumno;
     }
-    
+
     public String getNombres() {
         return nombres;
     }
@@ -162,6 +175,8 @@ public class AlumnoModelo {
 
     public void setApellidos(String apellidos) {
         this.apellidos = apellidos;
-    }    
+    }
+    
+     
 }
 

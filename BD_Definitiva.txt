@@ -49,13 +49,14 @@ CREATE TABLE horario_laboratorio (
   id_horario INT AUTO_INCREMENT PRIMARY KEY,      -- Identificador único del horario (clave primaria)
   id_laboratorio INT,                             -- Clave foránea al laboratorio
   id_asignatura INT,                              -- Clave foránea a la asignatura
-  dia ENUM('LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 'VIERNES', 'SABADO', 'DOMINGO'),  -- Día de la semana
+  dia VARCHAR(100),  -- Día de la semana
   horario_inicio TIME,                            -- Hora de inicio de la clase
   horario_fin TIME,                               -- Hora de fin de la clase
-  id_docente INT,                                 -- Clave foránea al docente (usuario)
+  id_usuario INT,                                 -- Clave foránea al docente (usuario)
+  codigo_horario VARCHAR(50) UNIQUE,			  -- Almacenar el código del horario (unico)
   FOREIGN KEY (id_laboratorio) REFERENCES laboratorio(id_laboratorio) ON DELETE CASCADE,   -- Si se elimina el laboratorio, se eliminan los horarios asociados
   FOREIGN KEY (id_asignatura) REFERENCES asignatura(id_asignatura) ON DELETE SET NULL,     -- Si se elimina la asignatura, se establece NULL en este campo
-  FOREIGN KEY (id_docente) REFERENCES usuario(id_usuario) ON DELETE SET NULL               -- Si se elimina el docente, se establece NULL en este campo
+  FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario) ON DELETE SET NULL               -- Si se elimina el docente, se establece NULL en este campo
 );
 
 -- 6. Crear la tabla 'equipo'
@@ -64,9 +65,9 @@ CREATE TABLE equipo (
   id_equipo INT AUTO_INCREMENT PRIMARY KEY,     -- Identificador único del equipo (clave primaria)
   cod_patrimonial VARCHAR(50) UNIQUE,           -- Código patrimonial del equipo (único)
   id_laboratorio INT,                           -- Clave foránea al laboratorio donde está el equipo
-  tipo_equipo VARCHAR(100),                     -- Tipo o categoría del equipo (ejemplo: Computadora, Proyector)
+  tipo_equipo ENUM('Teclado', 'CPU', 'Monitor', 'PizarraDigital'),                     -- Tipo o categoría del equipo (ejemplo: Computadora, Proyector)
   numero_serie VARCHAR(50),                     -- Número de serie del equipo
-  estado ENUM('OPERATIVO', 'NO_OPERATIVO'),     -- Estado actual del equipo
+  estado ENUM('OPERATIVO', 'INOPERATIVO'),     -- Estado actual del equipo
   FOREIGN KEY (id_laboratorio) REFERENCES laboratorio(id_laboratorio) ON DELETE SET NULL  -- Si se elimina el laboratorio, el campo se establece en NULL
 );
 
@@ -79,5 +80,6 @@ CREATE TABLE asistencia (
   id_alumno INT,                                 -- Clave foránea al alumno
   id_horario INT,                                -- Clave foránea al horario de la clase
   FOREIGN KEY (id_alumno) REFERENCES alumno(id_alumno) ON DELETE CASCADE,                -- Si se elimina el alumno, se eliminan sus asistencias
-  FOREIGN KEY (id_horario) REFERENCES horario_laboratorio(id_horario) ON DELETE CASCADE  -- Si se elimina el horario, se eliminan las asistencias asociadas
+  FOREIGN KEY (id_horario) REFERENCES horario_laboratorio(id_horario) ON DELETE CASCADE, -- Si se elimina el horario, se eliminan las asistencias asociadas
+  CONSTRAINT unique_alumno_horario_fecha UNIQUE (id_alumno, id_horario, fecha)  -- Combinación de alumno, horario y fecha debe ser única
 );

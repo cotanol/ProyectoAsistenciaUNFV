@@ -177,7 +177,7 @@ public class VentanaRight3 extends JPanel {
         lbEstadoLabel = ComponentFactory.crearEtiqueta("Estado", 670, 20, 200, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_HOVER_SELECCIONADO1);
         subPanel.add(lbEstadoLabel);
 
-        cbEstado = ComponentFactory.crearComboBoxString(new String[]{"Operativo", "Inoperativo"}, 670, 50, 300, 30, Constantes.BORDER_HOVER);
+        cbEstado = ComponentFactory.crearComboBoxString(new String[]{"OPERATIVO", "INOPERATIVO"}, 670, 50, 300, 30, Constantes.BORDER_HOVER);
         subPanel.add(cbEstado);
 
         // Etiqueta y Campo de Texto para Número de Serie
@@ -268,7 +268,7 @@ public class VentanaRight3 extends JPanel {
 
                 // Asignar valores al objeto equipo
                 equipo.setTipoEquipo(cbTipoEquipo.getSelectedItem().toString());
-                equipo.setNumeroLab(Integer.parseInt(cbLaboratorio.getSelectedItem().toString()));
+                equipo.setIdLaboratorio(Integer.parseInt(cbLaboratorio.getSelectedItem().toString()));
                 equipo.setEstado(cbEstado.getSelectedItem().toString());
                 equipo.setNumeroSerie(txtNumeroSerie.getText().trim());
                 equipo.setCodPatrimonial(txtCodigoPatrimonial.getText().trim());
@@ -304,7 +304,7 @@ public class VentanaRight3 extends JPanel {
 
                 // Asignar valores al objeto equipo
                 equipo.setTipoEquipo(cbTipoEquipo.getSelectedItem().toString());
-                equipo.setNumeroLab(Integer.parseInt(cbLaboratorio.getSelectedItem().toString()));
+                equipo.setIdLaboratorio(Integer.parseInt(cbLaboratorio.getSelectedItem().toString()));
                 equipo.setEstado(cbEstado.getSelectedItem().toString());
                 equipo.setNumeroSerie(txtNumeroSerie.getText().trim());
                 equipo.setCodPatrimonial(txtCodigoPatrimonial.getText().trim());
@@ -363,7 +363,7 @@ public class VentanaRight3 extends JPanel {
 
         for (EquipoModelo obj : listaEquipos) {
             Object[] fila = {
-                obj.getNumeroLab(),
+                obj.getIdLaboratorio(),
                 obj.getTipoEquipo(),
                 obj.getCodPatrimonial(),
                 obj.getNumeroSerie(),
@@ -421,7 +421,7 @@ public class VentanaRight3 extends JPanel {
 
         for (EquipoModelo equipoTa : listaEquipos) {
             modeloEquiposDisponibles.addRow(new Object[]{
-                equipoTa.getNumeroLab(),
+                equipoTa.getIdLaboratorio(),
                 equipoTa.getTipoEquipo(),
                 equipoTa.getCodPatrimonial(),
                 equipoTa.getNumeroSerie(),
@@ -436,7 +436,7 @@ public class VentanaRight3 extends JPanel {
 
         for (EquipoModelo equipoTa : listaEquipos) {
             modeloEquiposRegistrados.addRow(new Object[]{
-                equipoTa.getNumeroLab(),
+                equipoTa.getIdLaboratorio(),
                 equipoTa.getTipoEquipo(),
                 equipoTa.getCodPatrimonial(),
                 equipoTa.getNumeroSerie(),

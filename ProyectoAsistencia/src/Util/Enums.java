@@ -19,11 +19,24 @@ public class Enums {
     }
     
     public enum EstadoEquipo {
-        ACTIVO, INACTIVO, MANTENIMIENTO
+        OPERATIVO, INOPERATIVO
     }
     
     public enum EstadoAsistencia {
         PRESENTE, AUSENTE
     }
+    
+    public enum TipoDocumento {
+        DNI, PASAPORTE
+    }
+    
+    public enum TipoUsuario {
+        ADMIN, DOCENTE
+    }
+    
+    public enum TipoEquipo {
+        Teclado, CPU, Monitor, PizarraDigital
+    }
+    
     
 }

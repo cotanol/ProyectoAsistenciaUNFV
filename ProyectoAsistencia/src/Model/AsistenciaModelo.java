@@ -11,9 +11,9 @@ public class AsistenciaModelo {
     
     private int idAsistencia;
     private LocalDate fecha;
-    private EstadoAsistencia estado;
-    private int numeroLab;
-    private int codigoAlumno;
+    private String estado;
+    private int idAlumno;
+    private int idHorario;
     
     Connection cn = null;
     PreparedStatement pt = null;
@@ -34,11 +34,11 @@ public class AsistenciaModelo {
         try {
             
             cn = Conexion_BD.getConexionBD();
-            pt = cn.prepareStatement("INSERT INTO asistencia (fecha, estado, numero_lab, codigo_alumno) VALUES (?,?,?,?);");
+            pt = cn.prepareStatement("INSERT INTO asistencia (fecha, estado, id_alumno, id_horario) VALUES (?,?,?,?);");
             pt.setDate(1, java.sql.Date.valueOf(asistenciaModelo.getFecha()));
-            pt.setString(2, asistenciaModelo.getEstado().name());
-            pt.setInt(3, asistenciaModelo.getNumeroLab());
-            pt.setInt(4, asistenciaModelo.getCodigoAlumno());
+            pt.setString(2, asistenciaModelo.getEstado());
+            pt.setInt(3, asistenciaModelo.getIdAlumno());
+            pt.setInt(4, asistenciaModelo.getIdHorario());
             
             estado = pt.executeUpdate();
             
@@ -58,12 +58,14 @@ public class AsistenciaModelo {
         
         try {
             cn = Conexion_BD.getConexionBD();
-            pt = cn.prepareStatement("UPDATE asistencia SET fecha = ?, estado = ?, numero_lab = ?, codigo_alumno = ? WHERE id_asistencia = ?;");
+            pt = cn.prepareStatement("UPDATE asistencia SET fecha = ?, estado = ?, id_alumno = ?, id_horario = ? WHERE id_alumno = ? AND id_horario = ? AND fecha = ?;");
             pt.setDate(1, java.sql.Date.valueOf(asistenciaModelo.getFecha()));
-            pt.setString(2, asistenciaModelo.getEstado().name());
-            pt.setInt(3, asistenciaModelo.getNumeroLab());
-            pt.setInt(4, asistenciaModelo.getCodigoAlumno());
-            pt.setInt(5, asistenciaModelo.getIdAsistencia());
+            pt.setString(2, asistenciaModelo.getEstado());
+            pt.setInt(3, asistenciaModelo.getIdAlumno());
+            pt.setInt(4, asistenciaModelo.getIdHorario());
+            pt.setInt(5, asistenciaModelo.getIdAlumno());
+            pt.setInt(6, asistenciaModelo.getIdHorario());
+            pt.setDate(7, java.sql.Date.valueOf(asistenciaModelo.getFecha()));
             
             estado = pt.executeUpdate();
             
@@ -83,8 +85,10 @@ public class AsistenciaModelo {
         int estado = 0;
         try {
             cn = Conexion_BD.getConexionBD();
-            pt = cn.prepareStatement("DELETE FROM asistencia WHERE id_asistencia = ?;");
-            pt.setInt(1, asistenciaModelo.getIdAsistencia());
+            pt = cn.prepareStatement("DELETE FROM asistencia WHERE id_alumno = ? AND id_horario = ? AND fecha = ?;");
+            pt.setInt(1, asistenciaModelo.getIdAlumno());
+            pt.setInt(2, asistenciaModelo.getIdHorario());
+            pt.setDate(3, java.sql.Date.valueOf(asistenciaModelo.getFecha()));
             
             estado = pt.executeUpdate();
             
@@ -113,9 +117,9 @@ public class AsistenciaModelo {
                 AsistenciaModelo asistenciaModelo = new AsistenciaModelo();
                 asistenciaModelo.setIdAsistencia(rs.getInt("id_asistencia"));
                 asistenciaModelo.setFecha(rs.getDate("fecha").toLocalDate());
-                asistenciaModelo.setEstado(EstadoAsistencia.valueOf(rs.getString("estado")));
-                asistenciaModelo.setNumeroLab(rs.getInt("numero_lab"));
-                asistenciaModelo.setCodigoAlumno(rs.getInt("codigo_alumno"));
+                asistenciaModelo.setEstado((rs.getString("estado")));
+                asistenciaModelo.setIdAlumno(rs.getInt("id_alumno"));
+                asistenciaModelo.setIdHorario(rs.getInt("id_horario"));
                 listaAsistencias.add(asistenciaModelo);
             }
             
@@ -151,7 +155,7 @@ public class AsistenciaModelo {
         return id; 
     }    
     
-    public ArrayList<AlumnoModelo> obtenerAlumnosPorLaboratorioYHorario(int numeroLab, String asignatura, LocalTime horarioInicio) {
+    public ArrayList<AlumnoModelo> obtenerAlumnosPorLaboratorioYHorario(int numeroLab, int asignatura, LocalTime horarioInicio) {
         ArrayList<AlumnoModelo> listaAlumnos = new ArrayList<>();
         try (Connection cn = Conexion_BD.getConexionBD();
              PreparedStatement pt = cn.prepareStatement(
@@ -162,13 +166,13 @@ public class AsistenciaModelo {
                  "WHERE hl.numero_lab = ? AND hl.asignatura = ? AND hl.horario_inicio = ?")) {
 
             pt.setInt(1, numeroLab);
-            pt.setString(2, asignatura);
+            pt.setInt(2, asignatura);
             pt.setTime(3, java.sql.Time.valueOf(horarioInicio));
             ResultSet rs = pt.executeQuery();
 
             while (rs.next()) {
                 AlumnoModelo alumno = new AlumnoModelo();
-                alumno.setCodigoAlumno(rs.getInt("codigo_alumno"));
+                alumno.setCodigoAlumno(rs.getString("codigo_alumno"));
                 alumno.setNombres(rs.getString("nombres"));
                 alumno.setApellidos(rs.getString("apellidos"));
                 listaAlumnos.add(alumno);
@@ -179,7 +183,6 @@ public class AsistenciaModelo {
         return listaAlumnos;
     }
 
-    
     public int getIdAsistencia() {
         return idAsistencia;
     }
@@ -196,28 +199,31 @@ public class AsistenciaModelo {
         this.fecha = fecha;
     }
 
-    public EstadoAsistencia getEstado() {
+    public String getEstado() {
         return estado;
     }
 
-    public void setEstado(EstadoAsistencia estado) {
+    public void setEstado(String estado) {
         this.estado = estado;
     }
 
-    public int getNumeroLab() {
-        return numeroLab;
+    public int getIdAlumno() {
+        return idAlumno;
     }
 
-    public void setNumeroLab(int numeroLab) {
-        this.numeroLab = numeroLab;
+    public void setIdAlumno(int idAlumno) {
+        this.idAlumno = idAlumno;
     }
 
-    public int getCodigoAlumno() {
-        return codigoAlumno;
+    public int getIdHorario() {
+        return idHorario;
     }
 
-    public void setCodigoAlumno(int codigoAlumno) {
-        this.codigoAlumno = codigoAlumno;
-    }   
+    public void setIdHorario(int idHorario) {
+        this.idHorario = idHorario;
+    }
+
+    
+
     
 }

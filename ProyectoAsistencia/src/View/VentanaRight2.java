@@ -23,7 +23,7 @@ public class VentanaRight2 extends JPanel {
     private JLabel lblControlAsistencia, lblDatosLab, lblConfigAvanz, lblNroLab, lblHor, lblAsigs;
     private JComboBox<Integer> cboNroLab;
     private JComboBox<LocalTime> cboHorario;
-    private JComboBox<String> cboAsignatura;
+    private JComboBox<Integer> cboAsignatura;
     private JButton btnBuscar, btnActuDatos, btnReporteGen;
     private JTable tablaLaboratorios;
     private DefaultTableModel modeloLaboratorio;
@@ -118,7 +118,7 @@ public class VentanaRight2 extends JPanel {
         lblAsigs = ComponentFactory.crearEtiqueta("Asignatura", 550, 20, 200, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_HOVER_SELECCIONADO1);
         subPanel.add(lblAsigs);
 
-        cboAsignatura = ComponentFactory.crearComboBoxString(new String[]{}, 550, 50, 200, 30, Constantes.BORDER_HOVER);
+        cboAsignatura = ComponentFactory.crearComboBoxInteger(new Integer[]{}, 550, 50, 200, 30, Constantes.BORDER_HOVER);
         subPanel.add(cboAsignatura);
         cargarComboAsignatura();
 
@@ -132,8 +132,8 @@ public class VentanaRight2 extends JPanel {
         cboNroLab.addItem(null);
         Set<Integer> labsAgregados = new HashSet<>();
         for (HorarioLaboratorioModelo horaLab : listaHorarioLaboratorio) {
-            if (labsAgregados.add(horaLab.getNumeroLab())) {
-                cboNroLab.addItem(horaLab.getNumeroLab());
+            if (labsAgregados.add(horaLab.getIdLaboratorio())) {
+                cboNroLab.addItem(horaLab.getIdLaboratorio());
             }
         }
     }
@@ -151,11 +151,12 @@ public class VentanaRight2 extends JPanel {
 
     private void cargarComboAsignatura() {
         cboAsignatura.removeAllItems();
-        cboAsignatura.addItem("");
-        Set<String> asignaturasAgregadas = new HashSet<>();
+        cboAsignatura.addItem(null);
+        Set<Integer> asignaturasAgregadas = new HashSet<>();
         for (HorarioLaboratorioModelo horaLab : listaHorarioLaboratorio) {
-            if (asignaturasAgregadas.add(horaLab.getAsignatura())) {
-                cboAsignatura.addItem(horaLab.getAsignatura());
+            if (asignaturasAgregadas.add(horaLab.getIdAsignatura())) {
+                
+                cboAsignatura.addItem(horaLab.getIdAsignatura());
             }
         }
     }
@@ -202,7 +203,7 @@ public class VentanaRight2 extends JPanel {
 
     private void manejarBuscarHorario() {
         Integer numeroLab = (Integer) cboNroLab.getSelectedItem();
-        String asignatura = (String) cboAsignatura.getSelectedItem();
+        Integer asignatura = (Integer) cboAsignatura.getSelectedItem();
         LocalTime horarioInicio = (LocalTime) cboHorario.getSelectedItem();
 
         if (numeroLab == null || asignatura == null || horarioInicio == null) {
@@ -217,12 +218,12 @@ public class VentanaRight2 extends JPanel {
         }
     }
 
-    private void manejarCambioAPanelAsistencia(int numeroLab, String asignatura, LocalTime horarioInicio) {
+    private void manejarCambioAPanelAsistencia(int numeroLab, int asignatura, LocalTime horarioInicio) {
         
         // Buscar el horario seleccionado
         HorarioLaboratorioModelo horarioSeleccionado = null;
         for (HorarioLaboratorioModelo horario : listaHorarioLaboratorio) {
-            if (horario.getNumeroLab() == numeroLab && horario.getAsignatura().equals(asignatura) && horario.getHorarioInicio().equals(horarioInicio)) {
+            if (horario.getIdLaboratorio()== numeroLab && horario.getIdAsignatura() == asignatura && horario.getHorarioInicio().equals(horarioInicio)) {
                 horarioSeleccionado = horario;
                 break;
             }
@@ -233,7 +234,7 @@ public class VentanaRight2 extends JPanel {
             return;
         }
 
-        String docente = horarioSeleccionado.getDocente(); 
+        
         
         panelAsistencia = new JPanel(null);
         panelAsistencia.setBackground(Constantes.COLOR_FONDO_PANEL);
@@ -251,8 +252,8 @@ public class VentanaRight2 extends JPanel {
 
         // Información del horario
         lblInfoClase = new JLabel(String.format(
-                "<html>Nro. Laboratorio: %d<br>Asignatura: %s<br>Horario: %s<br> Docente: %s<br></html>",
-                numeroLab, asignatura, horarioInicio.toString(), horarioSeleccionado.getDocente()));
+                "<html>Nro. Laboratorio: %d<br>Asignatura: %d<br>Horario: %s<br> Docente: %d<br></html>",
+                numeroLab, asignatura, horarioInicio.toString(), horarioSeleccionado.getIdUsuario()));
         lblInfoClase.setBounds(100, 180, 600, 100);
         lblInfoClase.setFont(Constantes.FUENTE_LABEL);
         panelAsistencia.add(lblInfoClase);
@@ -278,7 +279,7 @@ public class VentanaRight2 extends JPanel {
         cardLayout.show(panelDerecho, "RegistroAsistencia");
     }
 
-    private void inicializarTablaAsistencia(int numeroLab, String asignatura, LocalTime horarioInicio) {
+    private void inicializarTablaAsistencia(int numeroLab, int asignatura, LocalTime horarioInicio) {
         String[] columnasAsistencia = {"Código", "Nombres", "Apellidos", "Asistencia"};
         DefaultTableModel modeloTabla = new DefaultTableModel(columnasAsistencia, 0) {
             @Override
