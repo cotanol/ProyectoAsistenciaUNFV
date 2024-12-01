@@ -316,6 +316,46 @@ public class EquipoModelo {
         return id; 
     }
 
+    public int obtenerIDLaboratorioPorNumero(String numeroLaboratorio) {
+        int idLaboratorio = -1;
+        try {
+            Connection cn = Conexion_BD.getConexionBD();
+            String sql = "SELECT id_laboratorio FROM laboratorio WHERE numero_lab = ?";
+            PreparedStatement pst = cn.prepareStatement(sql);
+            pst.setString(1, numeroLaboratorio);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                idLaboratorio = rs.getInt("id_laboratorio");
+            }
+            rs.close();
+            pst.close();
+            cn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return idLaboratorio;
+    }
+
+    public String obtenerNumeroLabPorId(int idLaboratorio) {
+        String NumeroLaboratorio = "Desconocida";
+        try {
+            Connection cn = Conexion_BD.getConexionBD();
+            String sql = "SELECT numero_lab FROM laboratorio WHERE id_laboratorio = ?";
+            PreparedStatement pst = cn.prepareStatement(sql);
+            pst.setInt(1, idLaboratorio);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                NumeroLaboratorio = rs.getString("numero");
+            }
+            rs.close();
+            pst.close();
+            cn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return NumeroLaboratorio;
+    }
+    
     public int getId_equipo() {
         return id_equipo;
     }

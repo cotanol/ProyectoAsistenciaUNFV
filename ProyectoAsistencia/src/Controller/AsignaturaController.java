@@ -1,13 +1,43 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Controller;
+import Model.AsignaturaModelo;
+import View.VentanaPrincipal;
+import java.util.ArrayList;
 
-/**
- *
- * @author brigi
- */
 public class AsignaturaController {
     
-}
+    AsignaturaModelo objAsignaturaModelo;
+    VentanaPrincipal objVentReg;
+    
+    public AsignaturaController(VentanaPrincipal objVentReg) {
+        this.objVentReg = objVentReg;
+        objAsignaturaModelo = new AsignaturaModelo(objVentReg);
+    }
+    
+    public AsignaturaController() {
+        objAsignaturaModelo = new AsignaturaModelo(objVentReg);
+    }
+    
+    public int insertarAsignaturaController (AsignaturaModelo obj) {
+        return objAsignaturaModelo.insertarAsignaturaModelo(obj);
+    }
+    
+    public int modificarAsignaturaController (AsignaturaModelo obj) {
+        return objAsignaturaModelo.modificarAsignaturaModelo(obj);
+    }
+    
+    public int eliminarAsignaturaController (AsignaturaModelo obj) {
+        return objAsignaturaModelo.eliminarAsignaturaModelo(obj);
+    }
+    
+    public ArrayList<AsignaturaModelo> enlistarAsignaturaController () {
+        return objAsignaturaModelo.enlistarAsignaturaModelo();
+    }
+            
+    public int obtenerIdAsignaturaPorNombreController(String nombreAsignatura) {
+        return objAsignaturaModelo.obtenerIdAsignaturaPorNombre(nombreAsignatura);
+    }
+    
+    public String obtenerNombreAsignaturaPorIdController(int idAsignatura) {
+        return objAsignaturaModelo.obtenerNombreAsignaturaPorId(idAsignatura);
+    }
+}    

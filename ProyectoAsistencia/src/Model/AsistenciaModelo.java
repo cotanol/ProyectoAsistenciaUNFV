@@ -183,6 +183,46 @@ public class AsistenciaModelo {
         return listaAlumnos;
     }
 
+    public int obtenerIdAlumnoPorCodigo(String codigoAlumno) {
+        int idAlumno = -1;
+        try {
+            Connection cn = Conexion_BD.getConexionBD();
+            String sql = "SELECT id_alumno FROM alumno WHERE codigo_alumno = ?";
+            PreparedStatement pst = cn.prepareStatement(sql);
+            pst.setString(1, codigoAlumno);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                idAlumno = rs.getInt("id_alumno");
+            }
+            rs.close();
+            pst.close();
+            cn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return idAlumno;
+    }
+      
+    public String obtenerCodigoAlumnoPorId(int idAlumno) {
+        String codigoAlumno = "Desconocido";
+        try {
+            Connection cn = Conexion_BD.getConexionBD();
+            String sql = "SELECT codigo_alumno FROM alumno WHERE id_alumno = ?";
+            PreparedStatement pst = cn.prepareStatement(sql);
+            pst.setInt(1, idAlumno);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                codigoAlumno = rs.getString("codigo_alumno");
+            }
+            rs.close();
+            pst.close();
+            cn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return codigoAlumno;
+    }     
+    
     public int getIdAsistencia() {
         return idAsistencia;
     }

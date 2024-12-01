@@ -41,4 +41,12 @@ public class AsistenciaController {
     public ArrayList<AlumnoModelo> obtenerAlumnosPorLaboratorioYHorario(int numeroLab, int asignatura, LocalTime horarioInicio) {
         return objAsistenciaModelo.obtenerAlumnosPorLaboratorioYHorario(numeroLab, asignatura, horarioInicio);
     }
+    
+    public int obtenerIdAlumnoPorCodigoController(String nombreAlumno){
+        return objAsistenciaModelo.obtenerIdAlumnoPorCodigo(nombreAlumno);
+    }    
+    
+    public String obtenerCodigoAlumnoPorIdController(int idAlumno){
+        return objAsistenciaModelo.obtenerCodigoAlumnoPorId(idAlumno);
+    }
 }
