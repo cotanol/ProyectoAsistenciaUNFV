@@ -303,7 +303,7 @@ public ArrayList<UsuarioModelo> buscarResgistroUsuarios(String buscar) {
 
         return id; 
     }
-
+  
     public int getIdUsuario() {
         return idUsuario;
     }

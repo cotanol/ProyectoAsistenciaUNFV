@@ -47,4 +47,12 @@ public class EquipoController {
     public int ultimoIdController () {
         return objEquipoModelo.ultimoId();
     }
+    
+    public int obtenerIDLaboratorioPorNumeroController(String numeroLaboratorio){
+        return objEquipoModelo.obtenerIDLaboratorioPorNumero(numeroLaboratorio);
+    }    
+    
+    public String obtenerNumeroLabPorIdController(int idLaboratorio){
+        return objEquipoModelo.obtenerNumeroLabPorId(idLaboratorio);
+    }    
 }

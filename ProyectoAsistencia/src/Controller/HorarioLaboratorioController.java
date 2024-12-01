@@ -49,6 +49,10 @@ public class HorarioLaboratorioController {
         return objHorarioLaboratorioModelo.obtenerIdUsuarioPorNombre(nombreUsuario);
     }
     
+    public int obtenerIDLaboratorioPorNumeroController(String numeroLaboratorio){
+        return objHorarioLaboratorioModelo.obtenerIDLaboratorioPorNumero(numeroLaboratorio);
+    }
+    
     public String obtenerNombreAsignaturaPorIdController(int idAsignatura) {
         return objHorarioLaboratorioModelo.obtenerNombreAsignaturaPorId(idAsignatura);
     }
@@ -56,4 +60,9 @@ public class HorarioLaboratorioController {
     public String obtenerNombreUsuarioPorIdController(int idUsuario) {
         return objHorarioLaboratorioModelo.obtenerNombreUsuarioPorId(idUsuario);
     }
-}    
+    
+    public String obtenerNumeroLabPorIdController(int idLaboratorio){
+        return objHorarioLaboratorioModelo.obtenerNumeroLabPorId(idLaboratorio);
+    }    
+    
+}

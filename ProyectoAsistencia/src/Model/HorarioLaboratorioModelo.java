@@ -125,7 +125,7 @@ public class HorarioLaboratorioModelo {
                 horarioLaboratorioModelo.setHorarioInicio(rs.getTime("horario_inicio").toLocalTime());
                 horarioLaboratorioModelo.setHorarioFin(rs.getTime("horario_fin").toLocalTime());
                 horarioLaboratorioModelo.setIdUsuario(rs.getInt("id_usuario"));
-                horarioLaboratorioModelo.setCodigoHorario(rs.getString("id_usuario"));
+                horarioLaboratorioModelo.setCodigoHorario(rs.getString("codigo_horario"));
             
                 listaHorarioLaboratorios.add(horarioLaboratorioModelo);
             }
@@ -165,25 +165,36 @@ public class HorarioLaboratorioModelo {
         ArrayList<HorarioLaboratorioModelo> listaHorarios = new ArrayList<>();
         try {
             cn = Conexion_BD.getConexionBD();
-            pt = cn.prepareStatement("SELECT * FROM horario_laboratorio WHERE id_laboratorio = ? AND id_asignatura = ? AND dia = ?");
-            pt.setInt(1, numeroLab);
-            pt.setInt(2, asignatura);
-            pt.setString(3, dia);
-            rs = pt.executeQuery();
+            StringBuilder sqlBuilder = new StringBuilder("SELECT * FROM horario_laboratorio WHERE id_laboratorio = ?");
+        if (asignatura != -1) {
+            sqlBuilder.append(" AND id_asignatura = ?");
+        }
+        if (!dia.isEmpty()) {
+            sqlBuilder.append(" AND dia = ?");
+        }
+        PreparedStatement pt = cn.prepareStatement(sqlBuilder.toString());
+        pt.setInt(1, numeroLab);
+        int paramIndex = 2;
+        if (asignatura != -1) {
+            pt.setInt(paramIndex++, asignatura);
+        }
+        if (!dia.isEmpty()) {
+            pt.setString(paramIndex, dia);
+        }
+        ResultSet rs = pt.executeQuery();
 
-            while (rs.next()) {
-                HorarioLaboratorioModelo horario = new HorarioLaboratorioModelo();
-                horario.setIdHorario(rs.getInt("id_horario"));
-                horario.setIdLaboratorio(rs.getInt("id_laboratorio"));
-                horario.setIdAsignatura(rs.getInt("id_asignatura"));
-                horario.setDia((rs.getString("dia")));
-                horario.setHorarioInicio(rs.getTime("horario_inicio").toLocalTime());
-                horario.setHorarioFin(rs.getTime("horario_fin").toLocalTime());
-                horario.setIdUsuario(rs.getInt("id_usuario"));
-                horario.setCodigoHorario(rs.getString("codigo_horario"));
-                listaHorarios.add(horario);
-            }
-
+        while (rs.next()) {
+            HorarioLaboratorioModelo horario = new HorarioLaboratorioModelo();
+            horario.setIdHorario(rs.getInt("id_horario"));
+            horario.setIdLaboratorio(rs.getInt("id_laboratorio"));
+            horario.setIdAsignatura(rs.getInt("id_asignatura"));
+            horario.setDia((rs.getString("dia")));
+            horario.setHorarioInicio(rs.getTime("horario_inicio").toLocalTime());
+            horario.setHorarioFin(rs.getTime("horario_fin").toLocalTime());
+            horario.setIdUsuario(rs.getInt("id_usuario"));
+            horario.setCodigoHorario(rs.getString("codigo_horario"));
+            listaHorarios.add(horario);
+        }
             cn.close();
             pt.close();
             rs.close();
@@ -193,11 +204,11 @@ public class HorarioLaboratorioModelo {
         return listaHorarios;
     }
     
-    public int obtenerIdAsignaturaPorNombre(String nombreAsignatura) {
+public int obtenerIdAsignaturaPorNombre(String nombreAsignatura) {
         int idAsignatura = -1;
         try {
             Connection cn = Conexion_BD.getConexionBD();
-            String sql = "SELECT id_asignatura FROM asignatura WHERE nombre_asignatura = ?";
+            String sql = "SELECT id_asignatura FROM asignatura WHERE nombre = ?";
             PreparedStatement pst = cn.prepareStatement(sql);
             pst.setString(1, nombreAsignatura);
             ResultSet rs = pst.executeQuery();
@@ -237,12 +248,12 @@ public class HorarioLaboratorioModelo {
         String nombreAsignatura = "Desconocida";
         try {
             Connection cn = Conexion_BD.getConexionBD();
-            String sql = "SELECT nombre_asignatura FROM asignatura WHERE id_asignatura = ?";
+            String sql = "SELECT nombre FROM asignatura WHERE id_asignatura = ?";
             PreparedStatement pst = cn.prepareStatement(sql);
             pst.setInt(1, idAsignatura);
             ResultSet rs = pst.executeQuery();
             if (rs.next()) {
-                nombreAsignatura = rs.getString("nombre_asignatura");
+                nombreAsignatura = rs.getString("nombre");
             }
             rs.close();
             pst.close();
@@ -273,6 +284,45 @@ public class HorarioLaboratorioModelo {
         return nombreUsuario;
     }
 
+    public int obtenerIDLaboratorioPorNumero(String numeroLaboratorio) {
+        int idLaboratorio = -1;
+        try {
+            Connection cn = Conexion_BD.getConexionBD();
+            String sql = "SELECT id_laboratorio FROM laboratorio WHERE numero_lab = ?";
+            PreparedStatement pst = cn.prepareStatement(sql);
+            pst.setString(1, numeroLaboratorio);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                idLaboratorio = rs.getInt("id_laboratorio");
+            }
+            rs.close();
+            pst.close();
+            cn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return idLaboratorio;
+    }
+
+    public String obtenerNumeroLabPorId(int idLaboratorio) {
+        String NumeroLaboratorio = "Desconocida";
+        try {
+            Connection cn = Conexion_BD.getConexionBD();
+            String sql = "SELECT numero_lab FROM laboratorio WHERE id_laboratorio = ?";
+            PreparedStatement pst = cn.prepareStatement(sql);
+            pst.setInt(1, idLaboratorio);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                NumeroLaboratorio = rs.getString("numero");
+            }
+            rs.close();
+            pst.close();
+            cn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return NumeroLaboratorio;
+    }
     
     public int getIdHorario() {
         return idHorario;

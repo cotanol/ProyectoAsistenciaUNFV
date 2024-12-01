@@ -208,15 +208,20 @@ public class VentanaRight4 extends JPanel {
         }
     }
 
-    private void buscarHorarios() {
-        String busqueda = txtBuscarLaboratorio.getText().trim().toLowerCase();
-        if (!busqueda.isEmpty()) {
-            modeloHorarios.setRowCount(0);
+private void buscarHorarios() {
+    String busqueda = txtBuscarLaboratorio.getText().trim().toLowerCase();
+    if (!busqueda.isEmpty()) {
+        modeloHorarios.setRowCount(0);
 
-            try {
-                int numeroLab = Integer.parseInt(busqueda);
-                listaHorarios = horarioControlador.buscarHorarios(numeroLab, -1, "");
+        try {
+            int numeroLab = Integer.parseInt(busqueda);
+            
+            // Modify the search to use -1 for unspecified asignatura and empty string for unspecified dia
+            listaHorarios = horarioControlador.buscarHorarios(numeroLab, -1, "");
 
+            if (listaHorarios.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "No se encontraron horarios para el laboratorio " + numeroLab);
+            } else {
                 for (HorarioLaboratorioModelo horario : listaHorarios) {
                     modeloHorarios.addRow(new Object[]{
                         horarioControlador.obtenerNombreAsignaturaPorIdController(horario.getIdAsignatura()),
@@ -227,13 +232,14 @@ public class VentanaRight4 extends JPanel {
                         horarioControlador.obtenerNombreUsuarioPorIdController(horario.getIdUsuario())
                     });
                 }
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(null, "Por favor ingrese un número de laboratorio válido");
             }
-        } else {
-            listarHorarios();
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Por favor ingrese un número de laboratorio válido");
         }
+    } else {
+        listarHorarios();
     }
+}
 
     public void listarHorarios() {
         modeloHorarios.setRowCount(0);
