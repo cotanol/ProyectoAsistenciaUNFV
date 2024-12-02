@@ -363,7 +363,7 @@ public class VentanaRight3 extends JPanel {
 
         for (EquipoModelo obj : listaEquipos) {
             Object[] fila = {
-                obj.getIdLaboratorio(),
+                equipoController.obtenerNumeroLabPorIdController(obj.getIdLaboratorio()),
                 obj.getTipoEquipo(),
                 obj.getCodPatrimonial(),
                 obj.getNumeroSerie(),
@@ -421,7 +421,7 @@ public class VentanaRight3 extends JPanel {
 
         for (EquipoModelo equipoTa : listaEquipos) {
             modeloEquiposDisponibles.addRow(new Object[]{
-                equipoTa.getIdLaboratorio(),
+                equipoController.obtenerNumeroLabPorIdController(equipoTa.getIdLaboratorio()),
                 equipoTa.getTipoEquipo(),
                 equipoTa.getCodPatrimonial(),
                 equipoTa.getNumeroSerie(),
@@ -436,7 +436,7 @@ public class VentanaRight3 extends JPanel {
 
         for (EquipoModelo equipoTa : listaEquipos) {
             modeloEquiposRegistrados.addRow(new Object[]{
-                equipoTa.getIdLaboratorio(),
+                equipoController.obtenerNumeroLabPorIdController(equipoTa.getIdLaboratorio()),
                 equipoTa.getTipoEquipo(),
                 equipoTa.getCodPatrimonial(),
                 equipoTa.getNumeroSerie(),

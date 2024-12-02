@@ -32,12 +32,5 @@ public class AsignaturaController {
     public ArrayList<AsignaturaModelo> enlistarAsignaturaController () {
         return objAsignaturaModelo.enlistarAsignaturaModelo();
     }
-            
-    public int obtenerIdAsignaturaPorNombreController(String nombreAsignatura) {
-        return objAsignaturaModelo.obtenerIdAsignaturaPorNombre(nombreAsignatura);
-    }
     
-    public String obtenerNombreAsignaturaPorIdController(int idAsignatura) {
-        return objAsignaturaModelo.obtenerNombreAsignaturaPorId(idAsignatura);
-    }
 }    

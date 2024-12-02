@@ -31,7 +31,7 @@ CREATE TABLE usuario (
 -- Esta tabla almacena la información de los laboratorios disponibles
 CREATE TABLE laboratorio (
   id_laboratorio INT AUTO_INCREMENT PRIMARY KEY,  -- Identificador único del laboratorio (clave primaria)
-  numero_lab INT UNIQUE,                          -- Número asignado al laboratorio (único)
+  numero_lab VARCHAR(20) UNIQUE,                          -- Número asignado al laboratorio (único)
   capacidad INT                                   -- Capacidad máxima del laboratorio
 );
 

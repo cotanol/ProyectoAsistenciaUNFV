@@ -248,7 +248,7 @@ private void buscarHorarios() {
         for (HorarioLaboratorioModelo horario : listaHorarios) {
             modeloHorarios.addRow(new Object[]{
                 horarioControlador.obtenerNombreAsignaturaPorIdController(horario.getIdAsignatura()),
-                horario.getIdLaboratorio(),
+                horarioControlador.obtenerNumeroLabPorIdController(horario.getIdLaboratorio()),
                 horario.getDia(),
                 horario.getHorarioInicio(),
                 horario.getHorarioFin(),
