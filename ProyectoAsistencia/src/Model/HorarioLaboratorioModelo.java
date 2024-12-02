@@ -204,7 +204,7 @@ public class HorarioLaboratorioModelo {
         return listaHorarios;
     }
     
-public int obtenerIdAsignaturaPorNombre(String nombreAsignatura) {
+    public int obtenerIdAsignaturaPorNombre(String nombreAsignatura) {
         int idAsignatura = -1;
         try {
             Connection cn = Conexion_BD.getConexionBD();
@@ -242,6 +242,26 @@ public int obtenerIdAsignaturaPorNombre(String nombreAsignatura) {
             e.printStackTrace();
         }
         return idUsuario;
+    }
+    
+    public int obtenerIDLaboratorioPorNumero(String numeroLaboratorio) {
+        int idLaboratorio = -1;
+        try {
+            Connection cn = Conexion_BD.getConexionBD();
+            String sql = "SELECT id_laboratorio FROM laboratorio WHERE numero_lab = ?";
+            PreparedStatement pst = cn.prepareStatement(sql);
+            pst.setString(1, numeroLaboratorio);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                idLaboratorio = rs.getInt("id_laboratorio");
+            }
+            rs.close();
+            pst.close();
+            cn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return idLaboratorio;
     }
     
     public String obtenerNombreAsignaturaPorId(int idAsignatura) {
@@ -284,25 +304,7 @@ public int obtenerIdAsignaturaPorNombre(String nombreAsignatura) {
         return nombreUsuario;
     }
 
-    public int obtenerIDLaboratorioPorNumero(String numeroLaboratorio) {
-        int idLaboratorio = -1;
-        try {
-            Connection cn = Conexion_BD.getConexionBD();
-            String sql = "SELECT id_laboratorio FROM laboratorio WHERE numero_lab = ?";
-            PreparedStatement pst = cn.prepareStatement(sql);
-            pst.setString(1, numeroLaboratorio);
-            ResultSet rs = pst.executeQuery();
-            if (rs.next()) {
-                idLaboratorio = rs.getInt("id_laboratorio");
-            }
-            rs.close();
-            pst.close();
-            cn.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return idLaboratorio;
-    }
+    
 
     public String obtenerNumeroLabPorId(int idLaboratorio) {
         String NumeroLaboratorio = "Desconocida";
@@ -313,7 +315,7 @@ public int obtenerIdAsignaturaPorNombre(String nombreAsignatura) {
             pst.setInt(1, idLaboratorio);
             ResultSet rs = pst.executeQuery();
             if (rs.next()) {
-                NumeroLaboratorio = rs.getString("numero");
+                NumeroLaboratorio = rs.getString("numero_lab");
             }
             rs.close();
             pst.close();

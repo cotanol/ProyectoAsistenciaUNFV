@@ -107,12 +107,12 @@ INSERT INTO usuario (nombres, apellidos, tipo_documento, nro_documento, numero, 
 
 
 INSERT INTO laboratorio (numero_lab, capacidad) VALUES
-(101, 30),
-(102, 25),
-(103, 35),
-(104, 40),
-(105, 20),
-(106, 30);
+('LAB-101', 30),
+('LAB-102', 25),
+('LAB-103', 35),
+('LAB-104', 40),
+('LAB-105', 20),
+('LAB-106', 30);
 
 
 

@@ -145,7 +145,7 @@ public class EquipoModelo {
 
             while (rs.next()) {
                 Row filaDatos = hoja.createRow(numFila);
-
+                
                 for (int i = 0; i < numCol; i++) {
                     Cell celda = filaDatos.createCell(i);
                     celda.setCellValue(rs.getString(i + 1));
@@ -345,7 +345,7 @@ public class EquipoModelo {
             pst.setInt(1, idLaboratorio);
             ResultSet rs = pst.executeQuery();
             if (rs.next()) {
-                NumeroLaboratorio = rs.getString("numero");
+                NumeroLaboratorio = rs.getString("numero_lab");
             }
             rs.close();
             pst.close();

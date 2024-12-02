@@ -49,4 +49,12 @@ public class AsistenciaController {
     public String obtenerCodigoAlumnoPorIdController(int idAlumno){
         return objAsistenciaModelo.obtenerCodigoAlumnoPorId(idAlumno);
     }
+    
+    public int obtenerIdHorarioPorCodigoController(String codigoHorario) {
+        return objAsistenciaModelo.obtenerIdHorarioPorCodigo(codigoHorario);
+    }
+    
+    public String obtenerCodigoHorarioPorIdController(int idHorario) {
+        return objAsistenciaModelo.obtenerCodigoHorarioPorId(idHorario);
+    }
 }

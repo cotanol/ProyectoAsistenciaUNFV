@@ -223,6 +223,46 @@ public class AsistenciaModelo {
         return codigoAlumno;
     }     
     
+    public int obtenerIdHorarioPorCodigo(String codigoHorario) {
+        int idHorario = -1;
+        try {
+            Connection cn = Conexion_BD.getConexionBD();
+            String sql = "SELECT id_horario FROM horario_laboratorio WHERE codigo_horario = ?";
+            PreparedStatement pst = cn.prepareStatement(sql);
+            pst.setString(1, codigoHorario);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                idHorario = rs.getInt("id_horario");
+            }
+            rs.close();
+            pst.close();
+            cn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return idHorario;
+    }
+      
+    public String obtenerCodigoHorarioPorId(int idHorario) {
+        String codigoHorario = "Desconocido";
+        try {
+            Connection cn = Conexion_BD.getConexionBD();
+            String sql = "SELECT codigo_horario FROM horario_laboratorio WHERE id_horario = ?";
+            PreparedStatement pst = cn.prepareStatement(sql);
+            pst.setInt(1, idHorario);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                codigoHorario = rs.getString("codigo_horario");
+            }
+            rs.close();
+            pst.close();
+            cn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return codigoHorario;
+    }   
+    
     public int getIdAsistencia() {
         return idAsistencia;
     }

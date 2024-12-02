@@ -21,9 +21,9 @@ public class VentanaRight2 extends JPanel {
 
     // Componentes principales
     private JLabel lblControlAsistencia, lblDatosLab, lblConfigAvanz, lblNroLab, lblHor, lblAsigs;
-    private JComboBox<Integer> cboNroLab;
+    private JComboBox<String> cboNroLab;
     private JComboBox<LocalTime> cboHorario;
-    private JComboBox<Integer> cboAsignatura;
+    private JComboBox<String> cboAsignatura;
     private JButton btnBuscar, btnActuDatos, btnReporteGen;
     private JTable tablaLaboratorios;
     private DefaultTableModel modeloLaboratorio;
@@ -102,7 +102,7 @@ public class VentanaRight2 extends JPanel {
         lblNroLab = ComponentFactory.crearEtiqueta("Nro. Laboratorio", 50, 20, 200, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_HOVER_SELECCIONADO1);
         subPanel.add(lblNroLab);
 
-        cboNroLab = ComponentFactory.crearComboBoxInteger(new Integer[]{}, 50, 50, 200, 30, Constantes.BORDER_HOVER);
+        cboNroLab = ComponentFactory.crearComboBoxString(new String[]{}, 50, 50, 200, 30, Constantes.BORDER_HOVER);
         subPanel.add(cboNroLab);
         cargarComboNroLab();
 
@@ -118,7 +118,7 @@ public class VentanaRight2 extends JPanel {
         lblAsigs = ComponentFactory.crearEtiqueta("Asignatura", 550, 20, 200, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_HOVER_SELECCIONADO1);
         subPanel.add(lblAsigs);
 
-        cboAsignatura = ComponentFactory.crearComboBoxInteger(new Integer[]{}, 550, 50, 200, 30, Constantes.BORDER_HOVER);
+        cboAsignatura = ComponentFactory.crearComboBoxString(new String[]{}, 550, 50, 200, 30, Constantes.BORDER_HOVER);
         subPanel.add(cboAsignatura);
         cargarComboAsignatura();
 
@@ -130,10 +130,10 @@ public class VentanaRight2 extends JPanel {
     private void cargarComboNroLab() {
         cboNroLab.removeAllItems();
         cboNroLab.addItem(null);
-        Set<Integer> labsAgregados = new HashSet<>();
+        Set<String> labsAgregados = new HashSet<>();
         for (HorarioLaboratorioModelo horaLab : listaHorarioLaboratorio) {
-            if (labsAgregados.add(horaLab.getIdLaboratorio())) {
-                cboNroLab.addItem(horaLab.getIdLaboratorio());
+            if (labsAgregados.add(horarioLaboratorioController.obtenerNumeroLabPorIdController(horaLab.getIdLaboratorio()))) {
+                cboNroLab.addItem(horarioLaboratorioController.obtenerNumeroLabPorIdController(horaLab.getIdLaboratorio()));
             }
         }
     }
@@ -152,11 +152,11 @@ public class VentanaRight2 extends JPanel {
     private void cargarComboAsignatura() {
         cboAsignatura.removeAllItems();
         cboAsignatura.addItem(null);
-        Set<Integer> asignaturasAgregadas = new HashSet<>();
+        Set<String> asignaturasAgregadas = new HashSet<>();
         for (HorarioLaboratorioModelo horaLab : listaHorarioLaboratorio) {
-            if (asignaturasAgregadas.add(horaLab.getIdAsignatura())) {
+            if (asignaturasAgregadas.add(horarioLaboratorioController.obtenerNombreAsignaturaPorIdController(horaLab.getIdAsignatura()))) {
                 
-                cboAsignatura.addItem(horaLab.getIdAsignatura());
+                cboAsignatura.addItem(horarioLaboratorioController.obtenerNombreAsignaturaPorIdController(horaLab.getIdAsignatura()));
             }
         }
     }
@@ -203,7 +203,7 @@ public class VentanaRight2 extends JPanel {
 
     private void manejarBuscarHorario() {
         Integer numeroLab = (Integer) cboNroLab.getSelectedItem();
-        Integer asignatura = (Integer) cboAsignatura.getSelectedItem();
+        Integer asignatura = (Integer) horarioLaboratorioController.obtenerIdAsignaturaPorNombreController((String)cboAsignatura.getSelectedItem());
         LocalTime horarioInicio = (LocalTime) cboHorario.getSelectedItem();
 
         if (numeroLab == null || asignatura == null || horarioInicio == null) {
@@ -426,7 +426,7 @@ public class VentanaRight2 extends JPanel {
             LaboratorioModelo laboratorioModelo = new LaboratorioModelo();
             int capacidad = Integer.parseInt(txtCapacidad.getText());
             laboratorioModelo.setCapacidad(capacidad);
-            laboratorioModelo.setNumeroLab(laboratorioController.ultimoIdController() + 1);
+            laboratorioModelo.setNumeroLab(txtNumeroLab.getText());
 
             int estado = laboratorioController.insertarLaboratorioController(laboratorioModelo);
             mostrarMensaje(estado, "Laboratorio Insertado 🧪!!", "Laboratorio no Insertado 🧪!!");
@@ -441,7 +441,7 @@ public class VentanaRight2 extends JPanel {
     private void manejarModificarLaboratorio() {
         if (seLlenaronTodosLosCamposLaboratorio()) {
             LaboratorioModelo laboratorioModelo = new LaboratorioModelo();
-            int numeroLab = Integer.parseInt(txtNumeroLab.getText());
+            String numeroLab = txtNumeroLab.getText();
             int capacidad = Integer.parseInt(txtCapacidad.getText());
             laboratorioModelo.setNumeroLab(numeroLab);
             laboratorioModelo.setCapacidad(capacidad);
@@ -471,9 +471,9 @@ public class VentanaRight2 extends JPanel {
                 return;
             }
 
-            int numeroLab = Integer.parseInt(numeroLabTexto);
+            
             LaboratorioModelo laboratorioModelo = new LaboratorioModelo();
-            laboratorioModelo.setNumeroLab(numeroLab);
+            laboratorioModelo.setNumeroLab(numeroLabTexto);
 
             int estado = laboratorioController.eliminarLaboratorioController(laboratorioModelo);
             mostrarMensaje(estado, "Laboratorio Eliminado 🧪!!", "Laboratorio no Eliminado 🧪!!");

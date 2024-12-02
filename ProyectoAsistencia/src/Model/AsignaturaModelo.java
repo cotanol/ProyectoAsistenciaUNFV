@@ -106,46 +106,6 @@ public class AsignaturaModelo {
         }
         return listaAsignaturas;
     }
-        
-    public int obtenerIdAsignaturaPorNombre(String nombreAsignatura) {
-        int idAsignatura = -1;
-        try {
-            Connection cn = Conexion_BD.getConexionBD();
-            String sql = "SELECT id_asignatura FROM asignatura WHERE nombre_asignatura = ?";
-            PreparedStatement pst = cn.prepareStatement(sql);
-            pst.setString(1, nombreAsignatura);
-            ResultSet rs = pst.executeQuery();
-            if (rs.next()) {
-                idAsignatura = rs.getInt("id_asignatura");
-            }
-            rs.close();
-            pst.close();
-            cn.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return idAsignatura;
-    }
-    
-    public String obtenerNombreAsignaturaPorId(int idAsignatura) {
-        String nombreAsignatura = "Desconocida";
-        try {
-            Connection cn = Conexion_BD.getConexionBD();
-            String sql = "SELECT nombre_asignatura FROM asignatura WHERE id_asignatura = ?";
-            PreparedStatement pst = cn.prepareStatement(sql);
-            pst.setInt(1, idAsignatura);
-            ResultSet rs = pst.executeQuery();
-            if (rs.next()) {
-                nombreAsignatura = rs.getString("nombre_asignatura");
-            }
-            rs.close();
-            pst.close();
-            cn.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return nombreAsignatura;
-    }    
     
     public int getIdAsignatura() {
         return idAsignatura;
