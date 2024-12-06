@@ -136,7 +136,7 @@ public class EquipoModelo {
         try {
             Connection conexion = cn.getConexionBD();
       
-            ps = conexion.prepareStatement("SELECT numero_lab, tipo_equipo, cod_patrimonial, numero_serie, estado FROM equipo WHERE estado = 'Operativo';");
+            ps = conexion.prepareStatement("SELECT id_laboratorio, tipo_equipo, cod_patrimonial, numero_serie, estado FROM equipo WHERE estado = 'Operativo';");
 
 
             rs = ps.executeQuery();
