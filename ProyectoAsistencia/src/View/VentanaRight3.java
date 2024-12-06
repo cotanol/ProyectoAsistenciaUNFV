@@ -274,9 +274,13 @@ public class VentanaRight3 extends JPanel {
                 equipo.setCodPatrimonial(txtCodigoPatrimonial.getText().trim());
 
                 // Insertar el equipo
-                int estadoRegistro = equipoController.insertarEquipoController(equipo);
+                int estado = equipoController.insertarEquipoController(equipo);
 
-                mostrarMensaje(estadoRegistro, "Equipo agregado exitosamente 🐧!!", "Error al agregar el equipo 🐧!!");
+                if (estado == 1) {
+                    Util.WindowFactory.confirmationWindowCRUD("Registro Insertado","INSERTADO");
+                } else {
+                    Util.WindowFactory.errorWindowCRUD("Registro No Insertado","INSERTADO");
+                }
 
                 // Actualizar tablas
                 listarEquiposDisponibles();
@@ -284,7 +288,7 @@ public class VentanaRight3 extends JPanel {
 
                 limpiarCamposEquipo();
             } else {
-                JOptionPane.showMessageDialog(null, "Llena todos los campos 🐧!!");
+                Util.WindowFactory.errorLogin(": Campos en Blanco","CAMPOS_EN_BLANCO");
             }
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(null, "El valor del laboratorio debe ser un número válido 🐧!!");
@@ -312,7 +316,11 @@ public class VentanaRight3 extends JPanel {
                 // Modificar el equipo
                 int estado = equipoController.modificarEquipoController(equipo);
 
-                mostrarMensaje(estado, "Equipo modificado correctamente 🐧!!", "Error al modificar el equipo 🐧!!");
+                if (estado == 1) {
+                    Util.WindowFactory.confirmationWindowCRUD("Registro Modificado","MODIFICADO");
+                } else {
+                    Util.WindowFactory.errorWindowCRUD("Registro No Modificado","MODIFICADO");
+                }
 
                 // Actualizar tablas
                 listarEquiposDisponibles();
@@ -320,7 +328,7 @@ public class VentanaRight3 extends JPanel {
 
                 limpiarCamposEquipo();
             } else {
-                JOptionPane.showMessageDialog(null, "Llena todos los campos 🐧!!");
+                Util.WindowFactory.errorLogin(": Campos en Blanco","CAMPOS_EN_BLANCO");
             }
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(null, "El valor del laboratorio debe ser un número válido 🐧!!");
@@ -345,7 +353,11 @@ public class VentanaRight3 extends JPanel {
 
                 int estado = equipoController.eliminarEquipoController(equipo);
 
-                mostrarMensaje(estado, "Equipo eliminado correctamente 🐧!!", "Error al eliminar el equipo 🐧!!");
+                if (estado == 1) {
+                    Util.WindowFactory.confirmationWindowCRUD("Registro Eliminado","ELIMINADO");
+                } else {
+                    Util.WindowFactory.errorWindowCRUD("Registro No Eliminado","ELIMINADO");
+                }
 
                 listarEquiposDisponibles();
                 listarEquiposRegistrados();
@@ -371,14 +383,6 @@ public class VentanaRight3 extends JPanel {
                 
             };
             modeloEquiposRegistrados.addRow(fila); // Agrega cada registro filtrado a la tabla
-        }
-    }
-    
-    private void mostrarMensaje(int estado, String mensajeExito, String mensajeError) {
-        if (estado == 1) {
-            JOptionPane.showMessageDialog(null, mensajeExito);
-        } else {
-            JOptionPane.showMessageDialog(null, mensajeError);
         }
     }
 

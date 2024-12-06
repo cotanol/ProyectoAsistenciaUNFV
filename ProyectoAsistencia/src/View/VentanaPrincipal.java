@@ -31,6 +31,8 @@ public class VentanaPrincipal extends JFrame {
     private JButton botonSeleccionado;
 
     public VentanaPrincipal() {
+        // Foco transparente de seleccion
+        UIManager.put("Button.select", new Color(0, 0, 0, 0));         
         // Configuración de la ventana principal
         setSize(1600, 900);
         setTitle("GESTOR DE LABORATORIOS");
@@ -172,7 +174,10 @@ public class VentanaPrincipal extends JFrame {
 
         // Configurar el botón de cerrar sesión
         btnCerrarSesion.addMouseListener(new EstiloHover.HoverAccionBoton(btnCerrarSesion));
-        btnCerrarSesion.addActionListener(e -> System.exit(0));
+        btnCerrarSesion.addActionListener(e -> {
+            this.dispose();
+            Util.WindowFactory.windowClose("Cirre de Sesión","CIERRE_SESION");
+        });
     }
 
     private void actualizarEstadoBotones() {

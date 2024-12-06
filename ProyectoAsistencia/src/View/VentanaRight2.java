@@ -434,7 +434,7 @@ public class VentanaRight2 extends JPanel {
             listarLaboratorios();
             limpiarCamposLaboratorio();
         } else {
-            JOptionPane.showMessageDialog(null, "Llena todos los campos 🧪!!");
+            Util.WindowFactory.errorLogin(": Campos en Blanco","CAMPOS_EN_BLANCO");
         }
     }
 
@@ -453,7 +453,7 @@ public class VentanaRight2 extends JPanel {
             listarLaboratorios();
             limpiarCamposLaboratorio();
         } else {
-            JOptionPane.showMessageDialog(null, "Llena todos los campos 🧪!!");
+            Util.WindowFactory.errorLogin(": Campos en Blanco","CAMPOS_EN_BLANCO");
         }
     }
 

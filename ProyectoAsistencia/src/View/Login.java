@@ -11,7 +11,7 @@ import Model.UsuarioModelo;
 import java.util.ArrayList;
 
 public class Login extends JFrame {
-
+    
     // Componentes de la interfaz
     private JPanel panelHeader, panelMenu, panelImg;
     private JLabel imageLabel, lbTitulo, lbUsuario, lbPassword;
@@ -20,7 +20,10 @@ public class Login extends JFrame {
     private JButton btnEntrar, btnSalir;
 
     public Login() {
+        // Foco transparente de seleccion
+        UIManager.put("Button.select", new Color(0, 0, 0, 0)); 
         // Configuración de la ventana principal
+        
         setSize(1000, 600);
         setTitle("Login del Gestionador");
         setResizable(false);
@@ -54,7 +57,7 @@ public class Login extends JFrame {
         add(panelMenu);
 
         // Etiqueta de título
-        lbTitulo = ComponentFactory.crearEtiqueta("INICIAR SESIÓN", 50, 40, 300, 45, Constantes.FUENTE_TITULO, Constantes.COLOR_TEXTO_NEGRO);
+        lbTitulo = ComponentFactory.crearEtiqueta("INICIAR SESIÓN", 50, 40, 300, 45, Constantes.FUENTE_SUBTITULO, Constantes.COLOR_TEXTO_NEGRO);
         panelMenu.add(lbTitulo);
 
         // Etiqueta y campo de texto para usuario
@@ -105,10 +108,7 @@ public class Login extends JFrame {
         // Eventos de acción
         btnEntrar.addActionListener(e -> Entrar());
         btnSalir.addActionListener(e -> {
-            int confirmacion = JOptionPane.showConfirmDialog(null, "¿Está seguro de que desea salir?", "Confirmación", JOptionPane.YES_NO_OPTION);
-            if (confirmacion == JOptionPane.YES_OPTION) {
-                System.exit(0);
-            }
+            Util.WindowFactory.windowClose("Cirre de Programa","CIERRE_PROGRAMA");
         });
     }
 
@@ -130,7 +130,7 @@ public class Login extends JFrame {
         String clave = new String(txtPassword.getPassword()).trim();
 
         if (usuario.isEmpty() || clave.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Por favor, complete todos los campos.");
+            Util.WindowFactory.errorLogin(" del login: Campos en Blanco","CAMPOS_EN_BLANCO");
             return;
         }
 
@@ -148,7 +148,7 @@ public class Login extends JFrame {
             vtn.setUser(usuario);
             vtn.setVisible(true);
         } else {
-            JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos.");
+            Util.WindowFactory.errorLogin(" del login: Usuario/Contraseña Incorrectos","USUARIO_CONTRASEÑA_INCORRECTOS");
         }
     }
 
