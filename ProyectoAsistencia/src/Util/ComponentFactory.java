@@ -8,8 +8,25 @@ import java.time.LocalTime;
 
 public class ComponentFactory {
     
+    public static JLabel insertarImagenLabel(String direccion, int escalaX, int escalaY, int x, int y){
+        ImageIcon icon = new ImageIcon(direccion);
+        ImageIcon imageScalada = new ImageIcon(icon.getImage().getScaledInstance(escalaX, escalaY, Image.SCALE_DEFAULT));
+        JLabel imageLabel = new JLabel(imageScalada);
+        imageLabel.setOpaque(true);
+        imageLabel.setBounds(x, y, escalaX, escalaY);
+        return imageLabel;
+    }
+     
+    public static JLabel preguntaVentanaCerrar(String texto, int x, int y, int ancho, int alto) {
+        JLabel etiqueta = new JLabel(texto,SwingConstants.CENTER);
+        etiqueta.setBounds(x, y, ancho, alto);
+        etiqueta.setFont(new Font("arial",1,16));
+        etiqueta.setHorizontalAlignment(SwingConstants.CENTER);
+        etiqueta.setVerticalAlignment(SwingConstants.CENTER);
+        return etiqueta;
+    }        
+            
     public static JButton crearBotonMenu(String texto) {
-        UIManager.put("Button.select", new Color(0, 0, 0, 0));
         JButton boton = new JButton(texto);
         boton.setBackground(Constantes.COLOR_BASE_BOTONES);
         boton.setForeground(Constantes.COLOR_TEXTO_NEGRO);
@@ -21,7 +38,6 @@ public class ComponentFactory {
     }
 
     public static JButton crearBotonAccion(String texto, int x, int y, int ancho, int alto) {
-        UIManager.put("Button.select", new Color(0, 0, 0, 0));
         JButton boton = new JButton(texto);
         boton.setBounds(x, y, ancho, alto);
         boton.setBackground(Constantes.COLOR_HOVER_SELECCIONADO1);
@@ -48,6 +64,16 @@ public class ComponentFactory {
         etiqueta.setBounds(x, y, ancho, alto);
         etiqueta.setFont(fuente);
         etiqueta.setForeground(colorTexto);
+        return etiqueta;
+    }
+    
+    public static JLabel crearEtiquetaMsj(String texto, int x, int y, int ancho, int alto, Font fuente, Color colorTexto) {
+        JLabel etiqueta = new JLabel(texto);
+        etiqueta.setBounds(x, y, ancho, alto);
+        etiqueta.setFont(fuente);
+        etiqueta.setForeground(colorTexto);
+        etiqueta.setHorizontalAlignment(SwingConstants.CENTER);
+        etiqueta.setVerticalAlignment(SwingConstants.CENTER);
         return etiqueta;
     }
 

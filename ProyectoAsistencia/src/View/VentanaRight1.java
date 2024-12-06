@@ -204,13 +204,17 @@ public class VentanaRight1 extends JPanel {
             usuarioModelo.setEmail(txtEmail.getText());
 
             int estado = usuarioControlador.insertarUsuarioController(usuarioModelo);
-
-            mostrarMensaje(estado, "Registro Insertado 🐧!!", "Registro no Insertado 🐧!!");
-
+            
+            if (estado == 1) {
+                Util.WindowFactory.confirmationWindowCRUD("Registro Insertado","INSERTADO");
+            } else {
+                Util.WindowFactory.errorWindowCRUD("Registro No Insertado","INSERTADO");
+            }
+            
             listarUsuario();
             limpiarCampos();
         } else {
-            JOptionPane.showMessageDialog(null, "Llena todos los campos 🐧!!");
+            Util.WindowFactory.errorLogin(": Campos en Blanco","CAMPOS_EN_BLANCO");
         }
     }
 
@@ -230,8 +234,12 @@ public class VentanaRight1 extends JPanel {
 
         int estado = usuarioControlador.modificarUsuarioController(usuarioModelo);
 
-        mostrarMensaje(estado, "Registro Modificado 🐧!!", "Registro no Modificado 🐧!!");
-
+            if (estado == 1) {
+                Util.WindowFactory.confirmationWindowCRUD("Registro Modificado","MODIFICADO");
+            } else {
+                Util.WindowFactory.errorWindowCRUD("Registro No Modificado","MODIFICADO");
+            }
+            
         listarUsuario();
         limpiarCampos();
     }
@@ -242,19 +250,16 @@ public class VentanaRight1 extends JPanel {
 
         int estado = usuarioControlador.eliminarUsuarioController(usuarioModelo);
 
-        mostrarMensaje(estado, "Registro Eliminado 🐧!!", "Registro no Eliminado 🐧!!");
-
+            if (estado == 1) {
+                Util.WindowFactory.confirmationWindowCRUD("Registro Eliminado","ELIMINADO");
+            } else {
+                Util.WindowFactory.errorWindowCRUD("Registro No Eliminado","ELIMINADO");
+            }
+            
         listarUsuario();
         limpiarCampos();
     }
 
-    private void mostrarMensaje(int estado, String mensajeExito, String mensajeError) {
-        if (estado == 1) {
-            JOptionPane.showMessageDialog(null, mensajeExito);
-        } else {
-            JOptionPane.showMessageDialog(null, mensajeError);
-        }
-    }
 
     private boolean seLlenaronTodosLosCampos() {
         String[] campos = {

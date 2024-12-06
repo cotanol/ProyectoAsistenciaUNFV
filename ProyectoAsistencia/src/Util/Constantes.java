@@ -18,9 +18,11 @@ public class Constantes {
     public static final Color COLOR_HOVER_SELECCIONADO2 = new Color(255, 198, 66);
     public static final Color COLOR_TEXTO_BLANCO = Color.WHITE;
     public static final Color COLOR_TEXTO_NEGRO = Color.BLACK;
+    public static final Color COLOR_TEXTO_ROJO = Color.RED;
     public static final Color COLOR_FONDO_PANEL = new Color(238, 238, 238);
     public static final Color COLOR_BOTON_EXCEL = new Color(0, 176, 80);
-
+    public static final Color COLOR_BOTON_BLOQUEADO_MENU = new Color(214,137,16);
+    public static final Color COLOR_BOTON_BLOQUEADO_FONT_MENU = new Color(97,106,107);
     // Fuentes
     public static final Font FUENTE_TITULO = new Font("arial", Font.BOLD, 50);
     public static final Font FUENTE_SUBTITULO = new Font("arial", Font.BOLD, 30);
@@ -28,8 +30,13 @@ public class Constantes {
     public static final Font FUENTE_TEXTFIELD = new Font("arial", Font.PLAIN, 18);
     public static final Font FUENTE_BOTON = new Font("arial", Font.BOLD, 20);
     public static final Font FUENTE_MENU = new Font("arial", Font.PLAIN, 22);
+    public static final Font FUENTE_TEXTO_ERROR_15 = new Font("arial",0,15);
+    public static final Font FUENTE_TEXTO_ERROR_17 = new Font("arial",0,17);
 
     // Bordes
     public static final Border BORDER_NEGRO = BorderFactory.createLineBorder(Color.BLACK, 2);
     public static final Border BORDER_HOVER = BorderFactory.createLineBorder(COLOR_HOVER_SELECCIONADO1, 2);
+    
+    //Constantes Fuentes para ErrorWindowFactory
+    public static final Font ERROR_FUENTE_LABEL_REGISTRO = new Font("arial",Font.BOLD,30);
 }
