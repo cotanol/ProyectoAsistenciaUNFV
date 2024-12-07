@@ -143,7 +143,7 @@ public class LaboratorioModelo {
 
         return id; 
     }
-    
+    /*
     public int crearHorarioLaboratorioVacio(int id_laboratorio) {
         
         int estado = 0;
@@ -162,7 +162,7 @@ public class LaboratorioModelo {
         
         return estado;
     }
-
+    */
     public int getIdLaboratorio() {
         return idLaboratorio;
     }

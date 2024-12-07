@@ -33,6 +33,10 @@ public class UsuarioController {
         return objUsuarioModelo.enlistarUsuarioModelo();
     }
     
+    public ArrayList<UsuarioModelo> enlistarUsuarioDocenteController () {
+        return objUsuarioModelo.enlistarDocentes();
+    }
+    
     public ArrayList<UsuarioModelo> buscarResgistroUsuarios(String buscar) {
         return objUsuarioModelo.buscarResgistroUsuarios(buscar);
     }

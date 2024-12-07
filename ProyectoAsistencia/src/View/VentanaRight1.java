@@ -28,6 +28,10 @@ public class VentanaRight1 extends JPanel {
     private JButton btnAgregar, btnModificar, btnEliminar, btnExportarExcel;
     private JTable tablaUsuarios;
     private DefaultTableModel modeloUsuario;
+    
+    private VentanaRight2 ventanaRight2;
+    private VentanaRight3 ventanaRight3;
+    private VentanaRight4 ventanaRight4;
 
     // Datos
     private ArrayList<UsuarioModelo> listaUsuarios;
@@ -207,6 +211,7 @@ public class VentanaRight1 extends JPanel {
             
             if (estado == 1) {
                 Util.WindowFactory.confirmationWindowCRUD("Registro Insertado","INSERTADO");
+                ventanaRight4.cargarComboDocente();
             } else {
                 Util.WindowFactory.errorWindowCRUD("Registro No Insertado","INSERTADO");
             }
@@ -236,6 +241,7 @@ public class VentanaRight1 extends JPanel {
 
             if (estado == 1) {
                 Util.WindowFactory.confirmationWindowCRUD("Registro Modificado","MODIFICADO");
+                ventanaRight4.cargarComboDocente();
             } else {
                 Util.WindowFactory.errorWindowCRUD("Registro No Modificado","MODIFICADO");
             }
@@ -252,6 +258,7 @@ public class VentanaRight1 extends JPanel {
 
             if (estado == 1) {
                 Util.WindowFactory.confirmationWindowCRUD("Registro Eliminado","ELIMINADO");
+                ventanaRight4.cargarComboDocente();
             } else {
                 Util.WindowFactory.errorWindowCRUD("Registro No Eliminado","ELIMINADO");
             }
@@ -350,5 +357,11 @@ public class VentanaRight1 extends JPanel {
         txtNumeroDeDocumento.setText("");
         cbCargo.setSelectedIndex(0);
         txtEmail.setText("");
+    }
+    
+    public void sincronizarVentanas(VentanaRight2 ventanaRight2,VentanaRight3 ventanaRight3, VentanaRight4 ventanaRight4) {
+        this.ventanaRight2 = ventanaRight2;
+        this.ventanaRight3 = ventanaRight3;
+        this.ventanaRight4 = ventanaRight4;
     }
 }
