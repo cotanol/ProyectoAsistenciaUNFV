@@ -143,6 +143,25 @@ public class LaboratorioModelo {
 
         return id; 
     }
+    
+    public int crearHorarioLaboratorioVacio(int id_laboratorio) {
+        
+        int estado = 0;
+        
+        try {
+            cn = Conexion_BD.getConexionBD();
+            pt = cn.prepareStatement("INSERT INTO horario_laboratorio (id_laboratorio) VALUES (?);");
+            pt.setInt(1, id_laboratorio);
+            estado = pt.executeUpdate();
+            cn.close();
+            pt.close();
+            
+        } catch (Exception e) {
+            
+        }
+        
+        return estado;
+    }
 
     public int getIdLaboratorio() {
         return idLaboratorio;

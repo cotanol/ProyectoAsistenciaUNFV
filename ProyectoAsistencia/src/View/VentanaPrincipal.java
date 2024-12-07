@@ -105,10 +105,10 @@ public class VentanaPrincipal extends JFrame {
         AsistenciaController asistenciaController = new AsistenciaController(this);
         LaboratorioController laboratorioController = new LaboratorioController(this);
         EquipoController equipoController = new EquipoController(this);
-
+        
+        ventanaRight3 = new VentanaRight3(equipoController, horarioController, laboratorioController);
         ventanaRight1 = new VentanaRight1(usuarioController);
-        ventanaRight2 = new VentanaRight2(laboratorioController, asistenciaController, horarioController);
-        ventanaRight3 = new VentanaRight3(equipoController);
+        ventanaRight2 = new VentanaRight2(laboratorioController, asistenciaController, horarioController, ventanaRight3);
         ventanaRight4 = new VentanaRight4(horarioController);
         // Agregar ventanas al CardLayout
         panelDerecho.add(ventanaRight1, "RegistroUsuarios");

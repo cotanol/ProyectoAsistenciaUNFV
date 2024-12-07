@@ -12,8 +12,8 @@ public class HorarioLaboratorioModelo {
     private int idLaboratorio;
     private int idAsignatura;
     private String dia;
-    private LocalTime horarioInicio;
-    private LocalTime horarioFin;
+    private String horarioInicio;
+    private String horarioFin;
     private int idUsuario;
     private String codigoHorario;
     
@@ -39,9 +39,9 @@ public class HorarioLaboratorioModelo {
             pt.setInt(1, horarioLaboratorioModelo.getIdLaboratorio());
             pt.setInt(2, horarioLaboratorioModelo.getIdAsignatura());
             pt.setString(3, horarioLaboratorioModelo.getDia());
-            pt.setTime(4, java.sql.Time.valueOf(horarioLaboratorioModelo.getHorarioInicio()));
-            pt.setTime(5, java.sql.Time.valueOf(horarioLaboratorioModelo.getHorarioFin()));
-            pt.setInt(2, horarioLaboratorioModelo.getIdUsuario());
+            pt.setString(4, horarioLaboratorioModelo.getHorarioInicio());
+            pt.setString(5, horarioLaboratorioModelo.getHorarioFin());
+            pt.setInt(6, horarioLaboratorioModelo.getIdUsuario());
             
             estado = pt.executeUpdate();
             
@@ -65,8 +65,8 @@ public class HorarioLaboratorioModelo {
             pt.setInt(1, horarioLaboratorioModelo.getIdLaboratorio());
             pt.setInt(2, horarioLaboratorioModelo.getIdAsignatura());
             pt.setString(3, horarioLaboratorioModelo.getDia());
-            pt.setTime(4, java.sql.Time.valueOf(horarioLaboratorioModelo.getHorarioInicio()));
-            pt.setTime(5, java.sql.Time.valueOf(horarioLaboratorioModelo.getHorarioFin()));
+            pt.setString(4, horarioLaboratorioModelo.getHorarioInicio());
+            pt.setString(5, horarioLaboratorioModelo.getHorarioInicio());
             pt.setInt(6, horarioLaboratorioModelo.getIdUsuario());
             pt.setString(7, horarioLaboratorioModelo.getCodigoHorario());
             pt.setString(8, horarioLaboratorioModelo.getCodigoHorario());
@@ -120,13 +120,27 @@ public class HorarioLaboratorioModelo {
                 HorarioLaboratorioModelo horarioLaboratorioModelo = new HorarioLaboratorioModelo();
                 horarioLaboratorioModelo.setIdHorario(rs.getInt("id_horario"));
                 horarioLaboratorioModelo.setIdLaboratorio(rs.getInt("id_laboratorio"));
-                horarioLaboratorioModelo.setIdAsignatura(rs.getInt("id_asignatura"));
-                horarioLaboratorioModelo.setDia((rs.getString("dia")));
-                horarioLaboratorioModelo.setHorarioInicio(rs.getTime("horario_inicio").toLocalTime());
-                horarioLaboratorioModelo.setHorarioFin(rs.getTime("horario_fin").toLocalTime());
-                horarioLaboratorioModelo.setIdUsuario(rs.getInt("id_usuario"));
-                horarioLaboratorioModelo.setCodigoHorario(rs.getString("codigo_horario"));
-            
+
+                // Manejar valores NULL
+                if (rs.getObject("id_asignatura") != null) {
+                    horarioLaboratorioModelo.setIdAsignatura(rs.getInt("id_asignatura"));
+                }
+                if (rs.getObject("dia") != null) {
+                    horarioLaboratorioModelo.setDia(rs.getString("dia"));
+                }
+                if (rs.getObject("horario_inicio") != null) {
+                    horarioLaboratorioModelo.setHorarioInicio(rs.getString("horario_inicio"));
+                }
+                if (rs.getObject("horario_fin") != null) {
+                    horarioLaboratorioModelo.setHorarioFin(rs.getString("horario_fin"));
+                }
+                if (rs.getObject("id_usuario") != null) {
+                    horarioLaboratorioModelo.setIdUsuario(rs.getInt("id_usuario"));
+                }
+                if (rs.getObject("codigo_horario") != null) {
+                    horarioLaboratorioModelo.setCodigoHorario(rs.getString("codigo_horario"));
+                }
+
                 listaHorarioLaboratorios.add(horarioLaboratorioModelo);
             }
             
@@ -189,8 +203,8 @@ public class HorarioLaboratorioModelo {
             horario.setIdLaboratorio(rs.getInt("id_laboratorio"));
             horario.setIdAsignatura(rs.getInt("id_asignatura"));
             horario.setDia((rs.getString("dia")));
-            horario.setHorarioInicio(rs.getTime("horario_inicio").toLocalTime());
-            horario.setHorarioFin(rs.getTime("horario_fin").toLocalTime());
+            horario.setHorarioInicio(rs.getString("horario_inicio"));
+            horario.setHorarioFin(rs.getString("horario_fin"));
             horario.setIdUsuario(rs.getInt("id_usuario"));
             horario.setCodigoHorario(rs.getString("codigo_horario"));
             listaHorarios.add(horario);
@@ -358,19 +372,19 @@ public class HorarioLaboratorioModelo {
         this.dia = dia;
     }
 
-    public LocalTime getHorarioInicio() {
+    public String getHorarioInicio() {
         return horarioInicio;
     }
 
-    public void setHorarioInicio(LocalTime horarioInicio) {
+    public void setHorarioInicio(String horarioInicio) {
         this.horarioInicio = horarioInicio;
     }
 
-    public LocalTime getHorarioFin() {
+    public String getHorarioFin() {
         return horarioFin;
     }
 
-    public void setHorarioFin(LocalTime horarioFin) {
+    public void setHorarioFin(String horarioFin) {
         this.horarioFin = horarioFin;
     }
 

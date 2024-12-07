@@ -137,8 +137,8 @@ public class VentanaRight4 extends JPanel {
             horario.setIdAsignatura(idAsignatura);
             horario.setIdLaboratorio(idLaboratorio);
             horario.setDia(datos[2]);
-            horario.setHorarioInicio(LocalTime.parse(datos[3]));
-            horario.setHorarioFin(LocalTime.parse(datos[4]));
+            horario.setHorarioInicio(datos[3]);
+            horario.setHorarioFin(datos[4]);
             horario.setIdUsuario(idUsuario);
 
             int estado = horarioControlador.insertarHorarioLaboratorioController(horario);
@@ -168,8 +168,8 @@ public class VentanaRight4 extends JPanel {
                 horario.setIdAsignatura(Integer.parseInt(datos[0]));
                 horario.setIdLaboratorio(Integer.parseInt(datos[1]));
                 horario.setDia(datos[2]);
-                horario.setHorarioInicio(LocalTime.parse(datos[3]));
-                horario.setHorarioFin(LocalTime.parse(datos[4]));
+                horario.setHorarioInicio(datos[3]);
+                horario.setHorarioFin(datos[4]);
                 horario.setIdUsuario(Integer.parseInt(datos[5]));
 
                 int estado = horarioControlador.modificarHorarioLaboratorioController(horario);

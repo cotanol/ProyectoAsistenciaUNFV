@@ -22,7 +22,7 @@ public class VentanaRight2 extends JPanel {
     // Componentes principales
     private JLabel lblControlAsistencia, lblDatosLab, lblConfigAvanz, lblNroLab, lblHor, lblAsigs;
     private JComboBox<String> cboNroLab;
-    private JComboBox<LocalTime> cboHorario;
+    private JComboBox<String> cboHorario;
     private JComboBox<String> cboAsignatura;
     private JButton btnBuscar, btnActuDatos, btnReporteGen;
     private JTable tablaLaboratorios;
@@ -42,15 +42,18 @@ public class VentanaRight2 extends JPanel {
     private JPanel panelDerecho;
     private JPanel panelAsistencia;
     private JPanel panelActualizarLaboratorio;
+    
+    private VentanaRight3 panelPrueba;
 
-    public VentanaRight2(LaboratorioController laboratorioController, AsistenciaController asistenciaController, HorarioLaboratorioController horarioLaboratorioController) {
+    public VentanaRight2(LaboratorioController laboratorioController, AsistenciaController asistenciaController, HorarioLaboratorioController horarioLaboratorioController, VentanaRight3 panelPrueba) {
         this.laboratorioController = laboratorioController;
         this.asistenciaController = asistenciaController;
         this.horarioLaboratorioController = horarioLaboratorioController;
+        this.panelPrueba = panelPrueba;
 
         setLayout(new CardLayout());
         setBackground(Constantes.COLOR_FONDO_PANEL);
-
+        
         inicializarComponentes();
         agregarEventos();
     }
@@ -74,11 +77,12 @@ public class VentanaRight2 extends JPanel {
 
         // Subtítulo y panel de configuración avanzada
         inicializarPanelConfiguracionAvanzada(panelRight2);
+        
     }
 
     private void inicializarPanelDatosLaboratorio(JPanel panel) {
         listaHorarioLaboratorio = horarioLaboratorioController.enlistarHorarioLaboratorioController();
-
+        
         // Subtítulo
         lblDatosLab = ComponentFactory.crearEtiqueta("DATOS DEL LABORATORIO", 100, 110, 500, 50, Constantes.FUENTE_SUBTITULO, Constantes.COLOR_TEXTO_BLANCO);
         lblDatosLab.setBackground(Constantes.COLOR_HOVER_SELECCIONADO1);
@@ -110,7 +114,7 @@ public class VentanaRight2 extends JPanel {
         lblHor = ComponentFactory.crearEtiqueta("Horario", 300, 20, 200, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_HOVER_SELECCIONADO1);
         subPanel.add(lblHor);
 
-        cboHorario = ComponentFactory.crearComboBoxLocalTime(new LocalTime[]{}, 300, 50, 200, 30, Constantes.BORDER_HOVER);
+        cboHorario = ComponentFactory.crearComboBoxString(new String[]{}, 300, 50, 200, 30, Constantes.BORDER_HOVER);
         subPanel.add(cboHorario);
         cargarComboHorario();
 
@@ -141,7 +145,7 @@ public class VentanaRight2 extends JPanel {
     private void cargarComboHorario() {
         cboHorario.removeAllItems();
         cboHorario.addItem(null);
-        Set<LocalTime> horariosAgregados = new HashSet<>();
+        Set<String> horariosAgregados = new HashSet<>();
         for (HorarioLaboratorioModelo horaLab : listaHorarioLaboratorio) {
             if (horariosAgregados.add(horaLab.getHorarioInicio())) {
                 cboHorario.addItem(horaLab.getHorarioInicio());
@@ -204,7 +208,7 @@ public class VentanaRight2 extends JPanel {
     private void manejarBuscarHorario() {
         Integer numeroLab = (Integer) cboNroLab.getSelectedItem();
         Integer asignatura = (Integer) horarioLaboratorioController.obtenerIdAsignaturaPorNombreController((String)cboAsignatura.getSelectedItem());
-        LocalTime horarioInicio = (LocalTime) cboHorario.getSelectedItem();
+        String horarioInicio = (String) cboHorario.getSelectedItem();
 
         if (numeroLab == null || asignatura == null || horarioInicio == null) {
             JOptionPane.showMessageDialog(null, "Por favor, seleccione todos los campos antes de buscar.");
@@ -218,7 +222,7 @@ public class VentanaRight2 extends JPanel {
         }
     }
 
-    private void manejarCambioAPanelAsistencia(int numeroLab, int asignatura, LocalTime horarioInicio) {
+    private void manejarCambioAPanelAsistencia(int numeroLab, int asignatura, String horarioInicio) {
         
         // Buscar el horario seleccionado
         HorarioLaboratorioModelo horarioSeleccionado = null;
@@ -253,7 +257,7 @@ public class VentanaRight2 extends JPanel {
         // Información del horario
         lblInfoClase = new JLabel(String.format(
                 "<html>Nro. Laboratorio: %d<br>Asignatura: %d<br>Horario: %s<br> Docente: %d<br></html>",
-                numeroLab, asignatura, horarioInicio.toString(), horarioSeleccionado.getIdUsuario()));
+                numeroLab, asignatura, horarioInicio, horarioSeleccionado.getIdUsuario()));
         lblInfoClase.setBounds(100, 180, 600, 100);
         lblInfoClase.setFont(Constantes.FUENTE_LABEL);
         panelAsistencia.add(lblInfoClase);
@@ -279,7 +283,7 @@ public class VentanaRight2 extends JPanel {
         cardLayout.show(panelDerecho, "RegistroAsistencia");
     }
 
-    private void inicializarTablaAsistencia(int numeroLab, int asignatura, LocalTime horarioInicio) {
+    private void inicializarTablaAsistencia(int numeroLab, int asignatura, String horarioInicio) {
         String[] columnasAsistencia = {"Código", "Nombres", "Apellidos", "Asistencia"};
         DefaultTableModel modeloTabla = new DefaultTableModel(columnasAsistencia, 0) {
             @Override
@@ -430,7 +434,15 @@ public class VentanaRight2 extends JPanel {
 
             int estado = laboratorioController.insertarLaboratorioController(laboratorioModelo);
             mostrarMensaje(estado, "Laboratorio Insertado 🧪!!", "Laboratorio no Insertado 🧪!!");
-
+            if (estado == 1) {
+                int idEncontrado = horarioLaboratorioController.obtenerIDLaboratorioPorNumeroController(txtNumeroLab.getText());
+                laboratorioController.crearHorarioVacioController(idEncontrado);
+                actualizarCombosHorarioAsignatura();
+                panelPrueba.cargarComboNroLab();
+            }
+            
+            
+            
             listarLaboratorios();
             limpiarCamposLaboratorio();
         } else {
@@ -477,7 +489,10 @@ public class VentanaRight2 extends JPanel {
 
             int estado = laboratorioController.eliminarLaboratorioController(laboratorioModelo);
             mostrarMensaje(estado, "Laboratorio Eliminado 🧪!!", "Laboratorio no Eliminado 🧪!!");
-            if (estado == 1) actualizarCombosHorarioAsignatura();
+            if (estado == 1) {
+                actualizarCombosHorarioAsignatura();
+                panelPrueba.cargarComboNroLab();
+            }
 
             listarLaboratorios();
             limpiarCamposLaboratorio();

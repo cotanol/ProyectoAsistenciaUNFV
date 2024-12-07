@@ -36,4 +36,8 @@ public class LaboratorioController {
     public int ultimoIdController () {
         return objLaboratorioModelo.ultimoId();
     }
+    
+    public int crearHorarioVacioController(int id_laboratorio) {
+        return objLaboratorioModelo.crearHorarioLaboratorioVacio(id_laboratorio);
+    }
 }
