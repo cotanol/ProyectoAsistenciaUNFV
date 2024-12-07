@@ -43,13 +43,15 @@ public class VentanaRight2 extends JPanel {
     private JPanel panelAsistencia;
     private JPanel panelActualizarLaboratorio;
     
-    private VentanaRight3 panelPrueba;
+    private VentanaRight3 ventanaRight3;
+    private VentanaRight1 ventanaRight1;
+    private VentanaRight4 ventanaRight4;
 
-    public VentanaRight2(LaboratorioController laboratorioController, AsistenciaController asistenciaController, HorarioLaboratorioController horarioLaboratorioController, VentanaRight3 panelPrueba) {
+    public VentanaRight2(LaboratorioController laboratorioController, AsistenciaController asistenciaController, HorarioLaboratorioController horarioLaboratorioController) {
         this.laboratorioController = laboratorioController;
         this.asistenciaController = asistenciaController;
         this.horarioLaboratorioController = horarioLaboratorioController;
-        this.panelPrueba = panelPrueba;
+        
 
         setLayout(new CardLayout());
         setBackground(Constantes.COLOR_FONDO_PANEL);
@@ -135,9 +137,9 @@ public class VentanaRight2 extends JPanel {
         cboNroLab.removeAllItems();
         cboNroLab.addItem(null);
         Set<String> labsAgregados = new HashSet<>();
-        for (HorarioLaboratorioModelo horaLab : listaHorarioLaboratorio) {
-            if (labsAgregados.add(horarioLaboratorioController.obtenerNumeroLabPorIdController(horaLab.getIdLaboratorio()))) {
-                cboNroLab.addItem(horarioLaboratorioController.obtenerNumeroLabPorIdController(horaLab.getIdLaboratorio()));
+        for (LaboratorioModelo lab : laboratorioController.enlistarLaboratorioController()) {
+            if (labsAgregados.add(lab.getNumeroLab())) {
+                cboNroLab.addItem(lab.getNumeroLab());
             }
         }
     }
@@ -435,10 +437,10 @@ public class VentanaRight2 extends JPanel {
             int estado = laboratorioController.insertarLaboratorioController(laboratorioModelo);
             mostrarMensaje(estado, "Laboratorio Insertado 🧪!!", "Laboratorio no Insertado 🧪!!");
             if (estado == 1) {
-                int idEncontrado = horarioLaboratorioController.obtenerIDLaboratorioPorNumeroController(txtNumeroLab.getText());
-                laboratorioController.crearHorarioVacioController(idEncontrado);
+                
                 actualizarCombosHorarioAsignatura();
-                panelPrueba.cargarComboNroLab();
+                ventanaRight3.cargarComboNroLab();
+                ventanaRight4.cargarComboNroLab();
             }
             
             
@@ -460,7 +462,11 @@ public class VentanaRight2 extends JPanel {
 
             int estado = laboratorioController.modificarLaboratorioController(laboratorioModelo);
             mostrarMensaje(estado, "Laboratorio Modificado 🧪!!", "Laboratorio no Modificado 🧪!!");
-            if (estado == 1) actualizarCombosHorarioAsignatura();
+            if (estado == 1) {
+                actualizarCombosHorarioAsignatura();
+                ventanaRight3.cargarComboNroLab();
+                ventanaRight4.cargarComboNroLab();
+            }
 
             listarLaboratorios();
             limpiarCamposLaboratorio();
@@ -491,7 +497,8 @@ public class VentanaRight2 extends JPanel {
             mostrarMensaje(estado, "Laboratorio Eliminado 🧪!!", "Laboratorio no Eliminado 🧪!!");
             if (estado == 1) {
                 actualizarCombosHorarioAsignatura();
-                panelPrueba.cargarComboNroLab();
+                ventanaRight3.cargarComboNroLab();
+                ventanaRight4.cargarComboNroLab();
             }
 
             listarLaboratorios();
@@ -545,4 +552,12 @@ public class VentanaRight2 extends JPanel {
     private boolean seLlenaronTodosLosCamposLaboratorio() {
         return !txtCapacidad.getText().equals("");
     }
+    
+    public void sincronizarVentanas(VentanaRight1 ventanaRight1,VentanaRight3 ventanaRight3, VentanaRight4 ventanaRight4) {
+        this.ventanaRight3 = ventanaRight3;
+        this.ventanaRight1 = ventanaRight1;
+        this.ventanaRight4 = ventanaRight4;
+    }
+    
+    
 }

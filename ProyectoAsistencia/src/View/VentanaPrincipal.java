@@ -108,8 +108,14 @@ public class VentanaPrincipal extends JFrame {
         
         ventanaRight3 = new VentanaRight3(equipoController, horarioController, laboratorioController);
         ventanaRight1 = new VentanaRight1(usuarioController);
-        ventanaRight2 = new VentanaRight2(laboratorioController, asistenciaController, horarioController, ventanaRight3);
-        ventanaRight4 = new VentanaRight4(horarioController);
+        ventanaRight2 = new VentanaRight2(laboratorioController, asistenciaController, horarioController);
+        ventanaRight4 = new VentanaRight4(horarioController, usuarioController, laboratorioController);
+        
+        ventanaRight1.sincronizarVentanas(ventanaRight2,ventanaRight3,ventanaRight4);
+        ventanaRight2.sincronizarVentanas(ventanaRight1,ventanaRight3,ventanaRight4);
+        ventanaRight3.sincronizarVentanas(ventanaRight1,ventanaRight2,ventanaRight4);
+        ventanaRight4.sincronizarVentanas(ventanaRight1,ventanaRight2,ventanaRight3);
+        
         // Agregar ventanas al CardLayout
         panelDerecho.add(ventanaRight1, "RegistroUsuarios");
         panelDerecho.add(ventanaRight2, "ControlAsistencia");

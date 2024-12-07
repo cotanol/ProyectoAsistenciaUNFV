@@ -282,6 +282,43 @@ public ArrayList<UsuarioModelo> buscarResgistroUsuarios(String buscar) {
     //=================================================================================
     
     
+    public ArrayList<UsuarioModelo> enlistarDocentes () {
+        ArrayList<UsuarioModelo> listaDocentes = new ArrayList<>();
+        
+        try {
+            cn = Conexion_BD.getConexionBD();
+            pt = cn.prepareStatement("SELECT * FROM usuario WHERE tipo_usuario = 'DOCENTE';");
+            rs = pt.executeQuery();
+            
+            while (rs.next()) {
+                UsuarioModelo docente = new UsuarioModelo();
+                docente.setIdUsuario(rs.getInt("id_usuario"));
+                docente.setNombres(rs.getString("nombres"));
+                docente.setApellidos(rs.getString("apellidos"));
+                docente.setTipoDocumento(rs.getString("tipo_documento"));
+                docente.setNroDocumento(rs.getString("nro_documento"));
+                docente.setNumero(rs.getString("numero"));
+                docente.setTipoUsuario(rs.getString("tipo_usuario"));
+                docente.setNombreUsuario(rs.getString("nombre_usuario"));
+                docente.setContrasena(rs.getString("contrasena"));
+                docente.setEmail(rs.getString("email"));
+                
+                listaDocentes.add(docente);
+            }
+            
+            cn.close();
+            pt.close();
+            rs.close();
+            
+        } catch (Exception e) {
+            
+            
+        }
+        
+        
+        return listaDocentes;
+    }
+    
     public int ultimoId() {
         int id = 0;
         try {

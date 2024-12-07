@@ -55,6 +55,10 @@ public class VentanaRight3 extends JPanel {
     private JPanel panelRightConfig;
     private JPanel panelRightExportExcel;
     
+    private VentanaRight1 ventanaRight1;
+    private VentanaRight2 ventanaRight2;
+    private VentanaRight4 ventanaRight4;
+    
 
     public VentanaRight3(EquipoController equipoController, HorarioLaboratorioController horarioLaboratorioController, LaboratorioController laboratorioController) {
         this.equipoController = equipoController;
@@ -594,5 +598,11 @@ public class VentanaRight3 extends JPanel {
         cbTipoEquipo.setSelectedIndex(0);
         cbLaboratorio.setSelectedIndex(0);
         cbEstado.setSelectedIndex(0);
+    }
+    
+    public void sincronizarVentanas(VentanaRight1 ventanaRight1,VentanaRight2 ventanaRight2, VentanaRight4 ventanaRight4) {
+        this.ventanaRight1 = ventanaRight1;
+        this.ventanaRight2 = ventanaRight2;
+        this.ventanaRight4 = ventanaRight4;
     }
 }
