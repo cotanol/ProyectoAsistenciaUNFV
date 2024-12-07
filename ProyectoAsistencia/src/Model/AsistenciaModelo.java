@@ -155,7 +155,7 @@ public class AsistenciaModelo {
         return id; 
     }    
     
-    public ArrayList<AlumnoModelo> obtenerAlumnosPorLaboratorioYHorario(int numeroLab, int asignatura, LocalTime horarioInicio) {
+    public ArrayList<AlumnoModelo> obtenerAlumnosPorLaboratorioYHorario(int numeroLab, int asignatura, String horarioInicio) {
         ArrayList<AlumnoModelo> listaAlumnos = new ArrayList<>();
         try (Connection cn = Conexion_BD.getConexionBD();
              PreparedStatement pt = cn.prepareStatement(
@@ -167,7 +167,7 @@ public class AsistenciaModelo {
 
             pt.setInt(1, numeroLab);
             pt.setInt(2, asignatura);
-            pt.setTime(3, java.sql.Time.valueOf(horarioInicio));
+            pt.setString(3, horarioInicio);
             ResultSet rs = pt.executeQuery();
 
             while (rs.next()) {

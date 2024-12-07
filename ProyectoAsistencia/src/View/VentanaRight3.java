@@ -10,12 +10,20 @@ import Util.Constantes;
 import Util.EstiloHover;
 import Model.EquipoModelo;
 import Controller.EquipoController;
+import Controller.HorarioLaboratorioController;
+import Controller.LaboratorioController;
+import Model.HorarioLaboratorioModelo;
+import Model.LaboratorioModelo;
+import java.util.HashSet;
+import java.util.Set;
 
 public class VentanaRight3 extends JPanel {
     
     
     // Controlador
     private EquipoController equipoController;
+    private HorarioLaboratorioController horarioLaboratorioController;
+    private LaboratorioController laboratorioController;
 
     // Componentes principales
     private JLabel lbTituloPantalla1, lbEquiposDisponiblesLabel;
@@ -26,6 +34,14 @@ public class VentanaRight3 extends JPanel {
     private JButton btnAgregarEquipo, btnModificarEquipo, btnEliminarEquipo, btnConfiguracion, btnRegresar, btnExportarExcel;
     private JTable tablaEquiposDisponibles, tablaEquiposRegistrados;
     private DefaultTableModel modeloEquiposDisponibles, modeloEquiposRegistrados;
+    
+    // Componentes del nuevo panel de Exportación
+    private JLabel lbTituloExportExcel;
+    private JLabel lbBuscarExport;
+    private JTextField txtBuscarExport;
+    private JTable tablaEquiposExport;
+    private DefaultTableModel modeloEquiposExport;
+    private JButton btnRealExportarExcel, btnRegresarExport;;
 
     // Datos
     private ArrayList<EquipoModelo> listaEquipos;
@@ -33,12 +49,19 @@ public class VentanaRight3 extends JPanel {
 
     // Layout y paneles
     private CardLayout cardLayout;
+    
     private JPanel panelDerecho;
     private JPanel panelRight3;
     private JPanel panelRightConfig;
+    private JPanel panelRightExportExcel;
+    
 
-    public VentanaRight3(EquipoController equipoController) {
+    public VentanaRight3(EquipoController equipoController, HorarioLaboratorioController horarioLaboratorioController, LaboratorioController laboratorioController) {
         this.equipoController = equipoController;
+        this.horarioLaboratorioController = horarioLaboratorioController;
+        this.laboratorioController = laboratorioController;
+        
+        
 
         setLayout(new CardLayout());
         setBackground(Constantes.COLOR_FONDO_PANEL);
@@ -74,6 +97,8 @@ public class VentanaRight3 extends JPanel {
 
         // Panel de configuración
         configurarPanelRightConfig();
+        
+        configurarPanelRightExportExcel();
     }
 
     private void inicializarPanelEquiposDisponibles(JPanel panel) {
@@ -89,9 +114,10 @@ public class VentanaRight3 extends JPanel {
         panel.add(btnConfiguracion);
 
         // Botón Exportar a Excel 
-        btnExportarExcel = ComponentFactory.crearBotonReporteExcel("EXPORTAR A EXCEL", 680, 170, 250, 50); 
-        panel.add(btnExportarExcel);
+        //btnExportarExcel = ComponentFactory.crearBotonReporteExcel("EXPORTAR A EXCEL", 680, 170, 250, 50); 
+        //panel.add(btnExportarExcel);
         
+        /*
         btnExportarExcel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -99,6 +125,11 @@ public class VentanaRight3 extends JPanel {
                 JOptionPane.showMessageDialog(null, "Datos exportados a Excel correctamente 🐧!!", "Exportación Exitosa", JOptionPane.INFORMATION_MESSAGE);
             }
         });
+        */
+        
+        // Este botón ahora solo cambia al panel de exportación en lugar de exportar directamente
+        btnExportarExcel = ComponentFactory.crearBotonReporteExcel("EXPORTAR A EXCEL", 680, 170, 250, 50); 
+        panelRight3.add(btnExportarExcel);
         
         // Tabla de Equipos Disponibles
         String[] columnasEquipoDisponible = {"LAB", "TIPO", "Código Patrimonial", "Número de Serie", "Estado"};
@@ -170,8 +201,9 @@ public class VentanaRight3 extends JPanel {
         lbLaboratorioLabel = ComponentFactory.crearEtiqueta("Laboratorio", 350, 20, 200, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_HOVER_SELECCIONADO1);
         subPanel.add(lbLaboratorioLabel);
 
-        cbLaboratorio = ComponentFactory.crearComboBoxString(new String[]{"", "1", "2", "3", "4", "5", "6"}, 350, 50, 300, 30, Constantes.BORDER_HOVER);
+        cbLaboratorio = ComponentFactory.crearComboBoxString(new String[]{}, 350, 50, 300, 30, Constantes.BORDER_HOVER);
         subPanel.add(cbLaboratorio);
+        cargarComboNroLab();
 
         // Etiqueta y ComboBox para Estado
         lbEstadoLabel = ComponentFactory.crearEtiqueta("Estado", 670, 20, 200, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_HOVER_SELECCIONADO1);
@@ -237,10 +269,15 @@ public class VentanaRight3 extends JPanel {
         btnConfiguracion.addMouseListener(new EstiloHover.HoverAccionBoton(btnConfiguracion));
         btnRegresar.addMouseListener(new EstiloHover.HoverAccionBoton(btnRegresar));
         btnExportarExcel.addMouseListener(new EstiloHover.HoverAccionBotonExcel(btnExportarExcel));
+        btnRealExportarExcel.addMouseListener(new EstiloHover.HoverAccionBotonExcel(btnRealExportarExcel));
+        btnRegresarExport.addMouseListener(new EstiloHover.HoverAccionBoton(btnRegresarExport));
         
         // Eventos de acción
         btnConfiguracion.addActionListener(e -> manejarConfigurarEquipo());
-        btnAgregarEquipo.addActionListener(e -> manejarAgregarEquipo());
+        btnAgregarEquipo.addActionListener(e -> {
+            manejarAgregarEquipo();
+            cargarComboNroLab();
+        });
         btnModificarEquipo.addActionListener(e -> manejarModificarEquipo());
         btnEliminarEquipo.addActionListener(e -> manejarEliminarEquipo());
         btnRegresar.addActionListener(e -> cardLayout.show(panelDerecho, "ControlEquipos"));
@@ -252,6 +289,77 @@ public class VentanaRight3 extends JPanel {
                 llenarCamposDesdeTablaEquipo();
             }
         });
+    }
+    
+    private void configurarPanelRightExportExcel() {
+        // Nuevo panel de exportación
+        panelRightExportExcel = new JPanel(null);
+        panelRightExportExcel.setBackground(Constantes.COLOR_FONDO_PANEL);
+        panelDerecho.add(panelRightExportExcel, "ExportExcelPanel");
+
+        // Título del nuevo panel
+        lbTituloExportExcel = ComponentFactory.crearEtiqueta("Exportando a Excel en:", 50, 30, 500, 52, Constantes.FUENTE_TITULO, Constantes.COLOR_TEXTO_NEGRO);
+        panelRightExportExcel.add(lbTituloExportExcel);
+
+        // Campo de Búsqueda en el nuevo panel
+        lbBuscarExport = ComponentFactory.crearEtiqueta("Buscar: ", 50, 110, 100, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_TEXTO_NEGRO);
+        panelRightExportExcel.add(lbBuscarExport);
+
+        txtBuscarExport = ComponentFactory.crearCampoTexto(160, 110, 300, 30, Constantes.BORDER_NEGRO);
+        panelRightExportExcel.add(txtBuscarExport);
+
+        // Tabla en el nuevo panel (idéntica a la de configuración)
+        String[] columnasExport = {"LAB", "TIPO", "COD. PATRIMONIAL", "NÚMERO DE SERIE", "ESTADO"};
+        modeloEquiposExport = new DefaultTableModel(columnasExport, 0);
+        tablaEquiposExport = ComponentFactory.crearTabla(columnasExport);
+        tablaEquiposExport.setModel(modeloEquiposExport);
+        
+        // Crear e añadir el scroll pane que contiene la tabla
+        JScrollPane scrollTablaEquiposExport = ComponentFactory.crearScrollTabla(tablaEquiposExport, 50, 170, 1150, 600);
+        panelRightExportExcel.add(scrollTablaEquiposExport);
+
+        // Botón Regresar en el panel de Exportación
+        btnRegresarExport = ComponentFactory.crearBotonAccion("REGRESAR", 800, 110, 150, 50);
+        panelRightExportExcel.add(btnRegresarExport);
+        btnRegresarExport.addActionListener(e -> cardLayout.show(panelDerecho, "ControlEquipos"));
+
+        // Botón verdadero de Exportar a Excel en este nuevo panel
+        btnRealExportarExcel = ComponentFactory.crearBotonReporteExcel("EXPORTAR A EXCEL", 1000, 110, 200, 50);
+        panelRightExportExcel.add(btnRealExportarExcel);
+        btnExportarExcel.addActionListener(e -> {
+            cardLayout.show(panelDerecho, "ExportExcelPanel");
+        });
+
+        // Evento de filtrado en el nuevo panel
+        txtBuscarExport.addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                FiltrarExport(txtBuscarExport.getText()); 
+            }
+        });
+
+        // Evento para el botón de exportar real
+        btnRealExportarExcel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                EquipoModelo.cargarBD_Excel();
+                JOptionPane.showMessageDialog(null, "Datos exportados a Excel correctamente 🐧!!", "Exportación Exitosa", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+
+        // Listar los equipos para exportar (puedes reutilizar el mismo método o crear uno nuevo)
+        listarEquiposParaExportar();
+    }
+    
+    public void cargarComboNroLab() {
+        cbLaboratorio.removeAllItems();
+        cbLaboratorio.addItem(null);
+        Set<String> labsAgregados = new HashSet<>();
+        for (LaboratorioModelo lab : laboratorioController.enlistarLaboratorioController()) {
+            if (labsAgregados.add(lab.getNumeroLab())) {
+                cbLaboratorio.addItem(lab.getNumeroLab());
+            }
+        }
     }
 
     // Métodos para el manejo de eventos y lógica
@@ -268,7 +376,7 @@ public class VentanaRight3 extends JPanel {
 
                 // Asignar valores al objeto equipo
                 equipo.setTipoEquipo(cbTipoEquipo.getSelectedItem().toString());
-                equipo.setIdLaboratorio(Integer.parseInt(cbLaboratorio.getSelectedItem().toString()));
+                equipo.setIdLaboratorio(horarioLaboratorioController.obtenerIDLaboratorioPorNumeroController((String)(cbLaboratorio.getSelectedItem())));
                 equipo.setEstado(cbEstado.getSelectedItem().toString());
                 equipo.setNumeroSerie(txtNumeroSerie.getText().trim());
                 equipo.setCodPatrimonial(txtCodigoPatrimonial.getText().trim());
@@ -278,6 +386,8 @@ public class VentanaRight3 extends JPanel {
 
                 if (estado == 1) {
                     Util.WindowFactory.confirmationWindowCRUD("Registro Insertado","INSERTADO");
+                    cargarComboNroLab();
+                    
                 } else {
                     Util.WindowFactory.errorWindowCRUD("Registro No Insertado","INSERTADO");
                 }
@@ -385,6 +495,21 @@ public class VentanaRight3 extends JPanel {
             modeloEquiposRegistrados.addRow(fila); // Agrega cada registro filtrado a la tabla
         }
     }
+    
+    public void FiltrarExport(String buscar) {
+        modeloEquiposExport.setRowCount(0);
+        listaEquipos = equipoController.buscarResgistroEquipos(buscar);
+        for (EquipoModelo obj : listaEquipos) {
+            Object[] fila = {
+                equipoController.obtenerNumeroLabPorIdController(obj.getIdLaboratorio()),
+                obj.getTipoEquipo(),
+                obj.getCodPatrimonial(),
+                obj.getNumeroSerie(),
+                obj.getEstado()
+            };
+            modeloEquiposExport.addRow(fila);
+        }
+    }
 
     private boolean seLlenaronTodosLosCamposEquipo() {
         String[] camposTexto = {
@@ -416,6 +541,20 @@ public class VentanaRight3 extends JPanel {
             txtCodigoPatrimonial.setText(modeloEquiposRegistrados.getValueAt(filaSeleccionada, 2).toString());
             txtNumeroSerie.setText(modeloEquiposRegistrados.getValueAt(filaSeleccionada, 3).toString());
             cbEstado.setSelectedItem(modeloEquiposRegistrados.getValueAt(filaSeleccionada, 4).toString());
+        }
+    }
+    
+    public void listarEquiposParaExportar() {
+        modeloEquiposExport.setRowCount(0);
+        listaEquipos = equipoController.enlistarEquipoController();
+        for (EquipoModelo equipoTa : listaEquipos) {
+            modeloEquiposExport.addRow(new Object[]{
+                equipoController.obtenerNumeroLabPorIdController(equipoTa.getIdLaboratorio()),
+                equipoTa.getTipoEquipo(),
+                equipoTa.getCodPatrimonial(),
+                equipoTa.getNumeroSerie(),
+                equipoTa.getEstado()
+            });
         }
     }
 
