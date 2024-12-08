@@ -12,7 +12,7 @@ public class AsignaturaController {
         this.objVentReg = objVentReg;
         objAsignaturaModelo = new AsignaturaModelo(objVentReg);
     }
-    
+ 
     public AsignaturaController() {
         objAsignaturaModelo = new AsignaturaModelo(objVentReg);
     }
@@ -21,8 +21,8 @@ public class AsignaturaController {
         return objAsignaturaModelo.insertarAsignaturaModelo(obj);
     }
     
-    public int modificarAsignaturaController (AsignaturaModelo obj) {
-        return objAsignaturaModelo.modificarAsignaturaModelo(obj);
+    public int modificarAsignaturaController (String nombre, String codigoAntiguo, String codigoNuevo) {
+        return objAsignaturaModelo.modificarAsignaturaModelo(nombre,codigoAntiguo,codigoNuevo);
     }
     
     public int eliminarAsignaturaController (AsignaturaModelo obj) {
@@ -31,6 +31,10 @@ public class AsignaturaController {
     
     public ArrayList<AsignaturaModelo> enlistarAsignaturaController () {
         return objAsignaturaModelo.enlistarAsignaturaModelo();
+    }
+    
+    public ArrayList<AsignaturaModelo> buscarAsignaturaController(String buscar){
+        return objAsignaturaModelo.buscarResgistroAsignaturas(buscar);
     }
     
 }    

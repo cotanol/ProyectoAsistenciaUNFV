@@ -179,6 +179,72 @@ public class EquipoModelo {
             System.err.println("Error: " + ex);
         }
     }
+    ///================================================================================
+    public static void cargarBD_Excel1() {
+        Workbook libro = new XSSFWorkbook();
+        Sheet hoja = libro.createSheet("ReporteEquipos");
+
+        Conexion_BD cn = new Conexion_BD();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        String[] cabeceras = new String[]{"Nro Laboratorio", "Tipo Equipo", "Código Patrimonial", "Nro Serie", "Estado"};
+
+        Row filaCabeceras = hoja.createRow(0); // Fila Cabeceras de las columnas
+        for (int i = 0; i < cabeceras.length; i++) {
+            Cell celda = filaCabeceras.createCell(i);
+            celda.setCellValue(cabeceras[i]);
+            
+        }
+
+        int numFila = 1;
+
+        try {
+            Connection conexion = cn.getConexionBD();
+      
+            ps = conexion.prepareStatement("SELECT id_laboratorio, tipo_equipo, cod_patrimonial, numero_serie, estado FROM equipo;");
+
+
+            rs = ps.executeQuery();
+
+            int numCol = rs.getMetaData().getColumnCount();
+
+            while (rs.next()) {
+                Row filaDatos = hoja.createRow(numFila);
+                
+                for (int i = 0; i < numCol; i++) {
+                    Cell celda = filaDatos.createCell(i);
+                    celda.setCellValue(rs.getString(i + 1));
+                }
+
+                numFila++;
+            }
+
+            rs.close();
+            ps.close();
+            conexion.close();
+            
+            for (int i = 0; i < cabeceras.length; i++) {
+            hoja.setColumnWidth(i, 30 * 256); // Forzamos ancho de 30 caracteres
+        }
+            // Guarda el archivo Excel
+            String filePath = "ReporteEquiposLaboratorio.xlsx";
+            FileOutputStream archivo = new FileOutputStream(filePath);
+            libro.write(archivo);
+            archivo.close();
+
+            // Abre el archivo Excel automáticamente
+            File archivoExcel = new File(filePath);
+            if (Desktop.isDesktopSupported()) {
+                Desktop.getDesktop().open(archivoExcel);
+            } else {
+                System.out.println("No se pudo abrir automáticamente el archivo Excel. Verifica tu sistema.");
+            }
+
+        } catch (Exception ex) {
+            System.err.println("Error: " + ex);
+        }
+    }
     //=================================================================================
     
     public ArrayList<EquipoModelo> enlistarEquipoModelo () {
