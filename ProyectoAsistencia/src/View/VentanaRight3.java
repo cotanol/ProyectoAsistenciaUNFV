@@ -41,7 +41,7 @@ public class VentanaRight3 extends JPanel {
     private JTextField txtBuscarExport;
     private JTable tablaEquiposExport;
     private DefaultTableModel modeloEquiposExport;
-    private JButton btnRealExportarExcel, btnRegresarExport;;
+    private JButton btnRealExportarExcel, btnRegresarExport;
 
     // Datos
     private ArrayList<EquipoModelo> listaEquipos;
@@ -77,7 +77,7 @@ public class VentanaRight3 extends JPanel {
         txtBuscar.addKeyListener(new java.awt.event.KeyAdapter() {
             @Override
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                Filtrar(txtBuscar.getText()); // Llama al método de filtro
+                Filtrar(txtBuscar.getText()); 
             }
         });
     }
@@ -294,41 +294,55 @@ public class VentanaRight3 extends JPanel {
             }
         });
     }
+    //====================================================================================================================
+    //====================================================================================================================
+    //====================================================================================================================
+    //====================================================================================================================
+    //====================================================================================================================
+    //====================================================================================================================
     
     private void configurarPanelRightExportExcel() {
         // Nuevo panel de exportación
         panelRightExportExcel = new JPanel(null);
+        panelRightExportExcel.setLayout(null);
         panelRightExportExcel.setBackground(Constantes.COLOR_FONDO_PANEL);
         panelDerecho.add(panelRightExportExcel, "ExportExcelPanel");
 
         // Título del nuevo panel
-        lbTituloExportExcel = ComponentFactory.crearEtiqueta("Exportando a Excel en:", 50, 30, 500, 52, Constantes.FUENTE_TITULO, Constantes.COLOR_TEXTO_NEGRO);
+        lbTituloExportExcel = ComponentFactory.crearEtiqueta("CONTROL DE EQUIPOS", 50, 30, 765, 52, Constantes.FUENTE_TITULO, Constantes.COLOR_TEXTO_NEGRO);
         panelRightExportExcel.add(lbTituloExportExcel);
-
+        
+        JLabel lbFiltracion = ComponentFactory.crearEtiqueta("FILTRACIÓN DE EXPORTACIÓN", 100, 110, 500, 50, Constantes.FUENTE_SUBTITULO, Constantes.COLOR_TEXTO_BLANCO);
+        lbFiltracion.setBackground(Constantes.COLOR_HOVER_SELECCIONADO1);
+        lbFiltracion.setOpaque(true);
+        lbFiltracion.setHorizontalAlignment(SwingConstants.CENTER);
+        panelRightExportExcel.add(lbFiltracion);
+        
         // Campo de Búsqueda en el nuevo panel
-        lbBuscarExport = ComponentFactory.crearEtiqueta("Buscar: ", 50, 110, 100, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_TEXTO_NEGRO);
+        lbBuscarExport = ComponentFactory.crearEtiqueta("Buscar: ", 140, 190, 100, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_TEXTO_NEGRO);
         panelRightExportExcel.add(lbBuscarExport);
 
-        txtBuscarExport = ComponentFactory.crearCampoTexto(160, 110, 300, 30, Constantes.BORDER_NEGRO);
+        txtBuscarExport = ComponentFactory.crearCampoTexto(270, 190, 300, 30, Constantes.BORDER_NEGRO);
         panelRightExportExcel.add(txtBuscarExport);
 
         // Tabla en el nuevo panel (idéntica a la de configuración)
-        String[] columnasExport = {"LAB", "TIPO", "COD. PATRIMONIAL", "NÚMERO DE SERIE", "ESTADO"};
+        String[] columnasExport = {"LAB", "TIPO", "Código Patrimonial", "Número De Serie", "Estado"};
         modeloEquiposExport = new DefaultTableModel(columnasExport, 0);
         tablaEquiposExport = ComponentFactory.crearTabla(columnasExport);
         tablaEquiposExport.setModel(modeloEquiposExport);
         
         // Crear e añadir el scroll pane que contiene la tabla
-        JScrollPane scrollTablaEquiposExport = ComponentFactory.crearScrollTabla(tablaEquiposExport, 50, 170, 1150, 600);
+        JScrollPane scrollTablaEquiposExport = ComponentFactory.crearScrollTabla(tablaEquiposExport, 70, 250, 1150, 550);
         panelRightExportExcel.add(scrollTablaEquiposExport);
 
+        
         // Botón Regresar en el panel de Exportación
-        btnRegresarExport = ComponentFactory.crearBotonAccion("REGRESAR", 800, 110, 150, 50);
+        btnRegresarExport = ComponentFactory.crearBotonAccion("REGRESAR", 1020, 170, 200, 50);
         panelRightExportExcel.add(btnRegresarExport);
         btnRegresarExport.addActionListener(e -> cardLayout.show(panelDerecho, "ControlEquipos"));
 
         // Botón verdadero de Exportar a Excel en este nuevo panel
-        btnRealExportarExcel = ComponentFactory.crearBotonReporteExcel("EXPORTAR A EXCEL", 1000, 110, 200, 50);
+        btnRealExportarExcel = ComponentFactory.crearBotonReporteExcel("EXPORTAR A EXCEL", 730, 170, 250, 50);
         panelRightExportExcel.add(btnRealExportarExcel);
         btnExportarExcel.addActionListener(e -> {
             cardLayout.show(panelDerecho, "ExportExcelPanel");
@@ -346,7 +360,7 @@ public class VentanaRight3 extends JPanel {
         btnRealExportarExcel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                EquipoModelo.cargarBD_Excel();
+                EquipoModelo.cargarBD_Excel1();
                 JOptionPane.showMessageDialog(null, "Datos exportados a Excel correctamente 🐧!!", "Exportación Exitosa", JOptionPane.INFORMATION_MESSAGE);
             }
         });
@@ -514,7 +528,7 @@ public class VentanaRight3 extends JPanel {
             modeloEquiposExport.addRow(fila);
         }
     }
-
+    
     private boolean seLlenaronTodosLosCamposEquipo() {
         String[] camposTexto = {
             txtNumeroSerie.getText().trim(),

@@ -45,7 +45,6 @@ public class LaboratorioModelo {
         
         return estado;
     }
-    
     public int modificarLaboratorioModelo(LaboratorioModelo laboratorioModelo) {
         int estado = 0;
         
@@ -55,6 +54,31 @@ public class LaboratorioModelo {
             pt.setString(1, laboratorioModelo.getNumeroLab());
             pt.setInt(2, laboratorioModelo.getCapacidad());
             pt.setString(3, laboratorioModelo.getNumeroLab());
+            
+            
+            estado = pt.executeUpdate();
+            
+            cn.close();
+            pt.close();
+            rs.close();
+            
+            
+        } catch (Exception e) {
+            
+        }
+        
+        return estado;
+    }
+    
+    public int modificarLaboratorioModelo(String nuevo, int capacidad, String antiguo) {
+        int estado = 0;
+        
+        try {
+            cn = Conexion_BD.getConexionBD();
+            pt = cn.prepareStatement("UPDATE laboratorio SET numero_lab = ?, capacidad = ? WHERE numero_lab = ?;");
+            pt.setString(1, nuevo);
+            pt.setInt(2, capacidad);
+            pt.setString(3, antiguo);
             
             
             estado = pt.executeUpdate();
@@ -122,6 +146,45 @@ public class LaboratorioModelo {
         return listaLaboratorios;
     }
     
+    public ArrayList<LaboratorioModelo> buscarResgistroLaboratorios(String buscar) {
+        ArrayList<LaboratorioModelo> listaLaboratorios = new ArrayList<>();
+
+        try {
+    
+            String sql = "SELECT * FROM laboratorio WHERE "
+                       + "id_laboratorio LIKE ? OR "
+                       + "numero_lab LIKE ? OR "
+                       + "capacidad LIKE ?;";
+            cn = Conexion_BD.getConexionBD();
+            pt = cn.prepareStatement(sql);
+
+            for (int i = 1; i <= 3; i++) {
+                pt.setString(i, "%" + buscar + "%");
+            }
+
+            rs = pt.executeQuery();
+
+            while (rs.next()) {
+                LaboratorioModelo labModelo= new LaboratorioModelo();
+                labModelo.setIdLaboratorio(rs.getInt("id_laboratorio"));
+                labModelo.setNumeroLab(rs.getString("numero_lab"));
+                labModelo.setCapacidad(rs.getInt("capacidad"));
+
+
+                listaLaboratorios.add(labModelo);
+            }
+
+            rs.close();
+            pt.close();
+            cn.close();
+
+        } catch (Exception e) {
+            System.err.println("Error: " + e);
+        }
+
+        return listaLaboratorios;
+    }   
+    
     public int ultimoId() {
         int id = 0;
         try {
@@ -143,26 +206,7 @@ public class LaboratorioModelo {
 
         return id; 
     }
-    /*
-    public int crearHorarioLaboratorioVacio(int id_laboratorio) {
-        
-        int estado = 0;
-        
-        try {
-            cn = Conexion_BD.getConexionBD();
-            pt = cn.prepareStatement("INSERT INTO horario_laboratorio (id_laboratorio) VALUES (?);");
-            pt.setInt(1, id_laboratorio);
-            estado = pt.executeUpdate();
-            cn.close();
-            pt.close();
-            
-        } catch (Exception e) {
-            
-        }
-        
-        return estado;
-    }
-    */
+
     public int getIdLaboratorio() {
         return idLaboratorio;
     }

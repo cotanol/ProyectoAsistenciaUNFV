@@ -1,5 +1,6 @@
 package View;
 
+import Controller.AsignaturaController;
 import javax.swing.*;
 import javax.swing.text.*;
 import java.awt.*;
@@ -13,7 +14,7 @@ import Util.EstiloHover;
 import Model.HorarioLaboratorioModelo;
 import Controller.HorarioLaboratorioController;
 import Controller.LaboratorioController;
-
+import java.text.Normalizer;
 import com.toedter.calendar.JDateChooser;
 import DAO.GenerarTablaClases;
 import Model.UsuarioModelo;
@@ -43,7 +44,7 @@ public class VentanaRight4 extends JPanel implements ActionListener {
     private JPanel subPanel1;
     private JLabel lbBuscarLaboratorio;
     private JTextField txtBuscarLaboratorio;
-    private JButton btnExportarExcel, btnCrearClase, btnConfiguracion, btnAgregar, btnModificar, btnEliminar;
+    private JButton btnExportarExcel, btnCrearClase, btnConfiguracion;
     private JTable tablaHorarios;
     private DefaultTableModel modeloHorarios;
     
@@ -104,8 +105,8 @@ public class VentanaRight4 extends JPanel implements ActionListener {
         add(nombreSubPanel1_2);
 
         // Tabla de horarios
-        String[] columnasHorarios = {"Asignatura", "Laboratorio", "Día", "Hora Inicio", "Hora Fin", "Docente"};
-        modeloHorarios = new DefaultTableModel(columnasHorarios, 0);
+        String[] columnasHorarios = {"Laboratorio","Asignatura","Docente","Día", "Hora Inicio", "Hora Fin", "Codigo Horario"};
+        modeloHorarios = new DefaultTableModel(null, columnasHorarios);
         tablaHorarios = ComponentFactory.crearTabla(columnasHorarios);
         tablaHorarios.setModel(modeloHorarios);
 
@@ -113,6 +114,14 @@ public class VentanaRight4 extends JPanel implements ActionListener {
         add(scrollTabla);
         
         inicializarComponentesDatosNuevaClase();
+        
+        txtBuscar.addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                Filtrar(txtBuscar.getText()); // Llama al método de filtro
+            }
+        });
+        
     }
     
     public void inicializarComponentesDatosNuevaClase(){      
@@ -233,16 +242,24 @@ public class VentanaRight4 extends JPanel implements ActionListener {
     private void agregarEventos() {
         // Eventos para botones
         // btnExprotarExcel, btnCrearClase, btnConfiguracion,
+        
         //btnAgregar.addActionListener(e -> manejarAgregarHorario());
         //btnModificar.addActionListener(e -> manejarModificarHorario());
         //btnEliminar.addActionListener(e -> manejarEliminarHorario());
-        //btnBuscar.addActionListener(e -> buscarHorarios());
-
+        btnConfiguracion.addActionListener((e)->Configuracion());
+        btnExportarExcel.addActionListener((e)->{
+           horarioControlador.exportarUsuariosAExcel();
+           JOptionPane.showMessageDialog(null, "Datos exportados a Excel correctamente 🐧!!", "Exportación Exitosa", JOptionPane.INFORMATION_MESSAGE);
+        });
+        
         // Eventos de hover en botones
         //btnAgregar.addMouseListener(new EstiloHover.HoverAccionBoton(btnAgregar));
         //btnModificar.addMouseListener(new EstiloHover.HoverAccionBoton(btnModificar));
         //btnEliminar.addMouseListener(new EstiloHover.HoverAccionBoton(btnEliminar));
         btnCrearClase.addMouseListener(new EstiloHover.HoverAccionBoton(btnCrearClase));
+        btnConfiguracion.addMouseListener(new EstiloHover.HoverAccionBoton(btnConfiguracion));
+        btnExportarExcel.addMouseListener(new EstiloHover.HoverAccionBotonExcel(btnExportarExcel));
+        
         // Evento de selección en la tabla
         tablaHorarios.addMouseListener(new MouseAdapter() {
             @Override
@@ -257,12 +274,13 @@ public class VentanaRight4 extends JPanel implements ActionListener {
             String dia1 = comboDiaX.getSelectedItem().toString();
             String dia2 = comboDiaY.getSelectedItem().toString();
             String docente = comboDocente.getSelectedItem().toString();
+            String laboratorio = comboLaboratorio.getSelectedItem().toString();
             String asignatura = comboAsignatura.getSelectedItem().toString();
             String horaInicioX = txtHoraInicioX.getText();
             String horaFinX = txtHoraFinX.getText();
             String horaInicioY = txtHoraInicioY.getText();
             String horaFinY = txtHoraFinY.getText();
-            String laboratorio = comboLaboratorio.getSelectedItem().toString();
+            
             
             // Obtener las fechas de los calendarios
             Date fechaInicioDateX = calendarInicioX.getDate();
@@ -304,32 +322,34 @@ public class VentanaRight4 extends JPanel implements ActionListener {
                 fechaInicioFormateadaX = sdf.format(fechaInicioDateX);
                 // Formatear el nombre de la tabla para el día X
                 nombreTablaX =
-                        laboratorio.toLowerCase().replace(" ", "") + "" +
+                        laboratorio.toLowerCase().replace(" ", "_") + "_" +
                         dia1.toLowerCase() + "_" +
-                        docente.toLowerCase().replace(" ", "") + "" +
-                        asignatura.toLowerCase().replace(" ", "") + "" +
-                        horaInicioX.replace(":", "-") + "_" +
-                        horaFinX.replace(":", "-");
+                        docente.toLowerCase().replace(" ", "_") + "_" +
+                        asignatura.toLowerCase().replace(" ", "_") + "_" +
+                        horaInicioX.replace(":", "y") + "_" +
+                        horaFinX.replace(":", "y");
                 JOptionPane.showMessageDialog(null, "Nombre de la tabla generado: \n" + nombreTablaX);
             } else if (nummeroClass == 32) {
                 fechaInicioFormateadaX = sdf.format(fechaInicioDateX);
                 fechaInicioFormateadaY = sdf.format(fechaInicioDateY);
                 // Formatear el nombre de la tabla para el día X
                 nombreTablaX =
+                        "`"+
                         laboratorio.toLowerCase() + "_" +
                         dia1.toLowerCase() + "_" +
-                        docente.toLowerCase().replace(" ", "") + "" +
-                        asignatura.toLowerCase().replace(" ", "") + "" +
-                        horaInicioX.replace(":", "-") + "_" +
-                        horaFinX.replace(":", "-");
+                        docente.toLowerCase().replace(" ", "_") + "_" +
+                        asignatura.toLowerCase().replace(" ", "_") + "_" +
+                        horaInicioX.replace(":", "y") + "_" +
+                        horaFinX.replace(":", "y") + "`"; 
                 // Formatear el nombre de la tabla para el día Y
-                nombreTablaY = 
+                nombreTablaY =
+                        "`"+
                         laboratorio.toLowerCase() + "_" +
                         dia2.toLowerCase() + "_" +
-                        docente.toLowerCase().replace(" ", "") + "" +
-                        asignatura.toLowerCase().replace(" ", "") + "" +
-                        horaInicioY.replace(":", "-") + "_" +
-                        horaFinY.replace(":", "-");
+                        docente.toLowerCase().replace(" ", "_") + "_" +
+                        asignatura.toLowerCase().replace(" ", "_") + "_" +
+                        horaInicioY.replace(":", "y") + "_" +
+                        horaFinY.replace(":", "y") + "`";
 
                 // Mostrar los nombres generados en un mensaje
                 JOptionPane.showMessageDialog(null, "Nombres de las tablas generados: \n" + nombreTablaX + " y " + nombreTablaY);
@@ -407,32 +427,42 @@ public class VentanaRight4 extends JPanel implements ActionListener {
 
 
             // Insertar datos en la tabla 'horario_laboratorio'
-            String insertSQL = "INSERT INTO repositorio_clases " +
-                               "(laboratorio, asignatura, docente, dia, horario_inicio, horario_fin) " +
+            String insertSQL = "INSERT INTO horario_laboratorio " +
+                               "(id_laboratorio, id_asignatura, dia, horario_inicio, horario_fin, id_usuario, codigo_horario) " +
                                "VALUES (?, ?, ?, ?, ?, ?, ?)";
-
+            
             // Preparar el statement
             try (var ps = conn.prepareStatement(insertSQL)) {
+                
+               int docente1 = horarioControlador.obtenerIdUsuarioPorNombreController(comboDocente.getSelectedItem().toString());
+                int laboratorio1 = horarioControlador.obtenerIDLaboratorioPorNumeroController(comboLaboratorio.getSelectedItem().toString());
+                int asignatura1 = horarioControlador.obtenerIdAsignaturaPorNombreController(comboAsignatura.getSelectedItem().toString());
+                String nombre1 = validarTexto(nombreTablaX);
+                
                 // Insertar datos para Día X
-                ps.setString(1, laboratorio);                  // Laboratorio
-                ps.setString(2, asignatura);                  // Asignatura (ajusta según tu esquema)
-                ps.setString(3, docente);                        // Día X 
-                ps.setString(4, dia1);        // Hora Inicio X
-                ps.setString(5, formattedHoraInicioX);           // Hora Fin X
-                ps.setString(6, formattedHoraFinX);                    // ID Usuario (Docente)           
+                ps.setInt(1, laboratorio1);                  
+                ps.setInt(2, asignatura1);                  
+                ps.setString(3, dia1);                     
+                ps.setString(4, formattedHoraInicioX);       
+                ps.setString(5, formattedHoraFinX);          
+                ps.setInt(6, docente1);
+                ps.setString(7, nombre1);           
                 ps.executeUpdate();
-
+   
+    
                 // Si hay Día Y, insertar también
                 if (nombreTablaY != null) {
-                    ps.setString(1, laboratorio);                  // Laboratorio
-                    ps.setString(2, asignatura);                  // Asignatura (ajusta según tu esquema)
-                    ps.setString(3, docente);                        // Día X 
-                    ps.setString(4, dia1);        // Hora Inicio X
-                    ps.setString(5, formattedHoraInicioX);           // Hora Fin X
-                    ps.setString(6, formattedHoraFinX);                    // ID Usuario (Docente)           
+                    String nombre2 = validarTexto(nombreTablaY);
+                    ps.setInt(1, laboratorio1);                 
+                    ps.setInt(2, asignatura1);                  
+                    ps.setString(3, dia2);                       
+                    ps.setString(4, formattedHoraInicioY);      
+                    ps.setString(5, formattedHoraFinY);           
+                    ps.setInt(6, docente1);
+                    ps.setString(7, nombre2);           
                     ps.executeUpdate();
                 }
-
+                listarHorarios();
                 JOptionPane.showMessageDialog(null, "Clase(s) creada(s) con éxito.");
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(null, "Error al guardar los datos: " + ex.getMessage());
@@ -463,8 +493,8 @@ public class VentanaRight4 extends JPanel implements ActionListener {
         comboDocente.addItem("");
         Set<String> profesoresAgregados = new HashSet<>();
         for (UsuarioModelo user : usuarioControlador.enlistarUsuarioDocenteController()) {
-            if (profesoresAgregados.add(user.getNombres())) {
-                comboDocente.addItem(user.getNombres());
+            if (profesoresAgregados.add(user.getNombreUsuario())) {
+                comboDocente.addItem(user.getNombreUsuario());
             }
         }
     }
@@ -480,7 +510,22 @@ public class VentanaRight4 extends JPanel implements ActionListener {
             }
         }
     }
-  
+    
+    public void insertarHorarioLaboratorio(String dia, String hi, String hf, String nombre_tabla){
+        int estado = 0;
+        try{
+            HorarioLaboratorioModelo horario = new HorarioLaboratorioModelo();
+            horario.setIdUsuario(horarioControlador.obtenerIdUsuarioPorNombreController(comboDocente.getSelectedItem().toString()));
+            horario.setIdLaboratorio(horarioControlador.obtenerIDLaboratorioPorNumeroController(comboLaboratorio.getSelectedItem().toString()));
+            horario.setIdAsignatura(horarioControlador.obtenerIdAsignaturaPorNombreController(comboAsignatura.getSelectedItem().toString()));
+            horario.setDia(dia);
+            horario.setHorarioInicio(hi);
+            horario.setHorarioFin(hf);
+            horario.setCodigoHorario(nombre_tabla);
+        }catch(Exception ex){
+            System.err.println("ERROR: " + ex);
+        }
+    }
   
 
     private void mostrarMensaje(int estado, String mensajeExito, String mensajeError) {
@@ -498,12 +543,13 @@ public class VentanaRight4 extends JPanel implements ActionListener {
 
         for (HorarioLaboratorioModelo horario : listaHorarios) {
             modeloHorarios.addRow(new Object[]{
-                horarioControlador.obtenerNombreAsignaturaPorIdController(horario.getIdAsignatura()),
                 horarioControlador.obtenerNumeroLabPorIdController(horario.getIdLaboratorio()),
+                horarioControlador.obtenerNombreAsignaturaPorIdController(horario.getIdAsignatura()),
+                horarioControlador.obtenerNombreUsuarioPorIdController(horario.getIdUsuario()),
                 horario.getDia(),
                 horario.getHorarioInicio(),
                 horario.getHorarioFin(),
-                horarioControlador.obtenerNombreUsuarioPorIdController(horario.getIdUsuario())
+                horario.getCodigoHorario()
             });
         }
     }
@@ -554,5 +600,51 @@ public class VentanaRight4 extends JPanel implements ActionListener {
         this.ventanaRight2 = ventanaRight2;
         this.ventanaRight3 = ventanaRight3;
     }
+    
+    
+
+    private String validarTexto(String texto) {
+        // Normalizar el texto y eliminar los acentos
+        String textoSinTildes = Normalizer.normalize(texto, Normalizer.Form.NFD)
+                .replaceAll("\\p{M}", "") // Elimina caracteres diacríticos (tildes)
+                .replace("ñ", "n")        // Reemplaza 'ñ' por 'n'
+                .replace("Ñ", "N");       // Reemplaza 'Ñ' por 'N'
+
+        // Eliminar caracteres no permitidos que no sean letras, números o '_'
+        textoSinTildes = textoSinTildes.replaceAll("[^a-zA-Z0-9_]", "");
+
+        // Retorna siempre la palabra transformada sin caracteres especiales
+        return textoSinTildes;
+    }
+
+    private void Configuracion() {
+        AsignaturaController asignaturaController = new AsignaturaController();
+        LaboratorioController laboratorioController = new LaboratorioController(); 
+        
+        VentanaInternalFrame vtn = new VentanaInternalFrame(asignaturaController,laboratorioController);
+        vtn.setVisible(true);
+    }
+
+    public void Filtrar(String buscar) {
+        listaHorarios = horarioControlador.buscarResgistroHorarioLaboratorioController(buscar); 
+        modeloHorarios.setRowCount(0); // Limpia la tabla
+
+        // Itera sobre los registros y los agrega a la tabla
+        for (HorarioLaboratorioModelo obj : listaHorarios) {
+            Object[] fila = {        
+                obj.getNumeroLaboratorio(),  
+                obj.getAsignaturaNombre(),   
+                obj.getNombreUsuario(),      
+                obj.getDia(),              
+                obj.getHorarioInicio(),    
+                obj.getHorarioFin(),         
+                obj.getCodigoHorario()      
+            };
+            modeloHorarios.addRow(fila); 
+        }
+    }
+
+    
+
     
 }

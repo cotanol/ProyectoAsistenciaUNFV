@@ -44,6 +44,10 @@ public class EquipoController {
         objEquipoModelo.cargarBD_Excel();
     }
     
+    public void exportarUsuariosAExcel1(){
+        objEquipoModelo.cargarBD_Excel1();
+    }
+    
     public int ultimoIdController () {
         return objEquipoModelo.ultimoId();
     }

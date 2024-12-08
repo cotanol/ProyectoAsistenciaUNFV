@@ -25,6 +25,10 @@ public class LaboratorioController {
         return objLaboratorioModelo.modificarLaboratorioModelo(obj);
     }
     
+    public int modificarLaboratorioController (String nuevo, int capacidad, String antiguo) {
+        return objLaboratorioModelo.modificarLaboratorioModelo(nuevo, capacidad, antiguo);
+    }
+    
     public int eliminarLaboratorioController (LaboratorioModelo obj) {
         return objLaboratorioModelo.eliminarLaboratorioModelo(obj);
     }
@@ -32,13 +36,12 @@ public class LaboratorioController {
     public ArrayList<LaboratorioModelo> enlistarLaboratorioController () {
         return objLaboratorioModelo.enlistarLaboratorioModelo();
     }
-            
+    
+    public ArrayList<LaboratorioModelo> buscarLaboratorioController(String buscar){
+        return objLaboratorioModelo.buscarResgistroLaboratorios(buscar);
+    }
+    
     public int ultimoIdController () {
         return objLaboratorioModelo.ultimoId();
     }
-    /*
-    public int crearHorarioVacioController(int id_laboratorio) {
-        return objLaboratorioModelo.crearHorarioLaboratorioVacio(id_laboratorio);
-    }
-    */
 }

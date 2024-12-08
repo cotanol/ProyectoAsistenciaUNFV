@@ -38,28 +38,29 @@ public class AsignaturaModelo {
             pt.close();
             rs.close();
             
-        } catch (Exception e){
-            
+        } catch (Exception ex){
+            System.err.println("ERROR: " +ex);
         }
         
         return estado;
     }
     
-    public int modificarAsignaturaModelo(AsignaturaModelo asignaturaModelo) {
+    public int modificarAsignaturaModelo(String nombre, String codigoAntiguo, String codigoNuevo) {
         int estado = 0;
         
         try {
             cn = Conexion_BD.getConexionBD();
             pt = cn.prepareStatement("UPDATE asignatura SET nombre = ?, codigo = ? WHERE codigo = ?;");
-            pt.setString(1, asignaturaModelo.getNombre());
-            pt.setString(2, asignaturaModelo.getCodigo());
+            pt.setString(1, nombre);
+            pt.setString(2, codigoNuevo);
+            pt.setString(3, codigoAntiguo);
             estado = pt.executeUpdate();
             cn.close();
             pt.close();
             rs.close();
      
-        } catch (Exception e) {
-            
+        } catch (Exception ex) {
+            System.err.println("ERROR: " +ex);
         }
         
         return estado;
@@ -75,8 +76,8 @@ public class AsignaturaModelo {
             cn.close();
             pt.close();
             rs.close();
-        } catch(Exception e) {
-            
+        } catch(Exception ex) {
+            System.err.println("ERROR: " +ex);
         }
         
         return estado;
@@ -102,11 +103,52 @@ public class AsignaturaModelo {
             pt.close();
             rs.close();
             
-        } catch (Exception e){  
+        } catch (Exception ex){
+            System.err.println("ERROR: " +ex);
         }
         return listaAsignaturas;
     }
     
+    public ArrayList<AsignaturaModelo> buscarResgistroAsignaturas(String buscar) {
+        ArrayList<AsignaturaModelo> listaAsignaturas = new ArrayList<>();
+
+        try {
+            // Consulta segura con parámetros preparados
+            String sql = "SELECT * FROM asignatura WHERE "
+                       + "id_asignatura LIKE ? OR "
+                       + "nombre LIKE ? OR "
+                       + "codigo LIKE ?;";
+            cn = Conexion_BD.getConexionBD();
+            pt = cn.prepareStatement(sql);
+
+            for (int i = 1; i <= 3; i++) {
+                pt.setString(i, "%" + buscar + "%");
+            }
+
+            rs = pt.executeQuery();
+
+            // Itera sobre los resultados y agrega los usuarios a la lista
+            while (rs.next()) {
+                AsignaturaModelo asignaturaModelo= new AsignaturaModelo();
+                asignaturaModelo.setIdAsignatura(rs.getInt("id_asignatura"));
+                asignaturaModelo.setNombre(rs.getString("nombre"));
+                asignaturaModelo.setCodigo(rs.getString("codigo"));
+
+
+                listaAsignaturas.add(asignaturaModelo);
+            }
+
+            rs.close();
+            pt.close();
+            cn.close();
+
+        } catch (Exception e) {
+            System.err.println("Error: " + e);
+        }
+
+        return listaAsignaturas;
+    }    
+        
     public int getIdAsignatura() {
         return idAsignatura;
     }
