@@ -436,7 +436,7 @@ public class VentanaRight3 extends JPanel {
 
                 // Asignar valores al objeto equipo
                 equipo.setTipoEquipo(cbTipoEquipo.getSelectedItem().toString());
-                equipo.setIdLaboratorio(Integer.parseInt(cbLaboratorio.getSelectedItem().toString()));
+                equipo.setIdLaboratorio( horarioLaboratorioController.obtenerIDLaboratorioPorNumeroController((String) cbLaboratorio.getSelectedItem()));
                 equipo.setEstado(cbEstado.getSelectedItem().toString());
                 equipo.setNumeroSerie(txtNumeroSerie.getText().trim());
                 equipo.setCodPatrimonial(txtCodigoPatrimonial.getText().trim());
