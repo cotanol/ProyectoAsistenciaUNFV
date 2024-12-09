@@ -41,8 +41,8 @@ public class UsuarioController {
         return objUsuarioModelo.buscarResgistroUsuarios(buscar);
     }
     
-    public void exportarUsuariosAExcel() {
-        objUsuarioModelo.cargarBD_Excel();
+    public void exportarUsuariosAExcel(String buscar) {
+        objUsuarioModelo.cargarBD_Excel(buscar);
     }
     
     public int ultimoIdController () {

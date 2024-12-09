@@ -40,12 +40,8 @@ public class EquipoController {
         return objEquipoModelo.buscarResgistroEquipos(buscar);
     }
     
-    public void exportarUsuariosAExcel() {
-        objEquipoModelo.cargarBD_Excel();
-    }
-    
-    public void exportarUsuariosAExcel1(){
-        objEquipoModelo.cargarBD_Excel1();
+    public void exportarEquipoAExcel(String buscar) {
+        objEquipoModelo.cargarBD_Excel_Equipo(buscar);
     }
     
     public int ultimoIdController () {

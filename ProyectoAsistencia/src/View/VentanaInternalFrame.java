@@ -8,15 +8,21 @@ import java.awt.Cursor;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+import View.VentanaRight4;
+import View.VentanaRight3;
+
 
 public class VentanaInternalFrame extends JFrame implements MouseListener {
     
     //Controlador
     private AsignaturaController asignaturaControlador;
     private LaboratorioController laboratorioControlador;
+    private VentanaRight4 ventanaRight4;
     
     JMenuBar barra;
     JMenu item1;
@@ -45,18 +51,18 @@ public class VentanaInternalFrame extends JFrame implements MouseListener {
     public VentanaInternalFrame(AsignaturaController asignaturaControlador, LaboratorioController laboratorioControlador) {
         this.asignaturaControlador = asignaturaControlador;
         this.laboratorioControlador = laboratorioControlador;
+        
         setSize(900, 900);
         setTitle("GESTOR DE ASIGNATURAS Y LABORATORIOS");
         setLayout(null);
         setResizable(false);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        
         barra = new JMenuBar();
         setJMenuBar(barra);
         item1 = new JMenu("Archivo");
         barra.add(item1);
-
         m1 = new JMenuItem("Gestor de Laboratorios");
         m1.addActionListener((e) -> InternalFrameLaboratorios());
         item1.add(m1);
@@ -71,7 +77,7 @@ public class VentanaInternalFrame extends JFrame implements MouseListener {
         internalFrameInitComponents1();
         listarAsignatura();
         listarLaboratorio();
-        
+
        txtBuscarAsignatura.addKeyListener(new java.awt.event.KeyAdapter() {
             @Override
             public void keyReleased(java.awt.event.KeyEvent evt) {
@@ -85,6 +91,11 @@ public class VentanaInternalFrame extends JFrame implements MouseListener {
                 FiltrarLaboratorio(txtBuscarLaboratorio.getText()); 
             }
         });
+        
+
+       
+
+
     }
     
     public void internalFrameInitComponents2(){
@@ -178,6 +189,7 @@ public class VentanaInternalFrame extends JFrame implements MouseListener {
             txtlaboratorio.setBounds(190,50,300,30);
             panel1.add(txtlaboratorio);
 
+            
             lbcapacidad = new JLabel("Capacidad:");
             lbcapacidad.setBounds(80,100,100,30);
             panel1.add(lbcapacidad);
@@ -266,6 +278,8 @@ public class VentanaInternalFrame extends JFrame implements MouseListener {
             
             if (estado == 1) {
                 Util.WindowFactory.confirmationWindowCRUD("Registro Insertado","INSERTADO");
+
+
             } else {
                 Util.WindowFactory.errorWindowCRUD("Registro No Insertado","INSERTADO");
             }
@@ -316,6 +330,8 @@ public class VentanaInternalFrame extends JFrame implements MouseListener {
 
                 if (estado == 1) {
                     Util.WindowFactory.confirmationWindowCRUD("Registro Modificado","MODIFICADO");
+
+
                 } else {
                     Util.WindowFactory.errorWindowCRUD("Registro No Modificado","MODIFICADO");
                 }
@@ -360,6 +376,7 @@ public class VentanaInternalFrame extends JFrame implements MouseListener {
 
                 if (estado == 1) {
                     Util.WindowFactory.confirmationWindowCRUD("Registro Eliminado","ELIMINADO");
+
                 } else {
                     Util.WindowFactory.errorWindowCRUD("Registro No Eliminado","ELIMINADO");
                 }
@@ -485,6 +502,9 @@ public class VentanaInternalFrame extends JFrame implements MouseListener {
             txtcapacidad.setText(tabla1.getValueAt(filaSeleccionada, 2).toString());
         }
     }
+    
+
+   
     
     public static void main(String[] args) {
             AsignaturaController asignaturaController = new AsignaturaController();

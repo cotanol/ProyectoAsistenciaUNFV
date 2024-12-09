@@ -216,7 +216,7 @@ public ArrayList<UsuarioModelo> buscarResgistroUsuarios(String buscar) {
     //              CARGAR DE TABLA (BASE DE DATOS) A EXCEL
     //============================================================================
 
-    public static void cargarBD_Excel() {
+    public static void cargarBD_Excel(String buscar) {
         Workbook libro = new XSSFWorkbook();
         Sheet hoja = libro.createSheet("ReporteUsuarios");
 
@@ -226,11 +226,11 @@ public ArrayList<UsuarioModelo> buscarResgistroUsuarios(String buscar) {
 
         String[] cabeceras = new String[]{"Nombres", "Apellidos", "Tipo Documento", "Nro Documento", "Nro Celular", "Tipo Usuario", "Nombre Usuario", "Contraseña", "Correo"};
 
-        Row filaCabeceras = hoja.createRow(0); // Fila Cabeceras de las columnas
+        // Crear fila de cabeceras
+        Row filaCabeceras = hoja.createRow(0);
         for (int i = 0; i < cabeceras.length; i++) {
             Cell celda = filaCabeceras.createCell(i);
             celda.setCellValue(cabeceras[i]);
-            
         }
 
         int numFila = 1;
@@ -238,11 +238,30 @@ public ArrayList<UsuarioModelo> buscarResgistroUsuarios(String buscar) {
         try {
             Connection conexion = cn.getConexionBD();
 
-            ps = conexion.prepareStatement("select nombres, apellidos, tipo_documento, nro_documento, numero, tipo_usuario, nombre_usuario, contrasena, email from usuario");
-            rs = ps.executeQuery();
+            // Consulta con filtro dinámico
+            String sql = "SELECT nombres, apellidos, tipo_documento, nro_documento, numero, tipo_usuario, nombre_usuario, contrasena, email " +
+                         "FROM usuario WHERE " +
+                         "nombres LIKE ? OR " +
+                         "apellidos LIKE ? OR " +
+                         "tipo_documento LIKE ? OR " +
+                         "nro_documento LIKE ? OR " +
+                         "numero LIKE ? OR " +
+                         "tipo_usuario LIKE ? OR " +
+                         "nombre_usuario LIKE ? OR " +
+                         "contrasena LIKE ? OR " +
+                         "email LIKE ?";
 
+            ps = conexion.prepareStatement(sql);
+
+            // Configurar los parámetros del filtro
+            for (int i = 1; i <= 9; i++) {
+                ps.setString(i, "%" + buscar + "%");
+            }
+
+            rs = ps.executeQuery();
             int numCol = rs.getMetaData().getColumnCount();
 
+            // Llenar filas con los datos filtrados
             while (rs.next()) {
                 Row filaDatos = hoja.createRow(numFila);
 
@@ -257,17 +276,19 @@ public ArrayList<UsuarioModelo> buscarResgistroUsuarios(String buscar) {
             rs.close();
             ps.close();
             conexion.close();
-            
+
+            // Ajustar ancho de columnas
             for (int i = 0; i < cabeceras.length; i++) {
-            hoja.setColumnWidth(i, 30 * 256); // Forzamos ancho de 30 caracteres
-        }
-            // Guarda el archivo Excel
+                hoja.setColumnWidth(i, 30 * 256);
+            }
+
+            // Guardar archivo Excel
             String filePath = "ReporteRegistrosUsuarios.xlsx";
             FileOutputStream archivo = new FileOutputStream(filePath);
             libro.write(archivo);
             archivo.close();
 
-            // Abre el archivo Excel automáticamente
+            // Abrir automáticamente el archivo Excel
             File archivoExcel = new File(filePath);
             if (Desktop.isDesktopSupported()) {
                 Desktop.getDesktop().open(archivoExcel);
@@ -279,6 +300,7 @@ public ArrayList<UsuarioModelo> buscarResgistroUsuarios(String buscar) {
             System.err.println("Error: " + ex);
         }
     }
+
     //=================================================================================
     
     

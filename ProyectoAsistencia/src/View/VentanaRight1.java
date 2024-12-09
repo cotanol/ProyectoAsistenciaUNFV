@@ -117,7 +117,7 @@ public class VentanaRight1 extends JPanel {
         btnExportarExcel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                UsuarioModelo.cargarBD_Excel();
+                UsuarioModelo.cargarBD_Excel(txtBuscar.getText());
                 JOptionPane.showMessageDialog(null, "Datos exportados a Excel correctamente 🐧!!", "Exportación Exitosa", JOptionPane.INFORMATION_MESSAGE);
             }
         });
@@ -334,11 +334,11 @@ public class VentanaRight1 extends JPanel {
                 obj.getIdUsuario(),
                 obj.getNombres(),
                 obj.getApellidos(),
-                obj.getNombreUsuario(),
                 obj.getTipoDocumento(),
                 obj.getNroDocumento(),
                 obj.getNumero(),
                 obj.getTipoUsuario(),
+                obj.getNombreUsuario(),
                 obj.getContrasena(),
                 obj.getEmail()
                 

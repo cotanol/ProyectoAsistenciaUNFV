@@ -67,7 +67,7 @@ CREATE TABLE equipo (
   id_laboratorio INT,                           -- Clave foránea al laboratorio donde está el equipo
   tipo_equipo ENUM('Teclado', 'CPU', 'Monitor', 'PizarraDigital'),                     -- Tipo o categoría del equipo (ejemplo: Computadora, Proyector)
   numero_serie VARCHAR(50),                     -- Número de serie del equipo
-  estado ENUM('OPERATIVO', 'INOPERATIVO'),     -- Estado actual del equipo
+  estado VARCHAR(50),     -- Estado actual del equipo
   FOREIGN KEY (id_laboratorio) REFERENCES laboratorio(id_laboratorio) ON DELETE SET NULL  -- Si se elimina el laboratorio, el campo se establece en NULL
 );
 
