@@ -49,7 +49,7 @@ public class VentanaRight4 extends JPanel implements ActionListener {
     private DefaultTableModel modeloHorarios;
     
     private JLabel lbdocente, lbasignatura, lbnroclases, lbnrolab, lbdiax, lbdiay, lbfechainiciox, lbfechainicioy, lbhorainiciox, lbhorainicioy, lbhorafinx, lbhorafiny;
-    private JComboBox<String> comboDocente, comboLaboratorio, combonroClases,comboAsignatura, comboDiaX, comboDiaY;
+    public  JComboBox<String> comboDocente, comboLaboratorio, combonroClases,comboAsignatura, comboDiaX, comboDiaY;
     private JTextField  txtHoraInicioX, txtHoraFinX, txtHoraInicioY, txtHoraFinY;
     private JDateChooser calendarInicioX, calendarInicioY;
     
@@ -620,7 +620,6 @@ public class VentanaRight4 extends JPanel implements ActionListener {
     private void Configuracion() {
         AsignaturaController asignaturaController = new AsignaturaController();
         LaboratorioController laboratorioController = new LaboratorioController(); 
-        
         VentanaInternalFrame vtn = new VentanaInternalFrame(asignaturaController,laboratorioController);
         vtn.setVisible(true);
     }

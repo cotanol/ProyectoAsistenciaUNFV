@@ -30,7 +30,7 @@ public class VentanaRight3 extends JPanel {
     private JLabel lbTituloPantalla2, lbRegistroEquiposLabel, lbListaEquiposLabel;
     private JLabel lbTipoEquipoLabel, lbLaboratorioLabel, lbEstadoLabel, lbNumeroSerieLabel, lbCodigoPatrimonialLabel, lbBuscar;
     private JTextField txtNumeroSerie, txtCodigoPatrimonial, txtBuscar;
-    private JComboBox<String> cbTipoEquipo, cbLaboratorio, cbEstado;
+    public  JComboBox<String> cbTipoEquipo, cbLaboratorio, cbEstado;
     private JButton btnAgregarEquipo, btnModificarEquipo, btnEliminarEquipo, btnConfiguracion, btnRegresar, btnExportarExcel;
     private JTable tablaEquiposDisponibles, tablaEquiposRegistrados;
     private DefaultTableModel modeloEquiposDisponibles, modeloEquiposRegistrados;
@@ -72,7 +72,8 @@ public class VentanaRight3 extends JPanel {
 
         inicializarComponentes();
         agregarEventos();
-        listarEquiposDisponibles();
+        
+        
         
         txtBuscar.addKeyListener(new java.awt.event.KeyAdapter() {
             @Override
@@ -80,8 +81,20 @@ public class VentanaRight3 extends JPanel {
                 Filtrar(txtBuscar.getText()); 
             }
         });
+        
+        // Evento de filtrado en el nuevo panel
+        txtBuscarExport.addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                FiltrarExport(txtBuscarExport.getText()); 
+            }   
+        });
+        
+        listarEquiposDisponibles();
+        listarEquiposRegistrados();
+        listarEquiposParaExportar();
     }
-
+       
     private void inicializarComponentes() {
         // Configuración del CardLayout y panel principal
         cardLayout = (CardLayout) getLayout();
@@ -116,20 +129,6 @@ public class VentanaRight3 extends JPanel {
         // Botón de Configuración
         btnConfiguracion = ComponentFactory.crearBotonAccion("CONFIGURACIÓN", 970, 170, 250, 50);
         panel.add(btnConfiguracion);
-
-        // Botón Exportar a Excel 
-        //btnExportarExcel = ComponentFactory.crearBotonReporteExcel("EXPORTAR A EXCEL", 680, 170, 250, 50); 
-        //panel.add(btnExportarExcel);
-        
-        /*
-        btnExportarExcel.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                EquipoModelo.cargarBD_Excel();
-                JOptionPane.showMessageDialog(null, "Datos exportados a Excel correctamente 🐧!!", "Exportación Exitosa", JOptionPane.INFORMATION_MESSAGE);
-            }
-        });
-        */
         
         // Este botón ahora solo cambia al panel de exportación en lugar de exportar directamente
         btnExportarExcel = ComponentFactory.crearBotonReporteExcel("EXPORTAR A EXCEL", 680, 170, 250, 50); 
@@ -213,7 +212,7 @@ public class VentanaRight3 extends JPanel {
         lbEstadoLabel = ComponentFactory.crearEtiqueta("Estado", 670, 20, 200, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_HOVER_SELECCIONADO1);
         subPanel.add(lbEstadoLabel);
 
-        cbEstado = ComponentFactory.crearComboBoxString(new String[]{"OPERATIVO", "INOPERATIVO"}, 670, 50, 300, 30, Constantes.BORDER_HOVER);
+        cbEstado = ComponentFactory.crearComboBoxString(new String[]{"OPERATIVO", "NO OPERATIVO"}, 670, 50, 300, 30, Constantes.BORDER_HOVER);
         subPanel.add(cbEstado);
 
         // Etiqueta y Campo de Texto para Número de Serie
@@ -346,21 +345,16 @@ public class VentanaRight3 extends JPanel {
         panelRightExportExcel.add(btnRealExportarExcel);
         btnExportarExcel.addActionListener(e -> {
             cardLayout.show(panelDerecho, "ExportExcelPanel");
+            
+                  
         });
 
-        // Evento de filtrado en el nuevo panel
-        txtBuscarExport.addKeyListener(new java.awt.event.KeyAdapter() {
-            @Override
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                FiltrarExport(txtBuscarExport.getText()); 
-            }
-        });
 
         // Evento para el botón de exportar real
         btnRealExportarExcel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                EquipoModelo.cargarBD_Excel1();
+                equipoController.exportarEquipoAExcel(txtBuscarExport.getText());
                 JOptionPane.showMessageDialog(null, "Datos exportados a Excel correctamente 🐧!!", "Exportación Exitosa", JOptionPane.INFORMATION_MESSAGE);
             }
         });
@@ -413,7 +407,7 @@ public class VentanaRight3 extends JPanel {
                 // Actualizar tablas
                 listarEquiposDisponibles();
                 listarEquiposRegistrados();
-
+                listarEquiposParaExportar();
                 limpiarCamposEquipo();
             } else {
                 Util.WindowFactory.errorLogin(": Campos en Blanco","CAMPOS_EN_BLANCO");
@@ -453,6 +447,7 @@ public class VentanaRight3 extends JPanel {
                 // Actualizar tablas
                 listarEquiposDisponibles();
                 listarEquiposRegistrados();
+                listarEquiposParaExportar();
 
                 limpiarCamposEquipo();
             } else {
@@ -489,6 +484,7 @@ public class VentanaRight3 extends JPanel {
 
                 listarEquiposDisponibles();
                 listarEquiposRegistrados();
+                listarEquiposParaExportar();
 
                 limpiarCamposEquipo();
             }
@@ -603,7 +599,7 @@ public class VentanaRight3 extends JPanel {
                 equipoTa.getNumeroSerie(),
                 equipoTa.getEstado(),
             });
-        }
+        } 
     }
 
     private void limpiarCamposEquipo() {

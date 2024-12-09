@@ -21,7 +21,7 @@ public class VentanaRight2 extends JPanel {
 
     // Componentes principales
     private JLabel lblControlAsistencia, lblDatosLab, lblConfigAvanz, lblNroLab, lblHor, lblAsigs;
-    private JComboBox<String> cboNroLab;
+    public static JComboBox<String> cboNroLab;
     private JComboBox<String> cboHorario;
     private JComboBox<String> cboAsignatura;
     private JButton btnBuscar, btnActuDatos, btnReporteGen;
@@ -110,7 +110,6 @@ public class VentanaRight2 extends JPanel {
 
         cboNroLab = ComponentFactory.crearComboBoxString(new String[]{}, 50, 50, 200, 30, Constantes.BORDER_HOVER);
         subPanel.add(cboNroLab);
-        cargarComboNroLab();
 
         // Etiqueta y ComboBox para Horario
         lblHor = ComponentFactory.crearEtiqueta("Horario", 300, 20, 200, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_HOVER_SELECCIONADO1);

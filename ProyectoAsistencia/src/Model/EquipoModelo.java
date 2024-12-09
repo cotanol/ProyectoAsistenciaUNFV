@@ -20,6 +20,7 @@ public class EquipoModelo {
     private String numeroSerie;
     private String estado;
     
+    private String numero_lab;
     Connection cn = null;
     PreparedStatement pt = null;
     ResultSet rs = null;
@@ -114,137 +115,99 @@ public class EquipoModelo {
     //              CARGAR DE TABLA (BASE DE DATOS) A EXCEL
     //============================================================================
 
-    public static void cargarBD_Excel() {
-        Workbook libro = new XSSFWorkbook();
-        Sheet hoja = libro.createSheet("ReporteEquipos");
+public static void cargarBD_Excel_Equipo(String buscar) {
+    Workbook libro = new XSSFWorkbook();
+    Sheet hoja = libro.createSheet("ReporteEquipos");
 
-        Conexion_BD cn = new Conexion_BD();
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+    Conexion_BD cn = new Conexion_BD();
+    PreparedStatement ps = null;
+    ResultSet rs = null;
 
-        String[] cabeceras = new String[]{"Nro Laboratorio", "Tipo Equipo", "Código Patrimonial", "Nro Serie", "Estado"};
+    String[] cabeceras = new String[]{"Laboratorio", "Tipo Equipo", "Código Patrimonial", "Número de Serie", "Estado"};
 
-        Row filaCabeceras = hoja.createRow(0); // Fila Cabeceras de las columnas
-        for (int i = 0; i < cabeceras.length; i++) {
-            Cell celda = filaCabeceras.createCell(i);
-            celda.setCellValue(cabeceras[i]);
-            
-        }
-
-        int numFila = 1;
-
-        try {
-            Connection conexion = cn.getConexionBD();
-      
-            ps = conexion.prepareStatement("SELECT id_laboratorio, tipo_equipo, cod_patrimonial, numero_serie, estado FROM equipo WHERE estado = 'Operativo';");
-
-
-            rs = ps.executeQuery();
-
-            int numCol = rs.getMetaData().getColumnCount();
-
-            while (rs.next()) {
-                Row filaDatos = hoja.createRow(numFila);
-                
-                for (int i = 0; i < numCol; i++) {
-                    Cell celda = filaDatos.createCell(i);
-                    celda.setCellValue(rs.getString(i + 1));
-                }
-
-                numFila++;
-            }
-
-            rs.close();
-            ps.close();
-            conexion.close();
-            
-            for (int i = 0; i < cabeceras.length; i++) {
-            hoja.setColumnWidth(i, 30 * 256); // Forzamos ancho de 30 caracteres
-        }
-            // Guarda el archivo Excel
-            String filePath = "ReporteEquiposLaboratorio.xlsx";
-            FileOutputStream archivo = new FileOutputStream(filePath);
-            libro.write(archivo);
-            archivo.close();
-
-            // Abre el archivo Excel automáticamente
-            File archivoExcel = new File(filePath);
-            if (Desktop.isDesktopSupported()) {
-                Desktop.getDesktop().open(archivoExcel);
-            } else {
-                System.out.println("No se pudo abrir automáticamente el archivo Excel. Verifica tu sistema.");
-            }
-
-        } catch (Exception ex) {
-            System.err.println("Error: " + ex);
-        }
+    // Crear fila de cabeceras
+    Row filaCabeceras = hoja.createRow(0);
+    for (int i = 0; i < cabeceras.length; i++) {
+        Cell celda = filaCabeceras.createCell(i);
+        celda.setCellValue(cabeceras[i]);
     }
-    ///================================================================================
-    public static void cargarBD_Excel1() {
-        Workbook libro = new XSSFWorkbook();
-        Sheet hoja = libro.createSheet("ReporteEquipos");
 
-        Conexion_BD cn = new Conexion_BD();
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+    int numFila = 1;
 
-        String[] cabeceras = new String[]{"Nro Laboratorio", "Tipo Equipo", "Código Patrimonial", "Nro Serie", "Estado"};
+    try {
+        Connection conexion = cn.getConexionBD();
 
-        Row filaCabeceras = hoja.createRow(0); // Fila Cabeceras de las columnas
+        // Construcción dinámica de la consulta SQL
+        String sql = "SELECT l.id_laboratorio, e.tipo_equipo, e.cod_patrimonial, e.numero_serie, e.estado " +
+                     "FROM equipo e " +
+                     "INNER JOIN laboratorio l ON e.id_laboratorio = l.id_laboratorio " +
+                     "WHERE (l.numero_lab LIKE ? OR e.tipo_equipo LIKE ? OR e.cod_patrimonial LIKE ? OR e.numero_serie LIKE ? OR e.estado LIKE ?)";
+
+        ps = conexion.prepareStatement(sql);
+
+        for (int i = 1; i <= 5; i++) {
+            ps.setString(i, "%" + buscar + "%");
+        }
+
+        rs = ps.executeQuery();
+
+        // Crear una instancia de la clase que contiene el método obtenerNumeroLabPorId
+        EquipoModelo equipoModelo = new EquipoModelo();
+
+        // Llenar filas con los datos filtrados
+        while (rs.next()) {
+            Row filaDatos = hoja.createRow(numFila);
+
+            // Obtener el numero_lab usando el método
+            int idLaboratorio = rs.getInt("id_laboratorio");
+            String numeroLab = equipoModelo.obtenerNumeroLabPorId(idLaboratorio);
+
+            // Llenar la fila de datos
+            Object[] fila = {
+                numeroLab,  // En lugar de rs.getInt("id_laboratorio"), usamos el numeroLab
+                rs.getString("tipo_equipo"),
+                rs.getString("cod_patrimonial"),
+                rs.getString("numero_serie"),
+                rs.getString("estado")
+            };
+
+            for (int i = 0; i < fila.length; i++) {
+                Cell celda = filaDatos.createCell(i);
+                celda.setCellValue(fila[i].toString());
+            }
+
+            numFila++;
+        }
+
+        rs.close();
+        ps.close();
+        conexion.close();
+
+        // Ajustar ancho de columnas
         for (int i = 0; i < cabeceras.length; i++) {
-            Cell celda = filaCabeceras.createCell(i);
-            celda.setCellValue(cabeceras[i]);
-            
+            hoja.setColumnWidth(i, 30 * 256);
         }
 
-        int numFila = 1;
+        // Guardar archivo Excel
+        String filePath = "ReporteEquipos.xlsx";
+        FileOutputStream archivo = new FileOutputStream(filePath);
+        libro.write(archivo);
+        archivo.close();
 
-        try {
-            Connection conexion = cn.getConexionBD();
-      
-            ps = conexion.prepareStatement("SELECT id_laboratorio, tipo_equipo, cod_patrimonial, numero_serie, estado FROM equipo;");
-
-
-            rs = ps.executeQuery();
-
-            int numCol = rs.getMetaData().getColumnCount();
-
-            while (rs.next()) {
-                Row filaDatos = hoja.createRow(numFila);
-                
-                for (int i = 0; i < numCol; i++) {
-                    Cell celda = filaDatos.createCell(i);
-                    celda.setCellValue(rs.getString(i + 1));
-                }
-
-                numFila++;
-            }
-
-            rs.close();
-            ps.close();
-            conexion.close();
-            
-            for (int i = 0; i < cabeceras.length; i++) {
-            hoja.setColumnWidth(i, 30 * 256); // Forzamos ancho de 30 caracteres
+        // Abrir automáticamente el archivo Excel
+        File archivoExcel = new File(filePath);
+        if (Desktop.isDesktopSupported()) {
+            Desktop.getDesktop().open(archivoExcel);
+        } else {
+            System.out.println("No se pudo abrir automáticamente el archivo Excel. Verifica tu sistema.");
         }
-            // Guarda el archivo Excel
-            String filePath = "ReporteEquiposLaboratorio.xlsx";
-            FileOutputStream archivo = new FileOutputStream(filePath);
-            libro.write(archivo);
-            archivo.close();
 
-            // Abre el archivo Excel automáticamente
-            File archivoExcel = new File(filePath);
-            if (Desktop.isDesktopSupported()) {
-                Desktop.getDesktop().open(archivoExcel);
-            } else {
-                System.out.println("No se pudo abrir automáticamente el archivo Excel. Verifica tu sistema.");
-            }
-
-        } catch (Exception ex) {
-            System.err.println("Error: " + ex);
-        }
+    } catch (Exception ex) {
+        System.err.println("Error: " + ex);
     }
+}
+
+
     //=================================================================================
     
     public ArrayList<EquipoModelo> enlistarEquipoModelo () {
@@ -284,48 +247,51 @@ public class EquipoModelo {
     //                     METODO DE USUARIO DAO PARA BUSCAR
     //============================================================================
     public ArrayList<EquipoModelo> buscarResgistroEquipos(String buscar) {
-    ArrayList<EquipoModelo> listaEquipos = new ArrayList<>();
+        ArrayList<EquipoModelo> listaEquipos = new ArrayList<>();
 
-    try {
-        // Consulta segura con parámetros preparados
-        String sql = "SELECT * FROM equipo WHERE "
-                   + "cod_patrimonial LIKE ? OR "
-                   + "CAST(id_laboratorio AS CHAR) LIKE ? OR "
-                   + "tipo_equipo LIKE ? OR "
-                   + "numero_serie LIKE ? OR "
-                   + "estado LIKE ?"; // Corregido: Se añadió "LIKE" faltante en "numero_serie"
+        try {
+            // Consulta segura con parámetros preparados
+            String sql = "SELECT e.id_laboratorio, e.tipo_equipo, e.cod_patrimonial, e.numero_serie, e.estado " +
+                 "FROM equipo e " +
+                 "INNER JOIN laboratorio l ON e.id_laboratorio = l.id_laboratorio " +
+                 "WHERE e.cod_patrimonial LIKE ? OR " +
+                 "l.numero_lab LIKE ? OR " +  // Búsqueda por numero_lab
+                 "e.tipo_equipo LIKE ? OR " +
+                 "e.numero_serie LIKE ? OR " +
+                 "e.estado LIKE ?";
 
-        cn = Conexion_BD.getConexionBD();
-        pt = cn.prepareStatement(sql);
+            cn = Conexion_BD.getConexionBD();
+            pt = cn.prepareStatement(sql);
 
-        for (int i = 1; i <= 5; i++) {
-            pt.setString(i, "%" + buscar + "%");
+            // Establecer el parámetro de búsqueda
+            for (int i = 1; i <= 5; i++) {
+                pt.setString(i, "%" + buscar + "%");
+            }
+
+            rs = pt.executeQuery();
+
+            // Iterar sobre los resultados y agregar los equipos a la lista
+            while (rs.next()) {
+                EquipoModelo equipoModelo = new EquipoModelo();
+                equipoModelo.setIdLaboratorio(rs.getInt("id_laboratorio"));  // Obtener id_laboratorio
+                equipoModelo.setTipoEquipo(rs.getString("tipo_equipo"));
+                equipoModelo.setCodPatrimonial(rs.getString("cod_patrimonial"));
+                equipoModelo.setNumeroSerie(rs.getString("numero_serie"));
+                equipoModelo.setEstado(rs.getString("estado"));
+
+                listaEquipos.add(equipoModelo);
+            }
+
+            rs.close();
+            pt.close();
+            cn.close();
+
+        } catch (Exception e) {
+            System.err.println("Error: " + e);
         }
 
-        rs = pt.executeQuery();
-
-        // Itera sobre los resultados y agrega los equipos a la lista
-        while (rs.next()) {
-            EquipoModelo equipoModelo = new EquipoModelo();
-            equipoModelo.setCodPatrimonial(rs.getString("cod_patrimonial"));
-            equipoModelo.setIdLaboratorio(rs.getInt("id_laboratorio"));
-            equipoModelo.setTipoEquipo(rs.getString("tipo_equipo"));
-            equipoModelo.setNumeroSerie(rs.getString("numero_serie"));
-            equipoModelo.setEstado(rs.getString("estado"));
-
-            listaEquipos.add(equipoModelo);
-        }
-
-        rs.close();
-        pt.close();
-        cn.close();
-
-    } catch (Exception e) {
-        System.err.println("Error: " + e);
+        return listaEquipos;
     }
-
-    return listaEquipos;
-}
 
 
     
@@ -470,7 +436,12 @@ public class EquipoModelo {
         this.estado = estado;
     }
 
-    
+    public String getNumero_lab() {
+        return numero_lab;
+    }
 
+    public void setNumero_lab(String numero_lab) {
+        this.numero_lab = numero_lab;
+    }
     
 }
