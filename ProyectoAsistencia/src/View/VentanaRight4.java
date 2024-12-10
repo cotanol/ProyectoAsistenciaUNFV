@@ -16,27 +16,22 @@ import Controller.HorarioLaboratorioController;
 import Controller.LaboratorioController;
 import java.text.Normalizer;
 import com.toedter.calendar.JDateChooser;
-import DAO.GenerarTablaClases;
 import Model.UsuarioModelo;
 import Controller.UsuarioController;
+import Model.AsignaturaModelo;
 import Model.LaboratorioModelo;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import Util.Conexion_BD;
-import creandotablasjava.GenerarTablaClases1;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class VentanaRight4 extends JPanel implements ActionListener {
     // Controlador
     private HorarioLaboratorioController horarioControlador;
     private UsuarioController usuarioControlador;
     private LaboratorioController laboratorioControlador;
+    private AsignaturaController asignaturaControlador;
 
     // Componentes principales
     private JLabel lbRegistrosHorarios;
@@ -49,7 +44,7 @@ public class VentanaRight4 extends JPanel implements ActionListener {
     private DefaultTableModel modeloHorarios;
     
     private JLabel lbdocente, lbasignatura, lbnroclases, lbnrolab, lbdiax, lbdiay, lbfechainiciox, lbfechainicioy, lbhorainiciox, lbhorainicioy, lbhorafinx, lbhorafiny;
-    public  JComboBox<String> comboDocente, comboLaboratorio, combonroClases,comboAsignatura, comboDiaX, comboDiaY;
+    public  JComboBox<String> comboDocente, comboLaboratorio, combonroClases, comboAsignatura, comboDiaX, comboDiaY;
     private JTextField  txtHoraInicioX, txtHoraFinX, txtHoraInicioY, txtHoraFinY;
     private JDateChooser calendarInicioX, calendarInicioY;
     
@@ -63,10 +58,11 @@ public class VentanaRight4 extends JPanel implements ActionListener {
     // Datos
     private ArrayList<HorarioLaboratorioModelo> listaHorarios;
 
-    public VentanaRight4(HorarioLaboratorioController horarioControlador, UsuarioController usuarioControlador, LaboratorioController laboratorioControlador) {
+    public VentanaRight4(HorarioLaboratorioController horarioControlador, UsuarioController usuarioControlador, LaboratorioController laboratorioControlador, AsignaturaController asignaturaControlador) {
         this.horarioControlador = horarioControlador;
         this.usuarioControlador = usuarioControlador;
         this.laboratorioControlador = laboratorioControlador;
+        this.asignaturaControlador = asignaturaControlador;
 
         setLayout(null);
         setBackground(Constantes.COLOR_FONDO_PANEL);
@@ -95,7 +91,6 @@ public class VentanaRight4 extends JPanel implements ActionListener {
         add(btnCrearClase);
         add(btnConfiguracion);
         add(btnExportarExcel);
-
 
         // Subtítulo para la tabla
         nombreSubPanel1_2 = ComponentFactory.crearEtiqueta("LISTA DE HORARIOS", 100, 490, 570, 50, Constantes.FUENTE_SUBTITULO, Constantes.COLOR_TEXTO_BLANCO);
@@ -135,14 +130,10 @@ public class VentanaRight4 extends JPanel implements ActionListener {
         lbdocente = ComponentFactory.crearEtiqueta("Docente", 30, 20, 200, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_HOVER_SELECCIONADO1);
         subPanel1.add(lbdocente);
         
-        //SE SUPONE QUE EL COMBO BOX SE CARGAR CON LOS VALORES DE LA BASE DE DATOS, LO DEL CODE PATROMONIAL ES PRUBEA NOMAS
-        
         String[] dias = {"","Lunes", "Martes", "Miercoles", "Juves", "Viernes", "Sabado", "Domingo"};
-        
-        
-        String[] clases = {"","16", "32"}; //ESTO SE QUEDA FIJO SI O SI
+        String[] clases = {"","16", "32"}; // Esto queda fijo
+
         comboDocente = ComponentFactory.crearComboBoxString(new String[]{},30, 50, 300, 30, Constantes.BORDER_HOVER);
-        
         subPanel1.add(comboDocente);
         
         lbasignatura = ComponentFactory.crearEtiqueta("Asignatura", 30, 100, 200, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_HOVER_SELECCIONADO1);
@@ -150,7 +141,6 @@ public class VentanaRight4 extends JPanel implements ActionListener {
         
         comboAsignatura = ComponentFactory.crearComboBoxString(new String[]{},30, 130, 300, 30, Constantes.BORDER_HOVER);
         subPanel1.add(comboAsignatura);
-        
         
         lbnroclases = ComponentFactory.crearEtiqueta("Nro. Clases", 30, 180, 200, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_HOVER_SELECCIONADO1);
         subPanel1.add(lbnroclases);
@@ -178,7 +168,7 @@ public class VentanaRight4 extends JPanel implements ActionListener {
         lbfechainiciox = ComponentFactory.crearEtiqueta("Fecha de Inicio (X)", 630, 20, 200, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_HOVER_SELECCIONADO1);
         subPanel1.add(lbfechainiciox);
         calendarInicioX = new JDateChooser();
-        calendarInicioX.setBounds(630, 50, 170, 30); // Posición y tamaño
+        calendarInicioX.setBounds(630, 50, 170, 30); 
         calendarInicioX.setFont(Constantes.FUENTE_LABEL);
         calendarInicioX.setBorder(Constantes.BORDER_HOVER);
         calendarInicioX.setEnabled(false);
@@ -186,7 +176,7 @@ public class VentanaRight4 extends JPanel implements ActionListener {
 
         lbhorainiciox = ComponentFactory.crearEtiqueta("Hora Inicio - Dia X", 630, 100, 200, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_HOVER_SELECCIONADO1);
         subPanel1.add(lbhorainiciox);
-        txtHoraInicioX = ComponentFactory.crearCampoTexto( 630, 130, 170, 30, Constantes.BORDER_HOVER);
+        txtHoraInicioX = ComponentFactory.crearCampoTexto(630, 130, 170, 30, Constantes.BORDER_HOVER);
         txtHoraInicioX.setEnabled(false);
         subPanel1.add(txtHoraInicioX);
         
@@ -199,7 +189,7 @@ public class VentanaRight4 extends JPanel implements ActionListener {
         lbfechainicioy = ComponentFactory.crearEtiqueta("Fecha de Inicio (Y)", 870, 20, 200, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_HOVER_SELECCIONADO1);
         subPanel1.add(lbfechainicioy);
         calendarInicioY = new JDateChooser();
-        calendarInicioY.setBounds(870, 50, 170, 30); // Posición y tamaño
+        calendarInicioY.setBounds(870, 50, 170, 30);
         calendarInicioY.setFont(Constantes.FUENTE_LABEL);
         calendarInicioY.setBorder(Constantes.BORDER_HOVER);
         calendarInicioY.setEnabled(false);
@@ -207,7 +197,7 @@ public class VentanaRight4 extends JPanel implements ActionListener {
 
         lbhorainicioy= ComponentFactory.crearEtiqueta("Hora Inicio - Dia Y", 870, 100, 200, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_HOVER_SELECCIONADO1);
         subPanel1.add(lbhorainicioy);
-        txtHoraInicioY = ComponentFactory.crearCampoTexto( 870, 130, 170, 30, Constantes.BORDER_HOVER);
+        txtHoraInicioY = ComponentFactory.crearCampoTexto(870, 130, 170, 30, Constantes.BORDER_HOVER);
         txtHoraInicioY.setEnabled(false);
         subPanel1.add(txtHoraInicioY);
         
@@ -240,22 +230,12 @@ public class VentanaRight4 extends JPanel implements ActionListener {
     }
     
     private void agregarEventos() {
-        // Eventos para botones
-        // btnExprotarExcel, btnCrearClase, btnConfiguracion,
-        
-        //btnAgregar.addActionListener(e -> manejarAgregarHorario());
-        //btnModificar.addActionListener(e -> manejarModificarHorario());
-        //btnEliminar.addActionListener(e -> manejarEliminarHorario());
         btnConfiguracion.addActionListener((e)->Configuracion());
         btnExportarExcel.addActionListener((e)->{
-           horarioControlador.exportarUsuariosAExcel(txtBuscar.getText());
+           horarioControlador.exportarUsuariosAExcel();
            JOptionPane.showMessageDialog(null, "Datos exportados a Excel correctamente 🐧!!", "Exportación Exitosa", JOptionPane.INFORMATION_MESSAGE);
         });
         
-        // Eventos de hover en botones
-        //btnAgregar.addMouseListener(new EstiloHover.HoverAccionBoton(btnAgregar));
-        //btnModificar.addMouseListener(new EstiloHover.HoverAccionBoton(btnModificar));
-        //btnEliminar.addMouseListener(new EstiloHover.HoverAccionBoton(btnEliminar));
         btnCrearClase.addMouseListener(new EstiloHover.HoverAccionBoton(btnCrearClase));
         btnConfiguracion.addMouseListener(new EstiloHover.HoverAccionBoton(btnConfiguracion));
         btnExportarExcel.addMouseListener(new EstiloHover.HoverAccionBotonExcel(btnExportarExcel));
@@ -281,14 +261,19 @@ public class VentanaRight4 extends JPanel implements ActionListener {
             String horaInicioY = txtHoraInicioY.getText();
             String horaFinY = txtHoraFinY.getText();
             
-            
             // Obtener las fechas de los calendarios
             Date fechaInicioDateX = calendarInicioX.getDate();
             Date fechaInicioDateY = calendarInicioY.getDate();
 
-            int nummeroClass = Integer.parseInt(combonroClases.getSelectedItem().toString());
+            int nummeroClass = 0;
+            try {
+                nummeroClass = Integer.parseInt(combonroClases.getSelectedItem().toString());
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(null, "Seleccione un número de clases.");
+                return;
+            }
 
-            // Verificar que los campos obligatorios no están vacíos
+            // Validar campos obligatorios
             if (nummeroClass == 16) {
                 if (docente.isEmpty() || horaInicioX.isEmpty() || horaFinX.isEmpty() || fechaInicioDateX == null) {
                     JOptionPane.showMessageDialog(null, "Por favor, complete todos los campos necesarios.");
@@ -301,7 +286,7 @@ public class VentanaRight4 extends JPanel implements ActionListener {
                 }
             }
 
-            // Verificar si las fechas son válidas antes de continuar
+            // Verificar fechas
             if (fechaInicioDateX == null) {
                 JOptionPane.showMessageDialog(null, "Debe seleccionar una fecha de inicio para el día X.");
                 return;
@@ -311,170 +296,50 @@ public class VentanaRight4 extends JPanel implements ActionListener {
                 return;
             }
 
-            // Formatear las fechas seleccionadas a 'dd-MM-yyyy'
+            // Formatear fecha a 'dd-MM-yyyy'
             SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-            String fechaInicioFormateadaX = null;
-            String fechaInicioFormateadaY = null;
-            String nombreTablaX = null;
-            String nombreTablaY = null;
-
-            if (nummeroClass == 16) {
-                fechaInicioFormateadaX = sdf.format(fechaInicioDateX);
-                // Formatear el nombre de la tabla para el día X
-                nombreTablaX =
-                        laboratorio.toLowerCase().replace(" ", "_") + "_" +
-                        dia1.toLowerCase() + "_" +
-                        docente.toLowerCase().replace(" ", "_") + "_" +
-                        asignatura.toLowerCase().replace(" ", "_") + "_" +
-                        horaInicioX.replace(":", "y") + "_" +
-                        horaFinX.replace(":", "y");
-                JOptionPane.showMessageDialog(null, "Nombre de la tabla generado: \n" + nombreTablaX);
-            } else if (nummeroClass == 32) {
-                fechaInicioFormateadaX = sdf.format(fechaInicioDateX);
-                fechaInicioFormateadaY = sdf.format(fechaInicioDateY);
-                // Formatear el nombre de la tabla para el día X
-                nombreTablaX =
-                        "`"+
-                        laboratorio.toLowerCase() + "_" +
-                        dia1.toLowerCase() + "_" +
-                        docente.toLowerCase().replace(" ", "_") + "_" +
-                        asignatura.toLowerCase().replace(" ", "_") + "_" +
-                        horaInicioX.replace(":", "y") + "_" +
-                        horaFinX.replace(":", "y") + "`"; 
-                // Formatear el nombre de la tabla para el día Y
-                nombreTablaY =
-                        "`"+
-                        laboratorio.toLowerCase() + "_" +
-                        dia2.toLowerCase() + "_" +
-                        docente.toLowerCase().replace(" ", "_") + "_" +
-                        asignatura.toLowerCase().replace(" ", "_") + "_" +
-                        horaInicioY.replace(":", "y") + "_" +
-                        horaFinY.replace(":", "y") + "`";
-
-                // Mostrar los nombres generados en un mensaje
-                JOptionPane.showMessageDialog(null, "Nombres de las tablas generados: \n" + nombreTablaX + " y " + nombreTablaY);
-            }
-
-            // Crear las tablas en la base de datos
-            try (Connection conn = Conexion_BD.getConexionBD()) {
-                int numClases = Integer.parseInt(combonroClases.getSelectedItem().toString());
-                String[] clasesConFechasX = new String[numClases];
-                String[] clasesConFechasY = new String[numClases];
-
-                // Llenar las fechas en las clases con el nuevo formato para el día X
-                for (int i = 0; i < numClases; i++) {
-                    clasesConFechasX[i] = fechaInicioFormateadaX;
-                    // Aquí calculamos la siguiente fecha sumando 7 días
-                    if (i > 0) {
-                        Calendar calendar = Calendar.getInstance();
-                        try {
-                            calendar.setTime(sdf.parse(clasesConFechasX[i - 1]));
-                            calendar.add(Calendar.DATE, 7); // Añadir 7 días
-                            clasesConFechasX[i] = sdf.format(calendar.getTime());  // Usar dd-MM-yyyy
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-                    }
-                }
-
-                // Solo llenamos las fechas para el día Y si se trata de 32 clases
-                if (nummeroClass == 32) {
-                    for (int i = 0; i < numClases; i++) {
-                        clasesConFechasY[i] = fechaInicioFormateadaY;
-                        // Aquí calculamos la siguiente fecha sumando 7 días adicionales para el día Y
-                        if (i > 0) {
-                            Calendar calendar = Calendar.getInstance();
-                            try {
-                                calendar.setTime(sdf.parse(clasesConFechasY[i - 1]));
-                                calendar.add(Calendar.DATE, 7); // Añadir 7 días
-                                clasesConFechasY[i] = sdf.format(calendar.getTime());  // Usar dd-MM-yyyy
-                            } catch (Exception ex) {
-                                ex.printStackTrace();
-                            }
-                        }
-                    }
-                }
-
-                // Crear las tablas con las fechas generadas
-                if (nummeroClass == 16) {
-                    GenerarTablaClases.crearTablaConFechas(conn, nombreTablaX, fechaInicioFormateadaX, numClases, 7, clasesConFechasX);
-                    JOptionPane.showMessageDialog(null, "Tabla creada con éxito.");
-                } else if (nummeroClass == 32) {
-                    GenerarTablaClases.crearTablaConFechas(conn, nombreTablaX, fechaInicioFormateadaX, numClases, 7, clasesConFechasX);
-                    GenerarTablaClases.crearTablaConFechas(conn, nombreTablaY, fechaInicioFormateadaY, numClases, 7, clasesConFechasY);
-                    JOptionPane.showMessageDialog(null, "Tablas creadas con éxito.");
-                }
-
-            } catch (SQLException ex) {
-                Logger.getLogger(GenerarTablaClases1.class.getName()).log(Level.SEVERE, null, ex);
-                JOptionPane.showMessageDialog(null, "Error al crear las tablas: " + ex.getMessage());
-            } catch (Exception ex) {
-                Logger.getLogger(GenerarTablaClases1.class.getName()).log(Level.SEVERE, null, ex);
-                JOptionPane.showMessageDialog(null, "Error inesperado: " + ex.getMessage());
-            }
-            
-            try {
-
-            // Conexión a la base de datos
-            Connection conn = Conexion_BD.getConexionBD();
+            String fechaInicioFormateadaX = sdf.format(fechaInicioDateX);
+            String fechaInicioFormateadaY = (fechaInicioDateY != null) ? sdf.format(fechaInicioDateY) : null;
 
             // Formatear horarios a formato TIME (hh:mm)
-            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-            String formattedHoraInicioX = timeFormat.format(timeFormat.parse(horaInicioX));
-            String formattedHoraFinX = timeFormat.format(timeFormat.parse(horaFinX));
-            String formattedHoraInicioY = horaInicioY.isEmpty() ? null : timeFormat.format(timeFormat.parse(horaInicioY));
-            String formattedHoraFinY = horaFinY.isEmpty() ? null : timeFormat.format(timeFormat.parse(horaFinY));
+            try {
+                SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+                String formattedHoraInicioX = timeFormat.format(timeFormat.parse(horaInicioX));
+                String formattedHoraFinX = timeFormat.format(timeFormat.parse(horaFinX));
+                String formattedHoraInicioY = (horaInicioY.isEmpty()) ? null : timeFormat.format(timeFormat.parse(horaInicioY));
+                String formattedHoraFinY = (horaFinY.isEmpty()) ? null : timeFormat.format(timeFormat.parse(horaFinY));
 
-
-            // Insertar datos en la tabla 'horario_laboratorio'
-            String insertSQL = "INSERT INTO horario_laboratorio " +
-                               "(id_laboratorio, id_asignatura, dia, horario_inicio, horario_fin, id_usuario, codigo_horario) " +
-                               "VALUES (?, ?, ?, ?, ?, ?, ?)";
-            
-            // Preparar el statement
-            try (var ps = conn.prepareStatement(insertSQL)) {
+                // Insertar el horario para el Día X
+                insertarHorarioLaboratorio(dia1, formattedHoraInicioX, formattedHoraFinX, generarCodigoHorario(laboratorio, dia1, docente, asignatura, horaInicioX, horaFinX), fechaInicioFormateadaX);
                 
-               int docente1 = horarioControlador.obtenerIdUsuarioPorNombreController(comboDocente.getSelectedItem().toString());
-                int laboratorio1 = horarioControlador.obtenerIDLaboratorioPorNumeroController(comboLaboratorio.getSelectedItem().toString());
-                int asignatura1 = horarioControlador.obtenerIdAsignaturaPorNombreController(comboAsignatura.getSelectedItem().toString());
-                String nombre1 = validarTexto(nombreTablaX);
+                ventanaRight2.cargarComboCodigoHorario();
                 
-                // Insertar datos para Día X
-                ps.setInt(1, laboratorio1);                  
-                ps.setInt(2, asignatura1);                  
-                ps.setString(3, dia1);                     
-                ps.setString(4, formattedHoraInicioX);       
-                ps.setString(5, formattedHoraFinX);          
-                ps.setInt(6, docente1);
-                ps.setString(7, nombre1);           
-                ps.executeUpdate();
-   
-    
-                // Si hay Día Y, insertar también
-                if (nombreTablaY != null) {
-                    String nombre2 = validarTexto(nombreTablaY);
-                    ps.setInt(1, laboratorio1);                 
-                    ps.setInt(2, asignatura1);                  
-                    ps.setString(3, dia2);                       
-                    ps.setString(4, formattedHoraInicioY);      
-                    ps.setString(5, formattedHoraFinY);           
-                    ps.setInt(6, docente1);
-                    ps.setString(7, nombre2);           
-                    ps.executeUpdate();
+                // Si hay Día Y (32 clases), insertar también el horario del Día Y
+                if (nummeroClass == 32 && formattedHoraInicioY != null && formattedHoraFinY != null && fechaInicioFormateadaY != null) {
+                    insertarHorarioLaboratorio(dia2, formattedHoraInicioY, formattedHoraFinY, generarCodigoHorario(laboratorio, dia2, docente, asignatura, horaInicioY, horaFinY), fechaInicioFormateadaY);
+                    ventanaRight2.cargarComboCodigoHorario();
                 }
+
                 listarHorarios();
                 JOptionPane.showMessageDialog(null, "Clase(s) creada(s) con éxito.");
-            } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(null, "Error al guardar los datos: " + ex.getMessage());
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Error al procesar la hora: " + ex.getMessage());
                 ex.printStackTrace();
             }
-
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, "Error inesperado: " + ex.getMessage());
-            ex.printStackTrace();
-        }
         }
     });
+    }
+
+    private String generarCodigoHorario(String laboratorio, String dia, String docente, String asignatura, String horaInicio, String horaFin) {
+        // Generar un código único según tus necesidades. Aquí un ejemplo:
+        String cod = laboratorio.toLowerCase().replace(" ", "_") + "_" +
+                     dia.toLowerCase() + "_" +
+                     docente.toLowerCase().replace(" ", "_") + "_" +
+                     asignatura.toLowerCase().replace(" ", "_") + "_" +
+                     horaInicio.replace(":", "y") + "_" +
+                     horaFin.replace(":", "y");
+        return validarTexto(cod);
     }
 
     public void cargarComboNroLab() {
@@ -503,15 +368,20 @@ public class VentanaRight4 extends JPanel implements ActionListener {
         comboAsignatura.removeAllItems();
         comboAsignatura.addItem("");
         Set<String> asignaturasAgregadas = new HashSet<>();
-        for (HorarioLaboratorioModelo horaLab : horarioControlador.enlistarHorarioLaboratorioController()) {
-            if (asignaturasAgregadas.add(horarioControlador.obtenerNombreAsignaturaPorIdController(horaLab.getIdAsignatura()))) {
-                
-                comboAsignatura.addItem(horarioControlador.obtenerNombreAsignaturaPorIdController(horaLab.getIdAsignatura()));
+        for (AsignaturaModelo asig : asignaturaControlador.enlistarAsignaturaController()) {
+            String nombreAsig = asig.getNombre();
+            if (asignaturasAgregadas.add(nombreAsig)) {
+                comboAsignatura.addItem(nombreAsig);
             }
         }
     }
     
-    public void insertarHorarioLaboratorio(String dia, String hi, String hf, String nombre_tabla){
+    public void cargarCombosOtrasVentana() {
+        ventanaRight3.cargarComboNroLab();
+        ventanaRight2.cargarComboCodigoHorario();
+    }
+    
+    public void insertarHorarioLaboratorio(String dia, String hi, String hf, String nombre_tabla, String fechaIn){
         int estado = 0;
         try{
             HorarioLaboratorioModelo horario = new HorarioLaboratorioModelo();
@@ -522,11 +392,21 @@ public class VentanaRight4 extends JPanel implements ActionListener {
             horario.setHorarioInicio(hi);
             horario.setHorarioFin(hf);
             horario.setCodigoHorario(nombre_tabla);
+            horario.setFechaInicio(fechaIn);
+            
+            estado = horarioControlador.insertarHorarioLaboratorioController(horario);
+            
+            if (estado == 1) {
+                ventanaRight2.cargarComboCodigoHorario();
+            }
+            
+            mostrarMensaje(estado, "Insertado Correctamente", "Ocurrió un error");
+            
         }catch(Exception ex){
             System.err.println("ERROR: " + ex);
+            JOptionPane.showMessageDialog(null, "ERROR: " + ex.getMessage());
         }
     }
-  
 
     private void mostrarMensaje(int estado, String mensajeExito, String mensajeError) {
         if (estado == 1) {
@@ -535,7 +415,6 @@ public class VentanaRight4 extends JPanel implements ActionListener {
             JOptionPane.showMessageDialog(null, mensajeError);
         }
     }
-
 
     public void listarHorarios() {
         modeloHorarios.setRowCount(0);
@@ -567,9 +446,7 @@ public class VentanaRight4 extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == btnCrearClase){
-            
-        }
+        // Acciones de botones si las hubiese
     }    
     
     private void activarCamposX() {
@@ -601,8 +478,6 @@ public class VentanaRight4 extends JPanel implements ActionListener {
         this.ventanaRight3 = ventanaRight3;
     }
     
-    
-
     private String validarTexto(String texto) {
         // Normalizar el texto y eliminar los acentos
         String textoSinTildes = Normalizer.normalize(texto, Normalizer.Form.NFD)
@@ -613,14 +488,13 @@ public class VentanaRight4 extends JPanel implements ActionListener {
         // Eliminar caracteres no permitidos que no sean letras, números o '_'
         textoSinTildes = textoSinTildes.replaceAll("[^a-zA-Z0-9_]", "");
 
-        // Retorna siempre la palabra transformada sin caracteres especiales
         return textoSinTildes;
     }
 
     private void Configuracion() {
         AsignaturaController asignaturaController = new AsignaturaController();
         LaboratorioController laboratorioController = new LaboratorioController(); 
-        VentanaInternalFrame vtn = new VentanaInternalFrame(asignaturaController,laboratorioController);
+        VentanaInternalFrame vtn = new VentanaInternalFrame(asignaturaController,laboratorioController, this);
         vtn.setVisible(true);
     }
 
@@ -628,7 +502,6 @@ public class VentanaRight4 extends JPanel implements ActionListener {
         listaHorarios = horarioControlador.buscarResgistroHorarioLaboratorioController(buscar); 
         modeloHorarios.setRowCount(0); // Limpia la tabla
 
-        // Itera sobre los registros y los agrega a la tabla
         for (HorarioLaboratorioModelo obj : listaHorarios) {
             Object[] fila = {        
                 obj.getNumeroLaboratorio(),  
@@ -642,8 +515,4 @@ public class VentanaRight4 extends JPanel implements ActionListener {
             modeloHorarios.addRow(fila); 
         }
     }
-
-    
-
-    
 }

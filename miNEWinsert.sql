@@ -149,47 +149,47 @@ INSERT INTO asignatura (nombre, codigo) VALUES
 ('Economía y Gestión de la Tecnología', 'IS030');
 
 
-INSERT INTO horario_laboratorio (id_laboratorio, id_asignatura, dia, horario_inicio, horario_fin, id_usuario, codigo_horario) VALUES
-(1, 1, 'LUNES', '08:00:00', '10:00:00', 1, 'HS01'),
-(2, 2, 'LUNES', '10:00:00', '12:00:00', 2, 'HS02'),
-(3, 3, 'LUNES', '12:00:00', '14:00:00', 3, 'HS03'),
-(4, 4, 'LUNES', '14:00:00', '16:00:00', 4, 'HS04'),
-(5, 5, 'LUNES', '16:00:00', '18:00:00', 5, 'HS05'),
-(6, 6, 'LUNES', '08:00:00', '10:00:00', 6, 'HS06'),
-(1, 7, 'MARTES', '08:00:00', '10:00:00', 7, 'HS07'),
-(2, 8, 'MARTES', '10:00:00', '12:00:00', 8, 'HS08'),
-(3, 9, 'MARTES', '12:00:00', '14:00:00', 9, 'HS09'),
-(4, 10, 'MARTES', '14:00:00', '16:00:00', 10, 'HS10'),
-(5, 11, 'MARTES', '16:00:00', '18:00:00', 11, 'HS11'),
-(6, 12, 'MARTES', '08:00:00', '10:00:00', 12, 'HS12'),
-(1, 13, 'MIERCOLES', '08:00:00', '10:00:00', 13, 'HS13'),
-(2, 14, 'MIERCOLES', '10:00:00', '12:00:00', 14, 'HS14'),
-(3, 15, 'MIERCOLES', '12:00:00', '14:00:00', 15, 'HS15'),
-(4, 16, 'MIERCOLES', '14:00:00', '16:00:00', 16, 'HS16'),
-(5, 17, 'MIERCOLES', '16:00:00', '18:00:00', 17, 'HS17'),
-(6, 18, 'MIERCOLES', '08:00:00', '10:00:00', 18, 'HS18'),
-(1, 19, 'JUEVES', '08:00:00', '10:00:00', 19, 'HS19'),
-(2, 20, 'JUEVES', '10:00:00', '12:00:00', 20, 'HS20'),
-(3, 21, 'JUEVES', '12:00:00', '14:00:00', 21, 'HS21'),
-(4, 22, 'JUEVES', '14:00:00', '16:00:00', 22, 'HS22'),
-(5, 23, 'JUEVES', '16:00:00', '18:00:00', 23, 'HS23'),
-(6, 24, 'JUEVES', '08:00:00', '10:00:00', 24, 'HS24'),
-(1, 25, 'VIERNES', '08:00:00', '10:00:00', 25, 'HS25'),
-(2, 26, 'VIERNES', '10:00:00', '12:00:00', 26, 'HS26'),
-(3, 27, 'VIERNES', '12:00:00', '14:00:00', 27, 'HS27'),
-(4, 28, 'VIERNES', '14:00:00', '16:00:00', 28, 'HS28'),
-(5, 29, 'VIERNES', '16:00:00', '18:00:00', 29, 'HS29'),
-(6, 30, 'VIERNES', '08:00:00', '10:00:00', 30, 'HS30'),
-(1, 1, 'SABADO', '08:00:00', '10:00:00', 31, 'HS31'),
-(2, 2, 'SABADO', '10:00:00', '12:00:00', 32, 'HS32'),
-(3, 3, 'SABADO', '12:00:00', '14:00:00', 33, 'HS33'),
-(4, 4, 'SABADO', '14:00:00', '16:00:00', 34, 'HS34'),
-(5, 5, 'SABADO', '16:00:00', '18:00:00', 35, 'HS35'),
-(6, 6, 'SABADO', '08:00:00', '10:00:00', 36, 'HS36'),
-(1, 7, 'DOMINGO', '08:00:00', '10:00:00', 37, 'HS37'),
-(2, 8, 'DOMINGO', '10:00:00', '12:00:00', 38, 'HS38'),
-(3, 9, 'DOMINGO', '12:00:00', '14:00:00', 39, 'HS39'),
-(4, 10, 'DOMINGO', '14:00:00', '16:00:00', 40, 'HS40');
+INSERT INTO horario_laboratorio (id_laboratorio, id_asignatura, dia, horario_inicio, horario_fin, fecha_inicio, id_usuario, codigo_horario) VALUES
+(1, 1, 'LUNES', '08:00:00', '10:00:00', '02-12-2024', 1, 'HS01'),
+(2, 2, 'LUNES', '10:00:00', '12:00:00', '03-12-2024', 2, 'HS02'),
+(3, 3, 'LUNES', '12:00:00', '14:00:00', '04-12-2024', 3, 'HS03'),
+(4, 4, 'LUNES', '14:00:00', '16:00:00', '05-12-2024', 4, 'HS04'),
+(5, 5, 'LUNES', '16:00:00', '18:00:00', '06-12-2024', 5, 'HS05'),
+(6, 6, 'LUNES', '08:00:00', '10:00:00', '07-12-2024', 6, 'HS06'),
+(1, 7, 'MARTES', '08:00:00', '10:00:00', '08-12-2024', 7, 'HS07'),
+(2, 8, 'MARTES', '10:00:00', '12:00:00', '09-12-2024', 8, 'HS08'),
+(3, 9, 'MARTES', '12:00:00', '14:00:00', '10-12-2024', 9, 'HS09'),
+(4, 10, 'MARTES', '14:00:00', '16:00:00', '11-12-2024', 10, 'HS10'),
+(5, 11, 'MARTES', '16:00:00', '18:00:00', '12-12-2024', 11, 'HS11'),
+(6, 12, 'MARTES', '08:00:00', '10:00:00', '13-12-2024', 12, 'HS12'),
+(1, 13, 'MIERCOLES', '08:00:00', '10:00:00', '14-12-2024', 13, 'HS13'),
+(2, 14, 'MIERCOLES', '10:00:00', '12:00:00', '15-12-2024', 14, 'HS14'),
+(3, 15, 'MIERCOLES', '12:00:00', '14:00:00', '16-12-2024', 15, 'HS15'),
+(4, 16, 'MIERCOLES', '14:00:00', '16:00:00', '17-12-2024', 16, 'HS16'),
+(5, 17, 'MIERCOLES', '16:00:00', '18:00:00', '18-12-2024', 17, 'HS17'),
+(6, 18, 'MIERCOLES', '08:00:00', '10:00:00', '19-12-2024', 18, 'HS18'),
+(1, 19, 'JUEVES', '08:00:00', '10:00:00', '20-12-2024', 19, 'HS19'),
+(2, 20, 'JUEVES', '10:00:00', '12:00:00', '21-12-2024', 20, 'HS20'),
+(3, 21, 'JUEVES', '12:00:00', '14:00:00', '22-12-2024', 21, 'HS21'),
+(4, 22, 'JUEVES', '14:00:00', '16:00:00', '23-12-2024', 22, 'HS22'),
+(5, 23, 'JUEVES', '16:00:00', '18:00:00', '24-12-2024', 23, 'HS23'),
+(6, 24, 'JUEVES', '08:00:00', '10:00:00', '25-12-2024', 24, 'HS24'),
+(1, 25, 'VIERNES', '08:00:00', '10:00:00', '26-12-2024', 25, 'HS25'),
+(2, 26, 'VIERNES', '10:00:00', '12:00:00', '27-12-2024', 26, 'HS26'),
+(3, 27, 'VIERNES', '12:00:00', '14:00:00', '28-12-2024', 27, 'HS27'),
+(4, 28, 'VIERNES', '14:00:00', '16:00:00', '29-12-2024', 28, 'HS28'),
+(5, 29, 'VIERNES', '16:00:00', '18:00:00', '30-12-2024', 29, 'HS29'),
+(6, 30, 'VIERNES', '08:00:00', '10:00:00', '31-12-2024', 30, 'HS30'),
+(1, 1, 'SABADO', '08:00:00', '10:00:00', '01-01-2025', 31, 'HS31'),
+(2, 2, 'SABADO', '10:00:00', '12:00:00', '02-01-2025', 32, 'HS32'),
+(3, 3, 'SABADO', '12:00:00', '14:00:00', '03-01-2025', 33, 'HS33'),
+(4, 4, 'SABADO', '14:00:00', '16:00:00', '04-01-2025', 34, 'HS34'),
+(5, 5, 'SABADO', '16:00:00', '18:00:00', '05-01-2025', 35, 'HS35'),
+(6, 6, 'SABADO', '08:00:00', '10:00:00', '06-01-2025', 36, 'HS36'),
+(1, 7, 'DOMINGO', '08:00:00', '10:00:00', '07-01-2025', 37, 'HS37'),
+(2, 8, 'DOMINGO', '10:00:00', '12:00:00', '08-01-2025', 38, 'HS38'),
+(3, 9, 'DOMINGO', '12:00:00', '14:00:00', '09-01-2025', 39, 'HS39'),
+(4, 10, 'DOMINGO', '14:00:00', '16:00:00', '10-01-2025', 40, 'HS40');
 
 
 
@@ -197,44 +197,45 @@ INSERT INTO equipo (cod_patrimonial, id_laboratorio, tipo_equipo, numero_serie, 
 VALUES 
 ('EQ001', 1, 'Teclado', 'SN1234567890', 'OPERATIVO'),
 ('EQ002', 1, 'CPU', 'SN9876543210', 'OPERATIVO'),
-('EQ003', 2, 'Monitor', 'SN1122334455', 'INOPERATIVO'),
+('EQ003', 2, 'Monitor', 'SN1122334455', 'NO OPERATIVO'),
 ('EQ004', 2, 'PizarraDigital', 'SN2233445566', 'OPERATIVO'),
-('EQ005', 3, 'Teclado', 'SN3344556677', 'INOPERATIVO'),
+('EQ005', 3, 'Teclado', 'SN3344556677', 'NO OPERATIVO'),
 ('EQ006', 3, 'CPU', 'SN4455667788', 'OPERATIVO'),
 ('EQ007', 4, 'Monitor', 'SN5566778899', 'OPERATIVO'),
-('EQ008', 4, 'Teclado', 'SN6677889900', 'INOPERATIVO'),
+('EQ008', 4, 'Teclado', 'SN6677889900', 'NO OPERATIVO'),
 ('EQ009', 5, 'PizarraDigital', 'SN7788990011', 'OPERATIVO'),
-('EQ010', 5, 'CPU', 'SN8899001122', 'INOPERATIVO'),
+('EQ010', 5, 'CPU', 'SN8899001122', 'NO OPERATIVO'),
 ('EQ011', 6, 'Monitor', 'SN9900112233', 'OPERATIVO'),
-('EQ012', 6, 'Teclado', 'SN0011223344', 'INOPERATIVO'),
+('EQ012', 6, 'Teclado', 'SN0011223344', 'NO OPERATIVO'),
 ('EQ013', 1, 'CPU', 'SN1122334455', 'OPERATIVO'),
-('EQ014', 1, 'PizarraDigital', 'SN2233445566', 'INOPERATIVO'),
+('EQ014', 1, 'PizarraDigital', 'SN2233445566', 'NO OPERATIVO'),
 ('EQ015', 2, 'Monitor', 'SN3344556677', 'OPERATIVO'),
-('EQ016', 2, 'Teclado', 'SN4455667788', 'INOPERATIVO'),
+('EQ016', 2, 'Teclado', 'SN4455667788', 'NO OPERATIVO'),
 ('EQ017', 3, 'CPU', 'SN5566778899', 'OPERATIVO'),
-('EQ018', 3, 'Monitor', 'SN6677889900', 'INOPERATIVO'),
+('EQ018', 3, 'Monitor', 'SN6677889900', 'NO OPERATIVO'),
 ('EQ019', 4, 'PizarraDigital', 'SN7788990011', 'OPERATIVO'),
-('EQ020', 4, 'Teclado', 'SN8899001122', 'INOPERATIVO'),
+('EQ020', 4, 'Teclado', 'SN8899001122', 'NO OPERATIVO'),
 ('EQ021', 5, 'CPU', 'SN9900112233', 'OPERATIVO'),
-('EQ022', 5, 'Monitor', 'SN0011223344', 'INOPERATIVO'),
+('EQ022', 5, 'Monitor', 'SN0011223344', 'NO OPERATIVO'),
 ('EQ023', 6, 'PizarraDigital', 'SN1122334455', 'OPERATIVO'),
-('EQ024', 6, 'Teclado', 'SN2233445566', 'INOPERATIVO'),
+('EQ024', 6, 'Teclado', 'SN2233445566', 'NO OPERATIVO'),
 ('EQ025', 1, 'CPU', 'SN3344556677', 'OPERATIVO'),
-('EQ026', 1, 'Monitor', 'SN4455667788', 'INOPERATIVO'),
+('EQ026', 1, 'Monitor', 'SN4455667788', 'NO OPERATIVO'),
 ('EQ027', 2, 'PizarraDigital', 'SN5566778899', 'OPERATIVO'),
-('EQ028', 2, 'Teclado', 'SN6677889900', 'INOPERATIVO'),
+('EQ028', 2, 'Teclado', 'SN6677889900', 'NO OPERATIVO'),
 ('EQ029', 3, 'CPU', 'SN7788990011', 'OPERATIVO'),
-('EQ030', 3, 'Monitor', 'SN8899001122', 'INOPERATIVO'),
+('EQ030', 3, 'Monitor', 'SN8899001122', 'NO OPERATIVO'),
 ('EQ031', 4, 'PizarraDigital', 'SN9900112233', 'OPERATIVO'),
-('EQ032', 4, 'Teclado', 'SN0011223344', 'INOPERATIVO'),
+('EQ032', 4, 'Teclado', 'SN0011223344', 'NO OPERATIVO'),
 ('EQ033', 5, 'CPU', 'SN1122334455', 'OPERATIVO'),
-('EQ034', 5, 'Monitor', 'SN2233445566', 'INOPERATIVO'),
+('EQ034', 5, 'Monitor', 'SN2233445566', 'NO OPERATIVO'),
 ('EQ035', 6, 'PizarraDigital', 'SN3344556677', 'OPERATIVO'),
-('EQ036', 6, 'Teclado', 'SN4455667788', 'INOPERATIVO'),
+('EQ036', 6, 'Teclado', 'SN4455667788', 'NO OPERATIVO'),
 ('EQ037', 1, 'CPU', 'SN5566778899', 'OPERATIVO'),
-('EQ038', 1, 'Monitor', 'SN6677889900', 'INOPERATIVO'),
+('EQ038', 1, 'Monitor', 'SN6677889900', 'NO OPERATIVO'),
 ('EQ039', 2, 'PizarraDigital', 'SN7788990011', 'OPERATIVO'),
-('EQ040', 2, 'Teclado', 'SN8899001122', 'INOPERATIVO');
+('EQ040', 2, 'Teclado', 'SN8899001122', 'NO OPERATIVO');
+
 
 
 INSERT INTO asistencia (fecha, estado, id_alumno, id_horario) VALUES
@@ -341,3 +342,51 @@ INSERT INTO asistencia (fecha, estado, id_alumno, id_horario) VALUES
 ('2024-11-28', 'AUSENTE', 48, 24),
 ('2024-11-28', 'PRESENTE', 49, 25),
 ('2024-11-28', 'AUSENTE', 50, 25);
+
+-- Insertando datos en la tabla horarios_alumno
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (1, 1);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (2, 2);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (3, 3);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (4, 4);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (5, 5);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (6, 6);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (7, 7);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (8, 8);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (9, 9);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (10, 10);
+
+-- Continuación con más datos
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (11, 11);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (12, 12);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (13, 13);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (14, 14);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (15, 15);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (16, 16);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (17, 17);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (18, 18);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (19, 19);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (20, 20);
+
+-- Más ejemplos con alumnos y horarios diferentes
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (1, 2);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (2, 3);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (3, 4);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (4, 5);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (5, 6);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (6, 7);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (7, 8);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (8, 9);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (9, 10);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (10, 11);
+
+-- Continuación con más combinaciones
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (11, 12);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (12, 13);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (13, 14);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (14, 15);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (15, 16);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (16, 17);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (17, 18);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (18, 19);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (19, 20);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (20, 1);

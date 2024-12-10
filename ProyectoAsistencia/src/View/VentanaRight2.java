@@ -11,6 +11,11 @@ import Util.Constantes;
 import Util.EstiloHover;
 import Model.*;
 import Controller.*;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellRenderer;
 
 public class VentanaRight2 extends JPanel {
 
@@ -18,12 +23,15 @@ public class VentanaRight2 extends JPanel {
     private HorarioLaboratorioController horarioLaboratorioController;
     private LaboratorioController laboratorioController;
     private AsistenciaController asistenciaController;
+    private HorariosAlumnoController horariosAlumnoController;
 
     // Componentes principales
     private JLabel lblControlAsistencia, lblDatosLab, lblConfigAvanz, lblNroLab, lblHor, lblAsigs;
     public static JComboBox<String> cboNroLab;
     private JComboBox<String> cboHorario;
     private JComboBox<String> cboAsignatura;
+    private JComboBox<String> cboCodigoHorario;
+    private JLabel lblCodigoHorario;
     private JButton btnBuscar, btnActuDatos, btnReporteGen;
     private JTable tablaLaboratorios;
     private DefaultTableModel modeloLaboratorio;
@@ -36,6 +44,7 @@ public class VentanaRight2 extends JPanel {
 
     // Datos
     private ArrayList<HorarioLaboratorioModelo> listaHorarioLaboratorio;
+    
 
     // Layout y paneles
     private CardLayout cardLayout;
@@ -47,12 +56,13 @@ public class VentanaRight2 extends JPanel {
     private VentanaRight1 ventanaRight1;
     private VentanaRight4 ventanaRight4;
 
-    public VentanaRight2(LaboratorioController laboratorioController, AsistenciaController asistenciaController, HorarioLaboratorioController horarioLaboratorioController) {
+    public VentanaRight2(LaboratorioController laboratorioController, AsistenciaController asistenciaController, HorarioLaboratorioController horarioLaboratorioController, HorariosAlumnoController horariosAlumnoController) {
         this.laboratorioController = laboratorioController;
         this.asistenciaController = asistenciaController;
         this.horarioLaboratorioController = horarioLaboratorioController;
+        this.horariosAlumnoController = horariosAlumnoController;
         
-
+        
         setLayout(new CardLayout());
         setBackground(Constantes.COLOR_FONDO_PANEL);
         
@@ -105,26 +115,35 @@ public class VentanaRight2 extends JPanel {
 
     private void inicializarComponentesDatosLaboratorio(JPanel subPanel) {
         // Etiqueta y ComboBox para Número de Laboratorio
-        lblNroLab = ComponentFactory.crearEtiqueta("Nro. Laboratorio", 50, 20, 200, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_HOVER_SELECCIONADO1);
-        subPanel.add(lblNroLab);
+        //lblNroLab = ComponentFactory.crearEtiqueta("Nro. Laboratorio", 50, 20, 200, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_HOVER_SELECCIONADO1);
+        //subPanel.add(lblNroLab);
 
-        cboNroLab = ComponentFactory.crearComboBoxString(new String[]{}, 50, 50, 200, 30, Constantes.BORDER_HOVER);
-        subPanel.add(cboNroLab);
+        //cboNroLab = ComponentFactory.crearComboBoxString(new String[]{}, 50, 50, 200, 30, Constantes.BORDER_HOVER);
+        //subPanel.add(cboNroLab);
+        
+        // Etiqueta para el ComboBox de Código de Horario
+        lblCodigoHorario = ComponentFactory.crearEtiqueta("Código de Horario:", 50, 20, 200, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_HOVER_SELECCIONADO1);
+        subPanel.add(lblCodigoHorario);
+        
+        // Único ComboBox largo para Código de Horario
+        cboCodigoHorario = ComponentFactory.crearComboBoxString(new String[]{}, 50, 50, 700, 30, Constantes.BORDER_HOVER);
+        subPanel.add(cboCodigoHorario);
+        cargarComboCodigoHorario(); // Método nuevo para llenar el cboCodigoHorario
 
         // Etiqueta y ComboBox para Horario
-        lblHor = ComponentFactory.crearEtiqueta("Horario", 300, 20, 200, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_HOVER_SELECCIONADO1);
-        subPanel.add(lblHor);
+        //lblHor = ComponentFactory.crearEtiqueta("Horario", 300, 20, 200, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_HOVER_SELECCIONADO1);
+        //subPanel.add(lblHor);
 
-        cboHorario = ComponentFactory.crearComboBoxString(new String[]{}, 300, 50, 200, 30, Constantes.BORDER_HOVER);
-        subPanel.add(cboHorario);
+        //cboHorario = ComponentFactory.crearComboBoxString(new String[]{}, 300, 50, 200, 30, Constantes.BORDER_HOVER);
+        //subPanel.add(cboHorario);
         cargarComboHorario();
 
         // Etiqueta y ComboBox para Asignatura
-        lblAsigs = ComponentFactory.crearEtiqueta("Asignatura", 550, 20, 200, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_HOVER_SELECCIONADO1);
-        subPanel.add(lblAsigs);
+        //lblAsigs = ComponentFactory.crearEtiqueta("Asignatura", 550, 20, 200, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_HOVER_SELECCIONADO1);
+        //subPanel.add(lblAsigs);
 
-        cboAsignatura = ComponentFactory.crearComboBoxString(new String[]{}, 550, 50, 200, 30, Constantes.BORDER_HOVER);
-        subPanel.add(cboAsignatura);
+        //cboAsignatura = ComponentFactory.crearComboBoxString(new String[]{}, 550, 50, 200, 30, Constantes.BORDER_HOVER);
+        //subPanel.add(cboAsignatura);
         cargarComboAsignatura();
 
         // Botón de Buscar
@@ -133,35 +152,28 @@ public class VentanaRight2 extends JPanel {
     }
 
     private void cargarComboNroLab() {
-        cboNroLab.removeAllItems();
-        cboNroLab.addItem(null);
-        Set<String> labsAgregados = new HashSet<>();
-        for (LaboratorioModelo lab : laboratorioController.enlistarLaboratorioController()) {
-            if (labsAgregados.add(lab.getNumeroLab())) {
-                cboNroLab.addItem(lab.getNumeroLab());
-            }
-        }
+        
     }
 
     private void cargarComboHorario() {
-        cboHorario.removeAllItems();
-        cboHorario.addItem(null);
-        Set<String> horariosAgregados = new HashSet<>();
-        for (HorarioLaboratorioModelo horaLab : listaHorarioLaboratorio) {
-            if (horariosAgregados.add(horaLab.getHorarioInicio())) {
-                cboHorario.addItem(horaLab.getHorarioInicio());
-            }
-        }
+        
     }
 
     private void cargarComboAsignatura() {
-        cboAsignatura.removeAllItems();
-        cboAsignatura.addItem(null);
-        Set<String> asignaturasAgregadas = new HashSet<>();
-        for (HorarioLaboratorioModelo horaLab : listaHorarioLaboratorio) {
-            if (asignaturasAgregadas.add(horarioLaboratorioController.obtenerNombreAsignaturaPorIdController(horaLab.getIdAsignatura()))) {
-                
-                cboAsignatura.addItem(horarioLaboratorioController.obtenerNombreAsignaturaPorIdController(horaLab.getIdAsignatura()));
+        
+    }
+    
+    public void cargarComboCodigoHorario() {
+        cboCodigoHorario.removeAllItems();
+        cboCodigoHorario.addItem(null);
+
+        Set<String> codigosAgregados = new HashSet<>();
+        for (HorarioLaboratorioModelo horaLab : horarioLaboratorioController.enlistarHorarioLaboratorioController()) {
+            // Ahora usamos directamente el código de horario del objeto
+            String codigoHorario = horaLab.getCodigoHorario();
+
+            if (codigosAgregados.add(codigoHorario)) {
+                cboCodigoHorario.addItem(codigoHorario);
             }
         }
     }
@@ -187,7 +199,7 @@ public class VentanaRight2 extends JPanel {
 
     private void inicializarComponentesConfiguracionAvanzada(JPanel subPanel) {
         // Botón para Actualizar Datos
-        btnActuDatos = ComponentFactory.crearBotonAccion("ACTUALIZAR DATOS DEL LABORATORIO", 50, 30, 400, 50);
+        btnActuDatos = ComponentFactory.crearBotonAccion("**REGISTRO ALUMNOS**", 50, 30, 400, 50);
         subPanel.add(btnActuDatos);
 
         // Botón para Generar Reporte
@@ -207,28 +219,39 @@ public class VentanaRight2 extends JPanel {
     }
 
     private void manejarBuscarHorario() {
-        Integer numeroLab = (Integer) cboNroLab.getSelectedItem();
-        Integer asignatura = (Integer) horarioLaboratorioController.obtenerIdAsignaturaPorNombreController((String)cboAsignatura.getSelectedItem());
-        String horarioInicio = (String) cboHorario.getSelectedItem();
+        String codigoHorario = (String) cboCodigoHorario.getSelectedItem();
 
-        if (numeroLab == null || asignatura == null || horarioInicio == null) {
-            JOptionPane.showMessageDialog(null, "Por favor, seleccione todos los campos antes de buscar.");
+        if (codigoHorario == null) {
+            JOptionPane.showMessageDialog(null, "Por favor, seleccione un código de horario antes de buscar.");
             return;
         }
 
         try {
-            manejarCambioAPanelAsistencia(numeroLab, asignatura, horarioInicio);
+            // Obtener el idHorario usando el código de horario
+            int idHorario = asistenciaController.obtenerIdHorarioPorCodigoController(codigoHorario);
+            if (idHorario == -1) {
+                JOptionPane.showMessageDialog(null, "Código de horario no válido.");
+                return;
+            }
+
+            // Obtener la lista de alumnos usando HorariosAlumnoController
+            ArrayList<AlumnoModelo> alumnos = horariosAlumnoController.obtenerAlumnosPorHorarioController(idHorario);
+            if (alumnos.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "No hay alumnos asignados a este horario.");
+                return;
+            }
+
+            manejarCambioAPanelAsistencia(idHorario, alumnos);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Ocurrió un error al buscar los alumnos: " + e.getMessage());
         }
     }
 
-    private void manejarCambioAPanelAsistencia(int numeroLab, int asignatura, String horarioInicio) {
-        
+    private void manejarCambioAPanelAsistencia(int idHorario, ArrayList<AlumnoModelo> alumnos) {
         // Buscar el horario seleccionado
         HorarioLaboratorioModelo horarioSeleccionado = null;
-        for (HorarioLaboratorioModelo horario : listaHorarioLaboratorio) {
-            if (horario.getIdLaboratorio()== numeroLab && horario.getIdAsignatura() == asignatura && horario.getHorarioInicio().equals(horarioInicio)) {
+        for (HorarioLaboratorioModelo horario : horarioLaboratorioController.enlistarHorarioLaboratorioController()) {
+            if (horario.getIdHorario() == idHorario) {
                 horarioSeleccionado = horario;
                 break;
             }
@@ -239,8 +262,6 @@ public class VentanaRight2 extends JPanel {
             return;
         }
 
-        
-        
         panelAsistencia = new JPanel(null);
         panelAsistencia.setBackground(Constantes.COLOR_FONDO_PANEL);
 
@@ -255,16 +276,21 @@ public class VentanaRight2 extends JPanel {
         lblSubTitulo.setHorizontalAlignment(SwingConstants.CENTER);
         panelAsistencia.add(lblSubTitulo);
 
+        String nombreLab = horarioLaboratorioController.obtenerNumeroLabPorIdController(horarioSeleccionado.getIdLaboratorio());
+        String nombreAsig = horarioLaboratorioController.obtenerNombreAsignaturaPorIdController(horarioSeleccionado.getIdAsignatura());
+        String Hora = horarioSeleccionado.getHorarioInicio();
+        String Docente = horarioLaboratorioController.obtenerNombreUsuarioPorIdController(horarioSeleccionado.getIdUsuario());
+
         // Información del horario
         lblInfoClase = new JLabel(String.format(
-                "<html>Nro. Laboratorio: %d<br>Asignatura: %d<br>Horario: %s<br> Docente: %d<br></html>",
-                numeroLab, asignatura, horarioInicio, horarioSeleccionado.getIdUsuario()));
+                "<html>Nro. Laboratorio: %s<br>Asignatura: %s<br>Horario: %s<br>Docente: %s<br></html>",
+                nombreLab, nombreAsig, Hora, Docente));
         lblInfoClase.setBounds(100, 180, 600, 100);
         lblInfoClase.setFont(Constantes.FUENTE_LABEL);
         panelAsistencia.add(lblInfoClase);
 
-        // Tabla de asistencia
-        inicializarTablaAsistencia(numeroLab, asignatura, horarioInicio);
+        // Inicializar tabla de asistencia con la lista de alumnos
+        inicializarTablaAsistencia(alumnos, idHorario);
 
         // Botones
         btnGuardar = ComponentFactory.crearBotonAccion("GUARDAR", 1000, 750, 150, 50);
@@ -273,7 +299,7 @@ public class VentanaRight2 extends JPanel {
         btnGuardar.addMouseListener(new EstiloHover.HoverAccionBoton(btnGuardar));
         btnRegresar.addMouseListener(new EstiloHover.HoverAccionBoton(btnRegresar));
 
-        btnGuardar.addActionListener(e -> manejarGuardarAsistencia(tablaAsistencia));
+        btnGuardar.addActionListener(e -> manejarGuardarAsistencia(tablaAsistencia, idHorario));
         btnRegresar.addActionListener(e -> cardLayout.show(panelDerecho, "ControlAsistencia"));
 
         panelAsistencia.add(btnGuardar);
@@ -284,39 +310,218 @@ public class VentanaRight2 extends JPanel {
         cardLayout.show(panelDerecho, "RegistroAsistencia");
     }
 
-    private void inicializarTablaAsistencia(int numeroLab, int asignatura, String horarioInicio) {
-        String[] columnasAsistencia = {"Código", "Nombres", "Apellidos", "Asistencia"};
-        DefaultTableModel modeloTabla = new DefaultTableModel(columnasAsistencia, 0) {
+    private void inicializarTablaAsistencia(ArrayList<AlumnoModelo> alumnos, int idHorario) {
+        if (alumnos.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No hay alumnos para este horario.");
+            return;
+        }
+
+        int numeroSemanas = 16;
+
+        // Obtener el horario seleccionado
+        HorarioLaboratorioModelo horarioSeleccionado = null;
+        for (HorarioLaboratorioModelo horario : listaHorarioLaboratorio) {
+            if (horario.getIdHorario() == idHorario) {
+                horarioSeleccionado = horario;
+                break;
+            }
+        }
+
+        if (horarioSeleccionado == null) {
+            JOptionPane.showMessageDialog(null, "No se encontró el horario seleccionado para inicializar la tabla.");
+            return;
+        }
+
+        // Configurar las fechas
+        String fechaInicioStr = horarioSeleccionado.getFechaInicio();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        Date fechaInicioDate = null;
+        try {
+            fechaInicioDate = sdf.parse(fechaInicioStr);
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error al parsear la fecha de inicio: " + fechaInicioStr);
+            return;
+        }
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(fechaInicioDate);
+
+        // Configurar columnas
+        int totalColumnas = numeroSemanas + 2;
+        String[] columnNames = new String[totalColumnas];
+        columnNames[0] = "Código Alumno";
+        columnNames[1] = "Alumno";
+
+        // Array para almacenar las fechas
+        LocalDate[] fechas = new LocalDate[numeroSemanas];
+
+        // Generar fechas para las columnas
+        for (int i = 2; i < totalColumnas; i++) {
+            String fechaCol = sdf.format(calendar.getTime());
+            columnNames[i] = fechaCol;
+            fechas[i - 2] = LocalDate.parse(fechaCol, java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+            calendar.add(Calendar.DATE, 7);
+        }
+
+        // Crear modelo de tabla
+        DefaultTableModel modeloTabla = new DefaultTableModel(columnNames, 0) {
             @Override
             public Class<?> getColumnClass(int columnIndex) {
-                return columnIndex == 3 ? Boolean.class : String.class;
+                return columnIndex > 1 ? Boolean.class : String.class;
+            }
+
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column > 1;
             }
         };
 
-        ArrayList<AlumnoModelo> alumnos = asistenciaController.obtenerAlumnosPorLaboratorioYHorario(numeroLab, asignatura, horarioInicio);
-        for (AlumnoModelo alumno : alumnos) {
-            modeloTabla.addRow(new Object[]{alumno.getCodigoAlumno(), alumno.getNombres(), alumno.getApellidos(), false});
+        // Crear mapa para almacenar las asistencias existentes
+        Map<String, Map<LocalDate, Boolean>> asistenciasMap = new HashMap<>();
+        ArrayList<AsistenciaModelo> asistenciasGuardadas = asistenciaController.obtenerAsistenciasPorHorarioController(idHorario);
+
+        // Llenar el mapa de asistencias
+        for (AsistenciaModelo asistencia : asistenciasGuardadas) {
+            String codigoAlumno = asistenciaController.obtenerCodigoAlumnoPorIdController(asistencia.getIdAlumno());
+            asistenciasMap.putIfAbsent(codigoAlumno, new HashMap<>());
+            asistenciasMap.get(codigoAlumno).put(asistencia.getFecha(), asistencia.getEstado().equals("PRESENTE"));
         }
 
-        tablaAsistencia = ComponentFactory.crearTabla(columnasAsistencia);
-        tablaAsistencia.setModel(modeloTabla);
+        // Llenar la tabla
+        for (AlumnoModelo alumno : alumnos) {
+            Object[] rowData = new Object[totalColumnas];
+            rowData[0] = alumno.getCodigoAlumno();
+            rowData[1] = alumno.getNombres() + " " + alumno.getApellidos();
 
+            // Obtener asistencias del alumno
+            Map<LocalDate, Boolean> asistenciasAlumno = asistenciasMap.getOrDefault(alumno.getCodigoAlumno(), new HashMap<>());
+
+            // Llenar las columnas de asistencia
+            for (int i = 0; i < numeroSemanas; i++) {
+                LocalDate fecha = fechas[i];
+                rowData[i + 2] = asistenciasAlumno.getOrDefault(fecha, Boolean.FALSE);
+            }
+
+            modeloTabla.addRow(rowData);
+        }
+
+        // Configurar la tabla con alternancia de colores y mantener los checkboxes
+        tablaAsistencia = new JTable(modeloTabla) {
+            @Override
+            public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+                Component c = super.prepareRenderer(renderer, row, column);
+                if (!isRowSelected(row)) {
+                    if (row % 2 == 0) {
+                        c.setBackground(new Color(245, 245, 245)); // Gris claro
+                    } else {
+                        c.setBackground(Color.WHITE);
+                    }
+                } else {
+                    c.setBackground(getSelectionBackground());
+                }
+                return c;
+            }
+        };
+        tablaAsistencia.setAutoResizeMode(JTable.AUTO_RESIZE_OFF); // Deshabilitar auto-resize
+
+        // Personalizar encabezados
+        JTableHeader header = tablaAsistencia.getTableHeader();
+        header.setBackground(Constantes.COLOR_HOVER_SELECCIONADO1);
+        header.setForeground(Constantes.COLOR_TEXTO_BLANCO);
+        header.setFont(Constantes.FUENTE_LABEL.deriveFont(Font.BOLD, 16f)); // Fuente más grande y en negrita
+
+        // Alinear texto al centro en las primeras dos columnas
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+        tablaAsistencia.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
+        tablaAsistencia.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
+
+        // Configurar renderizador y editor para las columnas de asistencia (Boolean)
+        for (int i = 2; i < tablaAsistencia.getColumnCount(); i++) {
+            tablaAsistencia.getColumnModel().getColumn(i).setCellRenderer(tablaAsistencia.getDefaultRenderer(Boolean.class));
+            tablaAsistencia.getColumnModel().getColumn(i).setCellEditor(new DefaultCellEditor(new JCheckBox()));
+        }
+
+        // Bordes y rejilla
+        tablaAsistencia.setGridColor(Color.LIGHT_GRAY);
+        tablaAsistencia.setShowGrid(true);
+        tablaAsistencia.setIntercellSpacing(new Dimension(1, 1));
+
+        // Ajustar ancho de columnas
+        tablaAsistencia.getColumnModel().getColumn(0).setPreferredWidth(150); // Código Alumno
+        tablaAsistencia.getColumnModel().getColumn(1).setPreferredWidth(200); // Alumno
+        for (int i = 2; i < tablaAsistencia.getColumnCount(); i++) {
+            tablaAsistencia.getColumnModel().getColumn(i).setPreferredWidth(100); // Fechas
+        }
+
+        // Establecer selección múltiple si lo deseas
+        tablaAsistencia.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+
+        // Agregar la tabla al panel
         JScrollPane scrollTabla = ComponentFactory.crearScrollTabla(tablaAsistencia, 100, 300, 1100, 400);
+        // Opcional: Puedes cambiar las políticas de scroll para que aparezcan solo cuando sea necesario
+        scrollTabla.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollTabla.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         panelAsistencia.add(scrollTabla);
     }
 
-    private void manejarGuardarAsistencia(JTable tabla) {
-        DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();
-        for (int i = 0; i < modelo.getRowCount(); i++) {
-            String codigo = modelo.getValueAt(i, 0).toString();
-            String nombre = modelo.getValueAt(i, 1).toString();
-            String apellido = modelo.getValueAt(i, 2).toString();
-            boolean asistencia = (boolean) modelo.getValueAt(i, 3);
 
-            // Procesar asistencia aquí
+    private void manejarGuardarAsistencia(JTable tabla, int idHorario) {
+        DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();
+        int totalColumnas = modelo.getColumnCount();
+        // Las primeras 2 columnas no son fechas, las siguientes sí
+        int columnasFechas = totalColumnas - 2;
+
+        // Obtener las fechas de las columnas
+        LocalDate[] fechas = new LocalDate[columnasFechas];
+        for (int i = 2; i < totalColumnas; i++) {
+            String fechaColStr = (String) modelo.getColumnName(i);
+            fechas[i-2] = LocalDate.parse(fechaColStr, java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy"));
         }
+
+        for (int i = 0; i < modelo.getRowCount(); i++) {
+            String codigoAlumno = modelo.getValueAt(i, 0).toString();
+            int idAlumno = asistenciaController.obtenerIdAlumnoPorCodigoController(codigoAlumno);
+            if (idAlumno == -1) {
+                JOptionPane.showMessageDialog(null, "No se encontró el alumno con código: " + codigoAlumno);
+                continue;
+            }
+
+            // Por cada fecha, guardamos el valor
+            for (int c = 0; c < columnasFechas; c++) {
+                boolean presente = (boolean) modelo.getValueAt(i, c+2);
+                String estado = presente ? "PRESENTE" : "AUSENTE";
+                LocalDate fecha = fechas[c];
+
+                // Verificar si ya existe el registro
+                boolean existe = asistenciaController.existeAsistenciaController(idAlumno, idHorario, fecha);
+
+                // Crear objeto asistencia
+                AsistenciaModelo asistencia = new AsistenciaModelo();
+                asistencia.setFecha(fecha);
+                asistencia.setEstado(estado);
+                asistencia.setIdAlumno(idAlumno);
+                asistencia.setIdHorario(idHorario);
+
+                int resultado;
+                if (existe) {
+                    // Modificar asistencia
+                    resultado = asistenciaController.modificarAsistenciaController(asistencia);
+                } else {
+                    // Insertar asistencia
+                    resultado = asistenciaController.insertarAsistenciaController(asistencia);
+                }
+
+                if (resultado == 0) {
+                    JOptionPane.showMessageDialog(null, "No se pudo guardar la asistencia del alumno: " + codigoAlumno + " en la fecha: " + fecha);
+                }
+            }
+        }
+
         JOptionPane.showMessageDialog(null, "Asistencia guardada exitosamente.");
     }
+
 
     private void manejarCambioAPanelActualizarLaboratorio() {
         panelActualizarLaboratorio = new JPanel(null);

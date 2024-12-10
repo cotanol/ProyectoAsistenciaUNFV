@@ -39,7 +39,7 @@ CREATE TABLE laboratorio (
 -- Esta tabla almacena las asignaturas que se imparten en los laboratorios
 CREATE TABLE asignatura (
   id_asignatura INT AUTO_INCREMENT PRIMARY KEY,  -- Identificador único de la asignatura (clave primaria)
-  nombre VARCHAR(100),                           -- Nombre de la asignatura
+  nombre VARCHAR(100) UNIQUE,                           -- Nombre de la asignatura
   codigo VARCHAR(20) UNIQUE                      -- Código único de la asignatura
 );
 
@@ -52,8 +52,9 @@ CREATE TABLE horario_laboratorio (
   dia VARCHAR(100),  -- Día de la semana
   horario_inicio VARCHAR(50),                            -- Hora de inicio de la clase
   horario_fin VARCHAR(50),                               -- Hora de fin de la clase
+  fecha_inicio VARCHAR(50),
   id_usuario INT,                                 -- Clave foránea al docente (usuario)
-  codigo_horario VARCHAR(50) UNIQUE,			  -- Almacenar el código del horario (unico)
+  codigo_horario VARCHAR(300) UNIQUE,			  -- Almacenar el código del horario (unico)
   FOREIGN KEY (id_laboratorio) REFERENCES laboratorio(id_laboratorio) ON DELETE CASCADE,   -- Si se elimina el laboratorio, se eliminan los horarios asociados
   FOREIGN KEY (id_asignatura) REFERENCES asignatura(id_asignatura) ON DELETE SET NULL,     -- Si se elimina la asignatura, se establece NULL en este campo
   FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario) ON DELETE SET NULL               -- Si se elimina el docente, se establece NULL en este campo
@@ -67,7 +68,7 @@ CREATE TABLE equipo (
   id_laboratorio INT,                           -- Clave foránea al laboratorio donde está el equipo
   tipo_equipo ENUM('Teclado', 'CPU', 'Monitor', 'PizarraDigital'),                     -- Tipo o categoría del equipo (ejemplo: Computadora, Proyector)
   numero_serie VARCHAR(50),                     -- Número de serie del equipo
-  estado ENUM('OPERATIVO', 'INOPERATIVO'),     -- Estado actual del equipo
+  estado VARCHAR(50),     -- Estado actual del equipo
   FOREIGN KEY (id_laboratorio) REFERENCES laboratorio(id_laboratorio) ON DELETE SET NULL  -- Si se elimina el laboratorio, el campo se establece en NULL
 );
 
@@ -82,4 +83,14 @@ CREATE TABLE asistencia (
   FOREIGN KEY (id_alumno) REFERENCES alumno(id_alumno) ON DELETE CASCADE,                -- Si se elimina el alumno, se eliminan sus asistencias
   FOREIGN KEY (id_horario) REFERENCES horario_laboratorio(id_horario) ON DELETE CASCADE, -- Si se elimina el horario, se eliminan las asistencias asociadas
   CONSTRAINT unique_alumno_horario_fecha UNIQUE (id_alumno, id_horario, fecha)  -- Combinación de alumno, horario y fecha debe ser única
+);
+
+-- 8. Crear la tabla 'horarios_alumno'
+-- Esta tabla almacena la relación de los alumnos con los horarios de laboratorio
+CREATE TABLE horarios_alumno (
+  id_alumno INT,                                 -- Clave foránea al alumno
+  id_horario INT,                                -- Clave foránea al horario
+  PRIMARY KEY (id_alumno, id_horario),           -- Combinación única de alumno y horario
+  FOREIGN KEY (id_alumno) REFERENCES alumno(id_alumno) ON DELETE CASCADE,  -- Si se elimina el alumno, se eliminan las asignaciones de horario
+  FOREIGN KEY (id_horario) REFERENCES horario_laboratorio(id_horario) ON DELETE CASCADE  -- Si se elimina el horario, se eliminan las asignaciones
 );

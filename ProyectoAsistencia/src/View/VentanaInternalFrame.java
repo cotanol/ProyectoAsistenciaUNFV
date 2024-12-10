@@ -48,9 +48,10 @@ public class VentanaInternalFrame extends JFrame implements MouseListener {
     ArrayList<AsignaturaModelo> listaAsignatura;
     ArrayList<LaboratorioModelo> listaLaboratorio;
     
-    public VentanaInternalFrame(AsignaturaController asignaturaControlador, LaboratorioController laboratorioControlador) {
+    public VentanaInternalFrame(AsignaturaController asignaturaControlador, LaboratorioController laboratorioControlador, VentanaRight4 ventanaRight4) {
         this.asignaturaControlador = asignaturaControlador;
         this.laboratorioControlador = laboratorioControlador;
+        this.ventanaRight4 = ventanaRight4;
         
         setSize(900, 900);
         setTitle("GESTOR DE ASIGNATURAS Y LABORATORIOS");
@@ -146,19 +147,28 @@ public class VentanaInternalFrame extends JFrame implements MouseListener {
        btnInsertar = new JButton("Insertar");
        btnInsertar.setBounds(80,210,100,30);
        btnInsertar.setCursor(new Cursor(Cursor.HAND_CURSOR));
-       btnInsertar.addActionListener((e)-> InsertarAsignatura());
+       btnInsertar.addActionListener((e)-> {
+           InsertarAsignatura();
+           ventanaRight4.cargarComboAsignatura();
+               });
        panel2.add(btnInsertar);
        
        btnModificar = new JButton("Modificar");
        btnModificar.setBounds(190,210,100,30);
        btnModificar.setCursor(new Cursor(Cursor.HAND_CURSOR));
-       btnModificar.addActionListener((e)-> ModificarAsignatura());
+       btnModificar.addActionListener((e)-> {
+           ModificarAsignatura();
+           ventanaRight4.cargarComboAsignatura();
+               });
        panel2.add(btnModificar);
        
        btnEliminar = new JButton("Eliminar");
        btnEliminar.setBounds(300,210,100,30);
        btnEliminar.setCursor(new Cursor(Cursor.HAND_CURSOR));
-       btnEliminar.addActionListener((e)-> EliminarAsignatura());
+       btnEliminar.addActionListener((e)-> {
+           EliminarAsignatura();
+           ventanaRight4.cargarComboAsignatura();
+               });
        panel2.add(btnEliminar);
        
        btnLimpiar = new JButton("Limpiar");
@@ -216,7 +226,11 @@ public class VentanaInternalFrame extends JFrame implements MouseListener {
            btnInsertar = new JButton("Insertar");
            btnInsertar.setBounds(80,210,100,30);
            btnInsertar.setCursor(new Cursor(Cursor.HAND_CURSOR));
-           btnInsertar.addActionListener((e)-> InsertarLaboratorio());
+           btnInsertar.addActionListener((e)-> {
+               InsertarLaboratorio();
+               ventanaRight4.cargarComboNroLab();
+               ventanaRight4.cargarCombosOtrasVentana();
+                   });
            panel1.add(btnInsertar);
 
            btnModificar = new JButton("Modificar");
@@ -504,16 +518,16 @@ public class VentanaInternalFrame extends JFrame implements MouseListener {
     }
     
 
-   
+   /*
     
     public static void main(String[] args) {
             AsignaturaController asignaturaController = new AsignaturaController();
             LaboratorioController laboratorioController = new LaboratorioController(); 
 
-            VentanaInternalFrame vtn = new VentanaInternalFrame(asignaturaController, laboratorioController);
+            VentanaInternalFrame vtn = new VentanaInternalFrame(asignaturaController, laboratorioController, );
             vtn.setVisible(true);
         }    
-
+*/
 
 
     @Override
