@@ -37,8 +37,8 @@ public class HorarioLaboratorioController {
         return objHorarioLaboratorioModelo.ultimoId();
     }
     
-    public void exportarUsuariosAExcel() {
-        objHorarioLaboratorioModelo.cargarBD_Excel();
+    public void exportarUsuariosAExcel(String buscar) {
+        objHorarioLaboratorioModelo.cargarBD_Excel_HorarioLaboratorio(buscar);
     }
     
     public ArrayList<HorarioLaboratorioModelo> buscarResgistroHorarioLaboratorioController(String buscar){
