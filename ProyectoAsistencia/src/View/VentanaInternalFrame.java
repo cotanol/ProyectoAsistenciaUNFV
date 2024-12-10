@@ -156,13 +156,19 @@ public class VentanaInternalFrame extends JFrame implements MouseListener {
        btnModificar = new JButton("Modificar");
        btnModificar.setBounds(190,210,100,30);
        btnModificar.setCursor(new Cursor(Cursor.HAND_CURSOR));
-       btnModificar.addActionListener((e)-> ModificarAsignatura());
+       btnModificar.addActionListener((e)-> {
+           ModificarAsignatura();
+           ventanaRight4.cargarComboAsignatura();
+               });
        panel2.add(btnModificar);
        
        btnEliminar = new JButton("Eliminar");
        btnEliminar.setBounds(300,210,100,30);
        btnEliminar.setCursor(new Cursor(Cursor.HAND_CURSOR));
-       btnEliminar.addActionListener((e)-> EliminarAsignatura());
+       btnEliminar.addActionListener((e)-> {
+           EliminarAsignatura();
+           ventanaRight4.cargarComboAsignatura();
+               });
        panel2.add(btnEliminar);
        
        btnLimpiar = new JButton("Limpiar");

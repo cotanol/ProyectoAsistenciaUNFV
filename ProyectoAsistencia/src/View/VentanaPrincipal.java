@@ -106,10 +106,11 @@ public class VentanaPrincipal extends JFrame {
         LaboratorioController laboratorioController = new LaboratorioController(this);
         EquipoController equipoController = new EquipoController(this);
         AsignaturaController asignaturaController = new AsignaturaController(this);
+        HorariosAlumnoController horariosAlumnoController = new HorariosAlumnoController(this);
         
         ventanaRight1 = new VentanaRight1(usuarioController);
         ventanaRight3 = new VentanaRight3(equipoController, horarioController, laboratorioController);
-        ventanaRight2 = new VentanaRight2(laboratorioController, asistenciaController, horarioController);
+        ventanaRight2 = new VentanaRight2(laboratorioController, asistenciaController, horarioController, horariosAlumnoController);
         ventanaRight4 = new VentanaRight4(horarioController, usuarioController, laboratorioController, asignaturaController);
         
         ventanaRight1.sincronizarVentanas(ventanaRight2,ventanaRight3,ventanaRight4);

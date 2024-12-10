@@ -23,6 +23,7 @@ public class VentanaRight2 extends JPanel {
     private HorarioLaboratorioController horarioLaboratorioController;
     private LaboratorioController laboratorioController;
     private AsistenciaController asistenciaController;
+    private HorariosAlumnoController horariosAlumnoController;
 
     // Componentes principales
     private JLabel lblControlAsistencia, lblDatosLab, lblConfigAvanz, lblNroLab, lblHor, lblAsigs;
@@ -55,11 +56,11 @@ public class VentanaRight2 extends JPanel {
     private VentanaRight1 ventanaRight1;
     private VentanaRight4 ventanaRight4;
 
-    public VentanaRight2(LaboratorioController laboratorioController, AsistenciaController asistenciaController, HorarioLaboratorioController horarioLaboratorioController) {
+    public VentanaRight2(LaboratorioController laboratorioController, AsistenciaController asistenciaController, HorarioLaboratorioController horarioLaboratorioController, HorariosAlumnoController horariosAlumnoController) {
         this.laboratorioController = laboratorioController;
         this.asistenciaController = asistenciaController;
         this.horarioLaboratorioController = horarioLaboratorioController;
-        
+        this.horariosAlumnoController = horariosAlumnoController;
         
         
         setLayout(new CardLayout());
@@ -226,22 +227,31 @@ public class VentanaRight2 extends JPanel {
         }
 
         try {
-            // Remover el panel anterior si existe
-            if (panelAsistencia != null) {
-                panelDerecho.remove(panelAsistencia);
+            // Obtener el idHorario usando el código de horario
+            int idHorario = asistenciaController.obtenerIdHorarioPorCodigoController(codigoHorario);
+            if (idHorario == -1) {
+                JOptionPane.showMessageDialog(null, "Código de horario no válido.");
+                return;
             }
-            
-            manejarCambioAPanelAsistencia(codigoHorario);
+
+            // Obtener la lista de alumnos usando HorariosAlumnoController
+            ArrayList<AlumnoModelo> alumnos = horariosAlumnoController.obtenerAlumnosPorHorarioController(idHorario);
+            if (alumnos.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "No hay alumnos asignados a este horario.");
+                return;
+            }
+
+            manejarCambioAPanelAsistencia(idHorario, alumnos);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Ocurrió un error al buscar los alumnos: " + e.getMessage());
         }
     }
 
-    private void manejarCambioAPanelAsistencia(String codigoHorario) {
+    private void manejarCambioAPanelAsistencia(int idHorario, ArrayList<AlumnoModelo> alumnos) {
         // Buscar el horario seleccionado
         HorarioLaboratorioModelo horarioSeleccionado = null;
         for (HorarioLaboratorioModelo horario : horarioLaboratorioController.enlistarHorarioLaboratorioController()) {
-            if (horario.getCodigoHorario().equals(codigoHorario)) {
+            if (horario.getIdHorario() == idHorario) {
                 horarioSeleccionado = horario;
                 break;
             }
@@ -279,9 +289,8 @@ public class VentanaRight2 extends JPanel {
         lblInfoClase.setFont(Constantes.FUENTE_LABEL);
         panelAsistencia.add(lblInfoClase);
 
-        // Inicializar tabla de asistencia con idHorario
-        int idHorario = horarioSeleccionado.getIdHorario();
-        inicializarTablaAsistencia(idHorario);
+        // Inicializar tabla de asistencia con la lista de alumnos
+        inicializarTablaAsistencia(alumnos, idHorario);
 
         // Botones
         btnGuardar = ComponentFactory.crearBotonAccion("GUARDAR", 1000, 750, 150, 50);
@@ -301,8 +310,7 @@ public class VentanaRight2 extends JPanel {
         cardLayout.show(panelDerecho, "RegistroAsistencia");
     }
 
-    private void inicializarTablaAsistencia(int idHorario) {
-        ArrayList<AlumnoModelo> alumnos = asistenciaController.obtenerAlumnosPorHorario(idHorario);
+    private void inicializarTablaAsistencia(ArrayList<AlumnoModelo> alumnos, int idHorario) {
         if (alumnos.isEmpty()) {
             JOptionPane.showMessageDialog(null, "No hay alumnos para este horario.");
             return;
