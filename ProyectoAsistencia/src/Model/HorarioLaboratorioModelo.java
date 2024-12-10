@@ -24,6 +24,7 @@ public class HorarioLaboratorioModelo {
     private String horarioFin;
     private int idUsuario;
     private String codigoHorario;
+    private String fechaInicio;
     
     private String numeroLaboratorio;
     private String asignaturaNombre;
@@ -47,14 +48,15 @@ public class HorarioLaboratorioModelo {
         try {
             
             cn = Conexion_BD.getConexionBD();
-            pt = cn.prepareStatement("INSERT INTO horario_laboratorio (id_laboratorio, id_asignatura, dia, horario_inicio, horario_fin, id_usuario, codigo_laboratorio) VALUES (?,?,?,?,?,?,?);");
+            pt = cn.prepareStatement("INSERT INTO horario_laboratorio (id_laboratorio, id_asignatura, dia, horario_inicio, horario_fin, fecha_inicio, id_usuario, codigo_horario) VALUES (?,?,?,?,?,?,?,?);");
             pt.setInt(1, horarioLaboratorioModelo.getIdLaboratorio());
             pt.setInt(2, horarioLaboratorioModelo.getIdAsignatura());
             pt.setString(3, horarioLaboratorioModelo.getDia());
             pt.setString(4, horarioLaboratorioModelo.getHorarioInicio());
             pt.setString(5, horarioLaboratorioModelo.getHorarioFin());
-            pt.setInt(6, horarioLaboratorioModelo.getIdUsuario());
-            pt.setString(7, horarioLaboratorioModelo.getCodigoHorario());
+            pt.setString(6, horarioLaboratorioModelo.getFechaInicio());
+            pt.setInt(7, horarioLaboratorioModelo.getIdUsuario());
+            pt.setString(8, horarioLaboratorioModelo.getCodigoHorario());
             
             estado = pt.executeUpdate();
             
@@ -73,15 +75,16 @@ public class HorarioLaboratorioModelo {
         
         try {
             cn = Conexion_BD.getConexionBD();
-            pt = cn.prepareStatement("UPDATE horario_laboratorio SET id_laboratorio = ?, id_asignatura = ?, dia = ?, horario_inicio = ?, horario_fin = ?, id_usuario = ?, codigo_horario = ? WHERE codigo_horario = ?;");
+            pt = cn.prepareStatement("UPDATE horario_laboratorio SET id_laboratorio = ?, id_asignatura = ?, dia = ?, horario_inicio = ?, horario_fin = ?, fecha_inicio = ?, id_usuario = ?, codigo_horario = ? WHERE codigo_horario = ?;");
             pt.setInt(1, horarioLaboratorioModelo.getIdLaboratorio());
             pt.setInt(2, horarioLaboratorioModelo.getIdAsignatura());
             pt.setString(3, horarioLaboratorioModelo.getDia());
             pt.setString(4, horarioLaboratorioModelo.getHorarioInicio());
-            pt.setString(5, horarioLaboratorioModelo.getHorarioInicio());
-            pt.setInt(6, horarioLaboratorioModelo.getIdUsuario());
-            pt.setString(7, horarioLaboratorioModelo.getCodigoHorario());
+            pt.setString(5, horarioLaboratorioModelo.getHorarioFin());
+            pt.setString(6, horarioLaboratorioModelo.getFechaInicio());  
+            pt.setInt(7, horarioLaboratorioModelo.getIdUsuario());
             pt.setString(8, horarioLaboratorioModelo.getCodigoHorario());
+            pt.setString(9, horarioLaboratorioModelo.getCodigoHorario());
             
             
             estado = pt.executeUpdate();
@@ -146,6 +149,9 @@ public class HorarioLaboratorioModelo {
                 if (rs.getObject("horario_fin") != null) {
                     horarioLaboratorioModelo.setHorarioFin(rs.getString("horario_fin"));
                 }
+                if (rs.getObject("fecha_inicio") != null) {
+                    horarioLaboratorioModelo.setFechaInicio(rs.getString("fecha_inicio"));
+                }
                 if (rs.getObject("id_usuario") != null) {
                     horarioLaboratorioModelo.setIdUsuario(rs.getInt("id_usuario"));
                 }
@@ -177,13 +183,22 @@ public class HorarioLaboratorioModelo {
         PreparedStatement ps = null;
         ResultSet rs = null;
 
-        String[] cabeceras = new String[]{"Nro Laboratorio", "Asignatura", "Docente", "Dia", "Hora Inicio", "HoraFin", "Codgio de Horario"};
+        // Se agrega "Fecha Inicio" como séptima columna
+        String[] cabeceras = new String[]{
+            "Nro Laboratorio", 
+            "Asignatura", 
+            "Docente", 
+            "Dia", 
+            "Hora Inicio", 
+            "Hora Fin", 
+            "Fecha Inicio", 
+            "Codigo de Horario"
+        };
 
         Row filaCabeceras = hoja.createRow(0); // Fila Cabeceras de las columnas
         for (int i = 0; i < cabeceras.length; i++) {
             Cell celda = filaCabeceras.createCell(i);
             celda.setCellValue(cabeceras[i]);
-            
         }
 
         int numFila = 1;
@@ -193,23 +208,21 @@ public class HorarioLaboratorioModelo {
 
             ps = conexion.prepareStatement(
                 "SELECT " +
-                "l.numero_lab AS laboratorio_nombre, " +  // Número del laboratorio
-                "a.nombre AS asignatura_nombre, " +       // Nombre de la asignatura
-                "u.nombre_usuario AS usuario_nombre, " +  // Nombre de usuario
-                "hl.dia, " +                              // Día
-                "hl.horario_inicio, " +                   // Hora de inicio
-                "hl.horario_fin, " +                      // Hora de fin
-                "hl.codigo_horario " +                    // Código del horario
+                "l.numero_lab AS laboratorio_nombre, " +   // 1 Nro Laboratorio
+                "a.nombre AS asignatura_nombre, " +        // 2 Asignatura
+                "u.nombre_usuario AS usuario_nombre, " +   // 3 Docente
+                "hl.dia, " +                               // 4 Dia
+                "hl.horario_inicio, " +                    // 5 Hora Inicio
+                "hl.horario_fin, " +                       // 6 Hora Fin
+                "hl.fecha_inicio, " +                      // 7 Fecha Inicio (Nuevo campo)
+                "hl.codigo_horario " +                     // 8 Codigo de Horario
                 "FROM horario_laboratorio hl " +
-                "JOIN laboratorio l ON hl.id_laboratorio = l.id_laboratorio " + // Join con laboratorio
-                "JOIN asignatura a ON hl.id_asignatura = a.id_asignatura " +    // Join con asignatura
-                "JOIN usuario u ON hl.id_usuario = u.id_usuario"               // Join con usuario
+                "JOIN laboratorio l ON hl.id_laboratorio = l.id_laboratorio " +
+                "JOIN asignatura a ON hl.id_asignatura = a.id_asignatura " +
+                "JOIN usuario u ON hl.id_usuario = u.id_usuario"
             );
 
-
-
             rs = ps.executeQuery();
-
             int numCol = rs.getMetaData().getColumnCount();
 
             while (rs.next()) {
@@ -226,22 +239,24 @@ public class HorarioLaboratorioModelo {
             rs.close();
             ps.close();
             conexion.close();
-            
+
+            // Ajustar ancho de columnas (opcional)
             for (int i = 0; i < cabeceras.length; i++) {
                 if (i == cabeceras.length - 1) {
-                    hoja.setColumnWidth(i, 90 * 256); // Última columna con 90 caracteres de ancho
-                }else if(i == cabeceras.length - 2 || i == cabeceras.length - 3){
-                    hoja.setColumnWidth(i, 15 * 256); // Las demás columnas con 30 caracteres de ancho
-                }else if(i == cabeceras.length - 4){
-                    hoja.setColumnWidth(i, 20 * 256); // Las demás columnas con 30 caracteres de ancho
-                }else if(i == cabeceras.length - 6){
-                    hoja.setColumnWidth(i, 45 * 256); // Las demás columnas con 30 caracteres de ancho
-                }else if(i == cabeceras.length - 7){
-                    hoja.setColumnWidth(i, 25 * 256); // Las demás columnas con 30 caracteres de ancho
-                }else {
-                    hoja.setColumnWidth(i, 30 * 256); // Las demás columnas con 30 caracteres de ancho
+                    hoja.setColumnWidth(i, 90 * 256); 
+                } else if(i == cabeceras.length - 2 || i == cabeceras.length - 3){
+                    hoja.setColumnWidth(i, 15 * 256); 
+                } else if(i == cabeceras.length - 4){
+                    hoja.setColumnWidth(i, 20 * 256);
+                } else if(i == cabeceras.length - 6){
+                    hoja.setColumnWidth(i, 45 * 256); 
+                } else if(i == cabeceras.length - 8){
+                    hoja.setColumnWidth(i, 25 * 256); 
+                } else {
+                    hoja.setColumnWidth(i, 30 * 256); 
                 }
             }
+
             // Guarda el archivo Excel
             String filePath = "ReporteClasesDeLaboratorio.xlsx";
             FileOutputStream archivo = new FileOutputStream(filePath);
@@ -561,5 +576,15 @@ public ArrayList<HorarioLaboratorioModelo> buscarResgistroHorarioLaboratorio(Str
     public void setNombreUsuario(String nombreUsuario) {
         this.nombreUsuario = nombreUsuario;
     }
+
+    public String getFechaInicio() {
+        return fechaInicio;
+    }
+
+    public void setFechaInicio(String fechaInicio) {
+        this.fechaInicio = fechaInicio;
+    }
+    
+    
     
 }

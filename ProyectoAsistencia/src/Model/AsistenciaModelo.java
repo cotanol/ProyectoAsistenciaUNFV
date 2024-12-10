@@ -263,6 +263,70 @@ public class AsistenciaModelo {
         return codigoHorario;
     }   
     
+    public ArrayList<AlumnoModelo> obtenerAlumnosPorHorario(int idHorario) {
+        ArrayList<AlumnoModelo> listaAlumnos = new ArrayList<>();
+        String sql = "SELECT DISTINCT a.codigo_alumno, a.nombres, a.apellidos " +
+                     "FROM alumno a " +
+                     "JOIN asistencia ass ON a.id_alumno = ass.id_alumno " +
+                     "WHERE ass.id_horario = ?";
+        try (Connection cn = Conexion_BD.getConexionBD();
+             PreparedStatement pt = cn.prepareStatement(sql)) {
+            pt.setInt(1, idHorario);
+            ResultSet rs = pt.executeQuery();
+
+            while (rs.next()) {
+                AlumnoModelo alumno = new AlumnoModelo();
+                alumno.setCodigoAlumno(rs.getString("codigo_alumno"));
+                alumno.setNombres(rs.getString("nombres"));
+                alumno.setApellidos(rs.getString("apellidos"));
+                listaAlumnos.add(alumno);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return listaAlumnos;
+    }
+    
+    public ArrayList<AsistenciaModelo> obtenerAsistenciasPorHorario(int idHorario) {
+        ArrayList<AsistenciaModelo> lista = new ArrayList<>();
+        String sql = "SELECT * FROM asistencia WHERE id_horario = ?";
+        try (Connection cn = Conexion_BD.getConexionBD();
+             PreparedStatement pt = cn.prepareStatement(sql)) {
+            pt.setInt(1, idHorario);
+            ResultSet rs = pt.executeQuery();
+            while (rs.next()) {
+                AsistenciaModelo a = new AsistenciaModelo();
+                a.setIdAsistencia(rs.getInt("id_asistencia"));
+                a.setFecha(rs.getDate("fecha").toLocalDate());
+                a.setEstado(rs.getString("estado"));
+                a.setIdAlumno(rs.getInt("id_alumno"));
+                a.setIdHorario(rs.getInt("id_horario"));
+                lista.add(a);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return lista;
+    }
+    
+    public boolean existeAsistencia(int idAlumno, int idHorario, LocalDate fecha) {
+        boolean existe = false;
+        String sql = "SELECT COUNT(*) as cnt FROM asistencia WHERE id_alumno = ? AND id_horario = ? AND fecha = ?";
+        try (Connection cn = Conexion_BD.getConexionBD();
+             PreparedStatement pt = cn.prepareStatement(sql)) {
+            pt.setInt(1, idAlumno);
+            pt.setInt(2, idHorario);
+            pt.setDate(3, java.sql.Date.valueOf(fecha));
+            ResultSet rs = pt.executeQuery();
+            if (rs.next()) {
+                existe = rs.getInt("cnt") > 0;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return existe;
+    }
+    
     public int getIdAsistencia() {
         return idAsistencia;
     }

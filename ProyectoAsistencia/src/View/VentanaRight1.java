@@ -38,7 +38,9 @@ public class VentanaRight1 extends JPanel {
 
     public VentanaRight1(UsuarioController usuarioControlador) {
         this.usuarioControlador = usuarioControlador;
-
+        
+        
+        
         setLayout(null);
         setBackground(Constantes.COLOR_FONDO_PANEL);
 

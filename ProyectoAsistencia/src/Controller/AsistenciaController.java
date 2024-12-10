@@ -2,6 +2,7 @@ package Controller;
 import Model.AsistenciaModelo;
 import Model.AlumnoModelo;
 import View.VentanaPrincipal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.time.LocalTime;
 
@@ -56,5 +57,17 @@ public class AsistenciaController {
     
     public String obtenerCodigoHorarioPorIdController(int idHorario) {
         return objAsistenciaModelo.obtenerCodigoHorarioPorId(idHorario);
+    }
+    
+    public ArrayList<AlumnoModelo> obtenerAlumnosPorHorario(int idHorario) {
+        return objAsistenciaModelo.obtenerAlumnosPorHorario(idHorario);
+    }
+    
+    public boolean existeAsistenciaController(int idAlumno, int idHorario, LocalDate fecha) {
+        return objAsistenciaModelo.existeAsistencia(idAlumno, idHorario, fecha);
+    }
+
+    public ArrayList<AsistenciaModelo> obtenerAsistenciasPorHorarioController(int idHorario) {
+        return objAsistenciaModelo.obtenerAsistenciasPorHorario(idHorario);
     }
 }
