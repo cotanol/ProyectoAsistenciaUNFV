@@ -232,7 +232,7 @@ public class VentanaRight4 extends JPanel implements ActionListener {
     private void agregarEventos() {
         btnConfiguracion.addActionListener((e)->Configuracion());
         btnExportarExcel.addActionListener((e)->{
-           horarioControlador.exportarUsuariosAExcel();
+           horarioControlador.exportarUsuariosAExcel(txtBuscar.getText());
            JOptionPane.showMessageDialog(null, "Datos exportados a Excel correctamente 🐧!!", "Exportación Exitosa", JOptionPane.INFORMATION_MESSAGE);
         });
         
