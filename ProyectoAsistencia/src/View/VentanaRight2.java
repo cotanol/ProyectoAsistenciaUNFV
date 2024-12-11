@@ -16,8 +16,10 @@ import java.time.LocalDate;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
+import View.VentanaInternalFrameGUI02;
 
-public class VentanaRight2 extends JPanel {
+
+public class VentanaRight2 extends JPanel implements MouseListener {
 
     // Controladores
     private HorarioLaboratorioController horarioLaboratorioController;
@@ -41,7 +43,18 @@ public class VentanaRight2 extends JPanel {
     private JTable tablaAsistencia;
     private JButton btnGuardar, btnRegresar;
     private JTextField txtNumeroLab, txtCapacidad;
-
+    
+    JLabel lbBuscar, lbCodigoEstudiante,lbCodigoH;
+    JTextField txtBuscar, txtCodigoEstudiante;
+    JButton btnCongifuracion, btnagregarEstudiante;
+    JComboBox<String> cboCodigoHorario1;
+    JTable tabla;
+    JScrollPane barra;
+    String[] titulo = {"Código","Apellidos","Nombres"};
+    DefaultTableModel modelo;
+    
+    ArrayList<AlumnoModelo> listaAlumno;
+    AlumnoController alumnoControlador;
     // Datos
     private ArrayList<HorarioLaboratorioModelo> listaHorarioLaboratorio;
     
@@ -68,6 +81,9 @@ public class VentanaRight2 extends JPanel {
         
         inicializarComponentes();
         agregarEventos();
+        
+        alumnoControlador = new AlumnoController();
+        ListarAlumno();      
     }
 
     private void inicializarComponentes() {
@@ -101,7 +117,14 @@ public class VentanaRight2 extends JPanel {
         lblDatosLab.setOpaque(true);
         lblDatosLab.setHorizontalAlignment(SwingConstants.CENTER);
         panel.add(lblDatosLab);
-
+        
+        btnCongifuracion = ComponentFactory.crearBotonAccion("CONFIGURACIÓN", 970, 400, 230, 50);
+        panel.add(btnCongifuracion);
+        
+        btnagregarEstudiante = ComponentFactory.crearBotonAccion("AGREGAR", 970, 470, 230, 50);
+        panel.add(btnagregarEstudiante);
+        
+       
         // Panel para los datos
         JPanel subPanelDatosLab = new JPanel(null);
         subPanelDatosLab.setBounds(100, 180, 1090, 100);
@@ -180,7 +203,7 @@ public class VentanaRight2 extends JPanel {
 
     private void inicializarPanelConfiguracionAvanzada(JPanel panel) {
         // Subtítulo
-        lblConfigAvanz = ComponentFactory.crearEtiqueta("CONFIGURACIÓN AVANZADA", 400, 400, 500, 50, Constantes.FUENTE_SUBTITULO, Constantes.COLOR_TEXTO_BLANCO);
+        lblConfigAvanz = ComponentFactory.crearEtiqueta("REGISTRAR ESTUDIANTE A LA CLASE", 100, 320, 750, 50, Constantes.FUENTE_SUBTITULO, Constantes.COLOR_TEXTO_BLANCO);
         lblConfigAvanz.setBackground(Constantes.COLOR_HOVER_SELECCIONADO1);
         lblConfigAvanz.setOpaque(true);
         lblConfigAvanz.setHorizontalAlignment(SwingConstants.CENTER);
@@ -188,7 +211,7 @@ public class VentanaRight2 extends JPanel {
 
         // Panel de configuración
         JPanel subPanelConfigAvanz = new JPanel(null);
-        subPanelConfigAvanz.setBounds(400, 470, 500, 200);
+        subPanelConfigAvanz.setBounds(100, 390, 800, 430);
         subPanelConfigAvanz.setBackground(Color.WHITE);
         subPanelConfigAvanz.setBorder(Constantes.BORDER_NEGRO);
         panel.add(subPanelConfigAvanz);
@@ -196,28 +219,117 @@ public class VentanaRight2 extends JPanel {
         // Componentes dentro del panel de configuración
         inicializarComponentesConfiguracionAvanzada(subPanelConfigAvanz);
     }
-
+ //****************************************************************************************************************
     private void inicializarComponentesConfiguracionAvanzada(JPanel subPanel) {
-        // Botón para Actualizar Datos
+        
+        // Etiqueta y caja de texto "Buscar"
+        lbBuscar = ComponentFactory.crearEtiqueta("Buscar en Tabla", 50, 20, 200, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_TEXTO_NEGRO);
+        subPanel.add(lbBuscar);
+        txtBuscar = ComponentFactory.crearCampoTexto(50, 60, 250, 30, Constantes.BORDER_HOVER);
+        subPanel.add(txtBuscar);
+        
+        // Etiqueta y caja de texto "Codigo Estudiante"
+        lbCodigoEstudiante = ComponentFactory.crearEtiqueta("Código Estudiante", 350, 20, 200, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_TEXTO_NEGRO);
+        subPanel.add(lbCodigoEstudiante);
+        txtCodigoEstudiante = ComponentFactory.crearCampoTexto(350, 60, 250, 30, Constantes.BORDER_HOVER);
+        txtCodigoEstudiante.setEditable(false);
+        subPanel.add(txtCodigoEstudiante);
+         
+        // Etiqueta para el ComboBox de Código de Horario
+        lbCodigoH = ComponentFactory.crearEtiqueta("Código de Horario:", 50, 100, 200, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_TEXTO_NEGRO);
+        subPanel.add(lbCodigoH);
+        
+        // Único ComboBox largo para Código de Horario
+        cboCodigoHorario1 = ComponentFactory.crearComboBoxString(new String[]{}, 50, 130, 700, 30, Constantes.BORDER_HOVER);
+        subPanel.add(cboCodigoHorario1);
+        cargarComboCodigoHorario(); // Método nuevo para llenar el cboCodigoHorario
+        
+        // Tabla de estudiantes
+        tabla = new JTable();
+        barra = new JScrollPane();
+        String[] titulo = {"Código","Apellidos","Nombres"};
+        modelo = new DefaultTableModel(null,titulo);
+        tabla.setModel(modelo);
+        tabla.addMouseListener(this);
+        barra.setViewportView(tabla);
+        barra.setBounds(50, 180, 700, 215);
+        subPanel.add(barra);
+          
+        
+       /* // Botón para Actualizar Datos
         btnActuDatos = ComponentFactory.crearBotonAccion("**REGISTRO ALUMNOS**", 50, 30, 400, 50);
         subPanel.add(btnActuDatos);
 
         // Botón para Generar Reporte
         btnReporteGen = ComponentFactory.crearBotonAccion("REPORTE GENERAL POR AÑO-MESES", 50, 110, 400, 50);
-        subPanel.add(btnReporteGen);
+        subPanel.add(btnReporteGen);*/
     }
 
+    public void ListarAlumno(){
+        modelo.setRowCount(0);
+        listaAlumno = alumnoControlador.enlistarAlumnoController();
+        
+        for(AlumnoModelo alu : listaAlumno){
+            modelo.addRow(new Object[]{
+                //alu.getId_alumno(),
+                alu.getCodigoAlumno(),
+                alu.getApellidos(),
+                alu.getNombres()
+            });
+        }
+    }    
+    
+    public void Filtrar(String buscar) {
+        listaAlumno = alumnoControlador.buscarResgistroAlumnoController(buscar); 
+        modelo.setRowCount(0); // Limpia la tabla
+
+        for (AlumnoModelo obj : listaAlumno) {
+            Object[] fila = {
+                obj.getCodigoAlumno(),
+                obj.getApellidos(),
+                obj.getNombres()      
+            };
+            modelo.addRow(fila); 
+        }
+    }
+    
     private void agregarEventos() {
         // Eventos de hover
         btnBuscar.addMouseListener(new EstiloHover.HoverAccionBoton(btnBuscar));
-        btnActuDatos.addMouseListener(new EstiloHover.HoverAccionBoton(btnActuDatos));
-        btnReporteGen.addMouseListener(new EstiloHover.HoverAccionBoton(btnReporteGen));
+        btnCongifuracion.addMouseListener(new EstiloHover.HoverAccionBoton(btnCongifuracion));
+        btnagregarEstudiante.addMouseListener(new EstiloHover.HoverAccionBoton(btnagregarEstudiante));
+        
+       /* btnActuDatos.addMouseListener(new EstiloHover.HoverAccionBoton(btnActuDatos));
+        btnReporteGen.addMouseListener(new EstiloHover.HoverAccionBoton(btnReporteGen));*/
 
         // Eventos de acción
         btnBuscar.addActionListener(e -> manejarBuscarHorario());
-        btnActuDatos.addActionListener(e -> manejarCambioAPanelActualizarLaboratorio());
+        btnCongifuracion.addActionListener(e -> Configuracion());
+        btnagregarEstudiante.addActionListener(e -> AgregarEstudiante());
+        
+       /* btnActuDatos.addActionListener(e -> manejarCambioAPanelActualizarLaboratorio());*/
+       
+       // Evento para buscar desde la caja de texto para actulizar la tabla alumnos
+       txtBuscar.addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                Filtrar(txtBuscar.getText()); // Llama al método de filtro
+            }
+        });
     }
-
+    
+    public void Configuracion(){
+        AsignaturaController asignaturaControlador = new AsignaturaController();
+        AlumnoController alumnoControlador = new AlumnoController();
+        VentanaRight4 vtn4 = new VentanaRight4();
+        VentanaInternalFrameGUI02 vtn = new VentanaInternalFrameGUI02(asignaturaControlador,alumnoControlador,vtn4);
+        vtn.setVisible(true);
+    }
+    
+    public void AgregarEstudiante(){
+        
+    }
+    
     private void manejarBuscarHorario() {
         String codigoHorario = (String) cboCodigoHorario.getSelectedItem();
 
@@ -761,6 +873,33 @@ public class VentanaRight2 extends JPanel {
         this.ventanaRight3 = ventanaRight3;
         this.ventanaRight1 = ventanaRight1;
         this.ventanaRight4 = ventanaRight4;
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        if(e.getSource() == tabla){
+            txtCodigoEstudiante.setText((String)tabla.getValueAt(tabla.getSelectedRow(),0));
+        }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
     }
     
     

@@ -71,7 +71,11 @@ public class VentanaRight4 extends JPanel implements ActionListener {
         agregarEventos();
         listarHorarios();
     }
-
+    
+    public VentanaRight4(){
+        
+    }
+    
     private void inicializarComponentes() {
         // Título
         lbRegistrosHorarios = ComponentFactory.crearEtiqueta("HORARIOS DE LABORATORIO", 50, 30, 750, 52, Constantes.FUENTE_TITULO, Constantes.COLOR_TEXTO_NEGRO);

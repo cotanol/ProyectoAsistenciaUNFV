@@ -1,6 +1,8 @@
 package View;
+import Controller.AlumnoController;
 import Controller.AsignaturaController;
 import Controller.LaboratorioController;
+import Model.AlumnoModelo;
 import Model.AsignaturaModelo;
 import Model.LaboratorioModelo;
 import Util.Conexion_BD;
@@ -17,44 +19,46 @@ import View.VentanaRight4;
 import View.VentanaRight3;
 
 
-public class VentanaInternalFrame extends JFrame implements MouseListener {
+public class VentanaInternalFrameGUI02 extends JFrame implements MouseListener {
     
     //Controlador
     private AsignaturaController asignaturaControlador;
-    private LaboratorioController laboratorioControlador;
+    private AlumnoController alumnoControlador;
     private VentanaRight4 ventanaRight4;
     
     JMenuBar barra;
     JMenu item1;
     JMenuItem m1, m2, m3;
-    JInternalFrame internalLaboratorios, internalAsignaturas;
+    JInternalFrame internalEstudiante, internalClase;
     JPanel panel1,panel2;
     
     JTable tabla1, tabla2;
     DefaultTableModel modelo1, modelo2;
     JScrollPane scroll1, scroll2;
     
-    String[] titulo1 = {"ID_LAB","NRO_LABORATORIO","CAPACIDAD"};
+    String[] titulo1 = {"CODIGO","APELLIDOS","NOMBRES"};
     String[] titulo2 = {"ID_ASIG","NOMBRE DE LA ASIGNATURA","CODIGO"};
     
     JButton btnInsertar, btnModificar, btnEliminar, btnLimpiar;
     
-    JLabel lbasignatura, lbcodigoasignatura, lbBuscarAsignatura;
-    JTextField txtnombreasignatura, txtcodigoasignatura, txtBuscarAsignatura;
+    JLabel lbCodigoHorario, lbCodigoEstudiante1, lbBuscarHorario, lbNombres,lbApellidosHorario, lbNombreHorario;
+    JTextField txtnCodigoHorario, txtCodEstudiante, txtBuscarHorarioEstudiante, txtNombres, txtApellidosHorario, txtNombreHorario;
     
-    JLabel lblaboratorio, lbcapacidad, lbBuscarLaboratorio;
-    JTextField txtlaboratorio, txtcapacidad, txtBuscarLaboratorio;
+    JLabel lbCodigoEstudiante, lbApellidos, lbBuscarEstudiante;
+    JTextField txtCodigoEstudiante, txtApellidos, txtBuscarEstudiante;
     
     ArrayList<AsignaturaModelo> listaAsignatura;
-    ArrayList<LaboratorioModelo> listaLaboratorio;
+    ArrayList<AlumnoModelo> listaAlumno;
     
-    public VentanaInternalFrame(AsignaturaController asignaturaControlador, LaboratorioController laboratorioControlador, VentanaRight4 ventanaRight4) {
+    
+    
+    public VentanaInternalFrameGUI02(AsignaturaController asignaturaControlador, AlumnoController alumnoControlador, VentanaRight4 ventanaRight4) {
         this.asignaturaControlador = asignaturaControlador;
-        this.laboratorioControlador = laboratorioControlador;
+        this.alumnoControlador = alumnoControlador;
         this.ventanaRight4 = ventanaRight4;
         
         setSize(900, 900);
-        setTitle("GESTOR DE ASIGNATURAS Y LABORATORIOS");
+        setTitle("GESTOR DE ESTUDIANTES");
         setLayout(null);
         setResizable(false);
         setLocationRelativeTo(null);
@@ -64,11 +68,11 @@ public class VentanaInternalFrame extends JFrame implements MouseListener {
         setJMenuBar(barra);
         item1 = new JMenu("Archivo");
         barra.add(item1);
-        m1 = new JMenuItem("Gestor de Laboratorios");
-        m1.addActionListener((e) -> InternalFrameLaboratorios());
+        m1 = new JMenuItem("Gestor de Estudiante");
+        m1.addActionListener((e) -> InternalFrameEstudiantes());
         item1.add(m1);
-        m2 = new JMenuItem("Gestor de Asignaturas");
-        m2.addActionListener((e) -> InternalFrameAsignaturas());
+        m2 = new JMenuItem("Gestor de Clase: Eliminar Estudiante");
+        m2.addActionListener((e) -> InternalFrameClase());
         item1.add(m2);
         m3 = new JMenuItem("Salir");
         m3.addActionListener((e) -> Salir());
@@ -77,63 +81,59 @@ public class VentanaInternalFrame extends JFrame implements MouseListener {
         internalFrameInitComponents2();
         internalFrameInitComponents1();
         listarAsignatura();
-        listarLaboratorio();
+        listarEstudiante();
 
-       txtBuscarAsignatura.addKeyListener(new java.awt.event.KeyAdapter() {
+       txtBuscarHorarioEstudiante.addKeyListener(new java.awt.event.KeyAdapter() {
             @Override
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                FiltrarAsignatura(txtBuscarAsignatura.getText()); 
+                FiltrarCodigoHorario(txtBuscarHorarioEstudiante.getText()); 
             }
         });
        
-       txtBuscarLaboratorio.addKeyListener(new java.awt.event.KeyAdapter() {
+       txtBuscarEstudiante.addKeyListener(new java.awt.event.KeyAdapter() {
             @Override
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                FiltrarLaboratorio(txtBuscarLaboratorio.getText()); 
+                FiltrarEstudiante(txtBuscarEstudiante.getText()); 
             }
         });
-        
-
-       
-
 
     }
-    
+
     public void internalFrameInitComponents2(){
         
         //======================================================================        
         // INTERNALFRAME DEL GESTOR DE ASIGNATURAS
         //======================================================================   
         
-        internalAsignaturas = new JInternalFrame("Gestor de Asignaturas", true, true, true, true);
-        internalAsignaturas.setSize(600, 700); 
-        internalAsignaturas.setLocation(150, 50);
-        add(internalAsignaturas);
+        internalClase = new JInternalFrame("Gestor de Clase: Eliminar Estudiante", true, true, true, true);
+        internalClase.setSize(600, 700); 
+        internalClase.setLocation(150, 50);
+        add(internalClase);
 
         panel2 = new JPanel();
         panel2.setLayout(null);
-        internalAsignaturas.add(panel2);
+        internalClase.add(panel2);
         
-        lbasignatura = new JLabel("Nombre:");
-        lbasignatura.setBounds(110,50,100,30);
-        panel2.add(lbasignatura);
-        txtnombreasignatura = new JTextField();
-        txtnombreasignatura.setBounds(190,50,300,30);
-        panel2.add(txtnombreasignatura);
+        lbCodigoHorario = new JLabel("Código Horario:");
+        lbCodigoHorario.setBounds(110,50,100,30);
+        panel2.add(lbCodigoHorario);
+        txtnCodigoHorario = new JTextField();
+        txtnCodigoHorario.setBounds(190,50,300,30);
+        panel2.add(txtnCodigoHorario);
         
-        lbcodigoasignatura = new JLabel("Codigo:");
-        lbcodigoasignatura.setBounds(110,100,100,30);
-        panel2.add(lbcodigoasignatura);
-        txtcodigoasignatura = new JTextField();
-        txtcodigoasignatura.setBounds(190,100,300,30);
-        panel2.add(txtcodigoasignatura);
-        
-        lbBuscarAsignatura = new JLabel("Buscar:");
-        lbBuscarAsignatura.setBounds(110,150,100,30);
-        panel2.add(lbBuscarAsignatura);
-        txtBuscarAsignatura = new JTextField();
-        txtBuscarAsignatura.setBounds(190,150,300,30);
-        panel2.add(txtBuscarAsignatura);
+        lbCodigoEstudiante1 = new JLabel("Codigo Estudiante:");
+        lbCodigoEstudiante1.setBounds(110,100,100,30);
+        panel2.add(lbCodigoEstudiante1);
+        txtCodEstudiante = new JTextField();
+        txtCodEstudiante.setBounds(190,100,300,30);
+        panel2.add(txtCodEstudiante);
+
+        lbBuscarHorario = new JLabel("Buscar:");
+        lbBuscarHorario.setBounds(110,150,100,30);
+        panel2.add(lbBuscarHorario);
+        txtBuscarHorarioEstudiante = new JTextField();
+        txtBuscarHorarioEstudiante.setBounds(190,150,300,30);
+        panel2.add(txtBuscarHorarioEstudiante);
         
         tabla2 = new JTable();
         scroll2 = new JScrollPane();
@@ -143,31 +143,32 @@ public class VentanaInternalFrame extends JFrame implements MouseListener {
         scroll2.setViewportView(tabla2);
         scroll2.setBounds(50,275,500,342);
         panel2.add(scroll2);
-       
+        
+       /*
        btnInsertar = new JButton("Insertar");
        btnInsertar.setBounds(80,210,100,30);
        btnInsertar.setCursor(new Cursor(Cursor.HAND_CURSOR));
        btnInsertar.addActionListener((e)-> {
            InsertarAsignatura();
-           ventanaRight4.cargarComboAsignatura();
+           //ventanaRight4.cargarComboAsignatura();
                });
        panel2.add(btnInsertar);
-       
+        
        btnModificar = new JButton("Modificar");
        btnModificar.setBounds(190,210,100,30);
        btnModificar.setCursor(new Cursor(Cursor.HAND_CURSOR));
        btnModificar.addActionListener((e)-> {
            ModificarAsignatura();
-           ventanaRight4.cargarComboAsignatura();
+           //ventanaRight4.cargarComboAsignatura();
                });
        panel2.add(btnModificar);
-       
+       */
        btnEliminar = new JButton("Eliminar");
        btnEliminar.setBounds(300,210,100,30);
        btnEliminar.setCursor(new Cursor(Cursor.HAND_CURSOR));
        btnEliminar.addActionListener((e)-> {
-           EliminarAsignatura();
-           ventanaRight4.cargarComboAsignatura();
+           EliminarEstudianteHorario();
+           //ventanaRight4.cargarComboAsignatura();
                });
        panel2.add(btnEliminar);
        
@@ -183,36 +184,43 @@ public class VentanaInternalFrame extends JFrame implements MouseListener {
             // INTERNALFRAME DEL GESTOR DE LABORATORIOS
             //======================================================================   
 
-            internalLaboratorios = new JInternalFrame("Gestor de Laboratorios", true, true, true, true);
-            internalLaboratorios.setSize(600, 700); 
-            internalLaboratorios.setLocation(150, 50);
-            add(internalLaboratorios);
+            internalEstudiante = new JInternalFrame("Gestor de Estudiante", true, true, true, true);
+            internalEstudiante.setSize(600, 700); 
+            internalEstudiante.setLocation(150, 50);
+            add(internalEstudiante);
 
             panel1 = new JPanel();
             panel1.setLayout(null);
-            internalLaboratorios.add(panel1);
+            internalEstudiante.add(panel1);
             
-            lblaboratorio = new JLabel("Nro. Laboratorio:");
-            lblaboratorio.setBounds(80,50,100,30);
-            panel1.add(lblaboratorio);
-            txtlaboratorio = new JTextField();
-            txtlaboratorio.setBounds(190,50,300,30);
-            panel1.add(txtlaboratorio);
+            lbCodigoEstudiante = new JLabel("Código de Estudiante:");
+            lbCodigoEstudiante.setBounds(50,50,130,30);
+            panel1.add(lbCodigoEstudiante);
+            txtCodigoEstudiante = new JTextField();
+            txtCodigoEstudiante.setBounds(190,50,300,30);
+            panel1.add(txtCodigoEstudiante);
 
             
-            lbcapacidad = new JLabel("Capacidad:");
-            lbcapacidad.setBounds(80,100,100,30);
-            panel1.add(lbcapacidad);
-            txtcapacidad = new JTextField();
-            txtcapacidad.setBounds(190,100,300,30);
-            panel1.add(txtcapacidad);
-
-            lbBuscarLaboratorio = new JLabel("Buscar:");
-            lbBuscarLaboratorio.setBounds(80,150,100,30);
-            panel1.add(lbBuscarLaboratorio);
-            txtBuscarLaboratorio = new JTextField();
-            txtBuscarLaboratorio.setBounds(190,150,300,30);
-            panel1.add(txtBuscarLaboratorio);
+            lbApellidos = new JLabel("Apellidos:");
+            lbApellidos.setBounds(120,100,100,30);
+            panel1.add(lbApellidos);
+            txtApellidos = new JTextField();
+            txtApellidos.setBounds(190,100,300,30);
+            panel1.add(txtApellidos);
+            
+            lbNombres = new JLabel("Nombres:");
+            lbNombres.setBounds(120,150,100,30);
+            panel1.add(lbNombres);
+            txtNombres = new JTextField();
+            txtNombres.setBounds(190,150,300,30);
+            panel1.add(txtNombres);
+            
+            lbBuscarEstudiante = new JLabel("Buscar:");
+            lbBuscarEstudiante.setBounds(130,200,100,30);
+            panel1.add(lbBuscarEstudiante);
+            txtBuscarEstudiante = new JTextField();
+            txtBuscarEstudiante.setBounds(190,200,300,30);
+            panel1.add(txtBuscarEstudiante);
 
             tabla1 = new JTable();
             scroll1 = new JScrollPane();
@@ -220,53 +228,45 @@ public class VentanaInternalFrame extends JFrame implements MouseListener {
             tabla1.setModel(modelo1);
             tabla1.addMouseListener(this);
             scroll1.setViewportView(tabla1);
-            scroll1.setBounds(50,275,500,342);
+            scroll1.setBounds(50,330,500,312);
             panel1.add(scroll1);
 
            btnInsertar = new JButton("Insertar");
-           btnInsertar.setBounds(80,210,100,30);
+           btnInsertar.setBounds(80,260,100,30);
            btnInsertar.setCursor(new Cursor(Cursor.HAND_CURSOR));
            btnInsertar.addActionListener((e)-> {
-               InsertarLaboratorio();
+               InsertarAlumno();
                ventanaRight4.cargarComboNroLab();
                ventanaRight4.cargarCombosOtrasVentana();
                    });
            panel1.add(btnInsertar);
 
            btnModificar = new JButton("Modificar");
-           btnModificar.setBounds(190,210,100,30);
+           btnModificar.setBounds(190,260,100,30);
            btnModificar.setCursor(new Cursor(Cursor.HAND_CURSOR));
-           btnModificar.addActionListener((e)-> {
-               ModificarLaboratorio();
-               ventanaRight4.cargarComboNroLab();
-               ventanaRight4.cargarCombosOtrasVentana();
-           });
+           btnModificar.addActionListener((e)-> ModificarAlumno());
            panel1.add(btnModificar);
 
            btnEliminar = new JButton("Eliminar");
-           btnEliminar.setBounds(300,210,100,30);
+           btnEliminar.setBounds(300,260,100,30);
            btnEliminar.setCursor(new Cursor(Cursor.HAND_CURSOR));
-           btnEliminar.addActionListener((e)-> {
-               EliminarLaboratorio();
-               ventanaRight4.cargarComboNroLab();
-               ventanaRight4.cargarCombosOtrasVentana();
-           });
+           btnEliminar.addActionListener((e)-> EliminarAlumno());
            panel1.add(btnEliminar);
 
            btnLimpiar = new JButton("Limpiar");
-           btnLimpiar.setBounds(410,210,100,30);
+           btnLimpiar.setBounds(410,260,100,30);
            btnLimpiar.setCursor(new Cursor(Cursor.HAND_CURSOR));
            btnLimpiar.addActionListener((e)-> Limpiar());
            panel1.add(btnLimpiar);  
            
-           listarLaboratorio();
+           listarEstudiante();
            listarAsignatura();
     }
     
     public void Salir() {
         this.dispose();
     }
-    
+    /*
     public void InsertarAsignatura(){
        if (seLlenaronTodosLosCampos()) {
             AsignaturaModelo asigModelo = new AsignaturaModelo();
@@ -288,31 +288,30 @@ public class VentanaInternalFrame extends JFrame implements MouseListener {
             Util.WindowFactory.errorLogin(": Campos en Blanco","CAMPOS_EN_BLANCO");
         } 
     }
-    
-    public void InsertarLaboratorio(){
+    */
+    public void InsertarAlumno(){
        if (seLlenaronTodosLosCampos1()) {
-            LaboratorioModelo labModelo = new LaboratorioModelo();
-
-            labModelo.setNumeroLab(txtlaboratorio.getText());
-            labModelo.setCapacidad(Integer.parseInt(txtcapacidad.getText()));
-
-            int estado = laboratorioControlador.insertarLaboratorioController(labModelo);
+           
+            AlumnoModelo aluModelo = new AlumnoModelo();
+            aluModelo.setCodigoAlumno(txtCodigoEstudiante.getText());
+            aluModelo.setApellidos(txtApellidos.getText());
+            aluModelo.setNombres(txtNombres.getText());
+            
+            int estado = alumnoControlador.insertarAlumnoController(aluModelo);
             
             if (estado == 1) {
                 Util.WindowFactory.confirmationWindowCRUD("Registro Insertado","INSERTADO");
-
-
             } else {
                 Util.WindowFactory.errorWindowCRUD("Registro No Insertado","INSERTADO");
             }
             
-            listarLaboratorio();
+            listarEstudiante();
             Limpiar();
         } else {
             Util.WindowFactory.errorLogin(": Campos en Blanco","CAMPOS_EN_BLANCO");
         }        
     }
-    
+    /*
     public void ModificarAsignatura(){
         if (seLlenaronTodosLosCampos()){
             String codigoAntiguo = (String) tabla2.getValueAt(tabla2.getSelectedRow(), 2);
@@ -337,18 +336,16 @@ public class VentanaInternalFrame extends JFrame implements MouseListener {
            Util.WindowFactory.errorLogin(": Campos en Blanco","CAMPOS_EN_BLANCO"); 
         } 
     }
-    
-    public void ModificarLaboratorio(){
+    */
+    public void ModificarAlumno(){
         if (seLlenaronTodosLosCampos1()){
-            String codigoTabla = (String) tabla1.getValueAt(tabla1.getSelectedRow(), 1);
-            int capacidad = Integer.parseInt(txtcapacidad.getText());
-            String codigoNuevo = txtlaboratorio.getText();
+            
+            String codigoAlumnoAntiguo = (String) tabla1.getValueAt(tabla1.getSelectedRow(), 0);
+            String nombre = txtNombres.getText();
+            String apellido = txtApellidos.getText();
+            String codigoAlumnoNuevo = txtCodigoEstudiante.getText();
 
-            LaboratorioModelo labModelo = new LaboratorioModelo();
-            labModelo.setCapacidad(capacidad);
-            labModelo.setNumeroLab(codigoNuevo);
-
-            int estado = laboratorioControlador.modificarLaboratorioController(codigoNuevo,capacidad,codigoTabla);
+            int estado = alumnoControlador.modificarAlumnoController(codigoAlumnoNuevo,nombre,apellido,codigoAlumnoAntiguo);
 
                 if (estado == 1) {
                     Util.WindowFactory.confirmationWindowCRUD("Registro Modificado","MODIFICADO");
@@ -358,14 +355,14 @@ public class VentanaInternalFrame extends JFrame implements MouseListener {
                     Util.WindowFactory.errorWindowCRUD("Registro No Modificado","MODIFICADO");
                 }
 
-            listarLaboratorio();
+            listarEstudiante();
             Limpiar(); 
         }else{
            Util.WindowFactory.errorLogin(": Campos en Blanco","CAMPOS_EN_BLANCO"); 
         } 
     }
     
-    public void EliminarAsignatura(){
+    public void EliminarEstudianteHorario(){
         if (seLlenaronTodosLosCampos()){
             String codigo = (String) tabla2.getValueAt(tabla2.getSelectedRow(), 2);
             AsignaturaModelo asigModelo = new AsignaturaModelo();
@@ -387,14 +384,14 @@ public class VentanaInternalFrame extends JFrame implements MouseListener {
 
     }
     
-    public void EliminarLaboratorio(){
+    public void EliminarAlumno(){
         if (seLlenaronTodosLosCampos1()){
-            String codigo = (String) tabla1.getValueAt(tabla1.getSelectedRow(), 1);
+            String codigo = (String) tabla1.getValueAt(tabla1.getSelectedRow(), 0);
             
-            LaboratorioModelo labModelo = new LaboratorioModelo();
-            labModelo.setNumeroLab(codigo);
+            AlumnoModelo aluModelo = new AlumnoModelo();
+            aluModelo.setCodigoAlumno(codigo);
 
-            int estado = laboratorioControlador.eliminarLaboratorioController(labModelo);
+            int estado = alumnoControlador.eliminarAlumnoController(aluModelo);
 
                 if (estado == 1) {
                     Util.WindowFactory.confirmationWindowCRUD("Registro Eliminado","ELIMINADO");
@@ -403,7 +400,7 @@ public class VentanaInternalFrame extends JFrame implements MouseListener {
                     Util.WindowFactory.errorWindowCRUD("Registro No Eliminado","ELIMINADO");
                 }
 
-            listarLaboratorio();
+            listarEstudiante();
             Limpiar();            
         }else{
             Util.WindowFactory.errorLogin(": Campos en Blanco","CAMPOS_EN_BLANCO"); 
@@ -411,7 +408,7 @@ public class VentanaInternalFrame extends JFrame implements MouseListener {
 
     }
     
-    public void FiltrarAsignatura(String buscar) {
+    public void FiltrarCodigoHorario(String buscar) {
         listaAsignatura = asignaturaControlador.buscarAsignaturaController(buscar); 
         modelo2.setRowCount(0); // Limpia la tabla
 
@@ -425,36 +422,35 @@ public class VentanaInternalFrame extends JFrame implements MouseListener {
         }
     }
     
-    public void FiltrarLaboratorio(String buscar) {
-        listaLaboratorio = laboratorioControlador.buscarLaboratorioController(buscar); 
+    public void FiltrarEstudiante(String buscar) {
+        listaAlumno = alumnoControlador.buscarResgistroAlumnoController(buscar); 
         modelo1.setRowCount(0); // Limpia la tabla
 
-        for (LaboratorioModelo obj : listaLaboratorio) {
+        for (AlumnoModelo obj : listaAlumno) {
             Object[] fila = {
-                obj.getIdLaboratorio(),
-                obj.getNumeroLab(),
-                obj.getCapacidad(),   
+                obj.getCodigoAlumno(),
+                obj.getApellidos(),
+                obj.getApellidos(),   
             };
             modelo1.addRow(fila); 
         }
     }
     
     private void Limpiar() {
-        txtnombreasignatura.setText("");
-        txtcodigoasignatura.setText("");
-        txtBuscarAsignatura.setText("");
+        txtnCodigoHorario.setText("");
+        txtCodEstudiante.setText("");
         
-        txtlaboratorio.setText("");
-        txtcapacidad.setText("");
-        txtBuscarLaboratorio.setText("");
+        txtNombres.setText("");
+        txtApellidos.setText("");
+        txtCodigoEstudiante.setText("");
     }
     
-    public void InternalFrameAsignaturas() {
-        internalAsignaturas.setVisible(true);
+    public void InternalFrameClase() {
+        internalClase.setVisible(true);
     }
     
-    public void InternalFrameLaboratorios() {
-        internalLaboratorios.setVisible(true);
+    public void InternalFrameEstudiantes() {
+        internalEstudiante.setVisible(true);
     }
     
     public void listarAsignatura() {
@@ -470,22 +466,22 @@ public class VentanaInternalFrame extends JFrame implements MouseListener {
         }
     }
     
-    public void listarLaboratorio() {
+    public void listarEstudiante() {
         modelo1.setRowCount(0);
-        listaLaboratorio = laboratorioControlador.enlistarLaboratorioController();
+        listaAlumno = alumnoControlador.enlistarAlumnoController();
 
-        for (LaboratorioModelo lab : listaLaboratorio) {
+        for (AlumnoModelo alu : listaAlumno) {
             modelo1.addRow(new Object[]{
-                lab.getIdLaboratorio(),
-                lab.getNumeroLab(),
-                lab.getCapacidad()
+                alu.getCodigoAlumno(),
+                alu.getApellidos(),
+                alu.getNombres()
             });
         }
     }
     
     private boolean seLlenaronTodosLosCampos() {
         String[] campos = {
-            txtnombreasignatura.getText().trim(), txtcodigoasignatura.getText().trim()
+            txtCodEstudiante.getText().trim(), txtnCodigoHorario.getText().trim()
         };
 
         for (String campo : campos) {
@@ -498,7 +494,7 @@ public class VentanaInternalFrame extends JFrame implements MouseListener {
     
     private boolean seLlenaronTodosLosCampos1() {
         String[] campos = {
-            txtlaboratorio.getText().trim(), txtcapacidad.getText().trim()
+            txtCodigoEstudiante.getText().trim(), txtApellidos.getText().trim(), txtNombres.getText().trim()
         };
 
         for (String campo : campos) {
@@ -508,30 +504,41 @@ public class VentanaInternalFrame extends JFrame implements MouseListener {
         }
         return true;
     }
-    
-    private void llenarCamposDesdeTablaAsignatura() {
+
+    private void llenarCamposDesdeTablaClase() {
         int filaSeleccionada = tabla2.getSelectedRow();
         if (filaSeleccionada != -1) {
-            txtnombreasignatura.setText(tabla2.getValueAt(filaSeleccionada, 1).toString());
-            txtcodigoasignatura.setText(tabla2.getValueAt(filaSeleccionada, 2).toString());
+            txtCodEstudiante.setText(tabla2.getValueAt(filaSeleccionada, 0).toString());
+            txtnCodigoHorario.setText(tabla2.getValueAt(filaSeleccionada, 1).toString());
         }
     }
     
-    private void llenarCamposDesdeTablaLaboratorio() {
+    private void llenarCamposDesdeTablaAlumno() {
         int filaSeleccionada = tabla1.getSelectedRow();
         if (filaSeleccionada != -1) {
-            txtlaboratorio.setText(tabla1.getValueAt(filaSeleccionada, 1).toString());
-            txtcapacidad.setText(tabla1.getValueAt(filaSeleccionada, 2).toString());
+            txtCodigoEstudiante.setText(tabla1.getValueAt(filaSeleccionada, 0).toString());
+            txtApellidos.setText(tabla1.getValueAt(filaSeleccionada, 1).toString());
+            txtNombres.setText(tabla1.getValueAt(filaSeleccionada, 2).toString());
         }
     }
     
+    public static void main(String[] args) {
+        AsignaturaController asignaturaControlador = new AsignaturaController();
+        AlumnoController alumnoControlador = new AlumnoController();
+        VentanaRight4 ventanaRight4 = new VentanaRight4();
+        
+        VentanaInternalFrameGUI02  internal2 = new VentanaInternalFrameGUI02(asignaturaControlador,alumnoControlador,ventanaRight4);
+        internal2.setVisible(true);
+        
+    }
+
     @Override
     public void mouseClicked(MouseEvent e) {
         if(e.getSource() == tabla1){
-            llenarCamposDesdeTablaLaboratorio();
+            llenarCamposDesdeTablaAlumno();
         }
         if(e.getSource() == tabla2){
-            llenarCamposDesdeTablaAsignatura();
+            llenarCamposDesdeTablaClase();
         }
     }
 
