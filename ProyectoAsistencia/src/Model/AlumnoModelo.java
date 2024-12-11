@@ -41,22 +41,22 @@ public class AlumnoModelo {
             rs.close();
             
         } catch (Exception e){
-            
+            System.err.println("ERROR: " + e);
         }
         
         return estado;
     }
     
-    public int modificarAlumnoModelo(AlumnoModelo alumnoModelo) {
+    public int modificarAlumnoModelo(String nuevo, String nombre, String apellido, String antiguo) {
         int estado = 0;
         
         try {
             cn = Conexion_BD.getConexionBD();
             pt = cn.prepareStatement("UPDATE alumno SET codigo_alumno = ?, nombres = ?, apellidos = ? WHERE codigo_alumno = ?;");
-            pt.setString(1, alumnoModelo.getCodigoAlumno());
-            pt.setString(2, alumnoModelo.getNombres());
-            pt.setString(3, alumnoModelo.getApellidos());
-            pt.setString(4, alumnoModelo.getCodigoAlumno());
+            pt.setString(1, nuevo);
+            pt.setString(2, nombre);
+            pt.setString(3, apellido);
+            pt.setString(4, antiguo);
             
             estado = pt.executeUpdate();
             
@@ -66,7 +66,7 @@ public class AlumnoModelo {
             
             
         } catch (Exception e) {
-            
+            System.err.println("ERROR: " + e);
         }
         
         return estado;
@@ -120,6 +120,46 @@ public class AlumnoModelo {
         }
         
         
+        return listaAlumnos;
+    }
+    
+    public ArrayList<AlumnoModelo> buscarResgistroAlumno(String buscar) {
+        ArrayList<AlumnoModelo> listaAlumnos = new ArrayList<>();
+
+        try {
+            // Consulta segura con parámetros preparados
+            String sql = "SELECT * FROM alumno WHERE "
+                       + "codigo_alumno LIKE ? OR "
+                       + "nombres LIKE ? OR "
+                       + "apellidos LIKE ?;";
+                    
+            cn = Conexion_BD.getConexionBD();
+            pt = cn.prepareStatement(sql);
+
+            for (int i = 1; i <= 3; i++) {
+                pt.setString(i, "%" + buscar + "%");
+            }
+
+            rs = pt.executeQuery();
+
+            while (rs.next()) {
+                AlumnoModelo alumnoModelo = new AlumnoModelo();
+                alumnoModelo.setCodigoAlumno(rs.getString("codigo_alumno"));
+                alumnoModelo.setNombres(rs.getString("nombres"));
+                alumnoModelo.setApellidos(rs.getString("apellidos"));
+
+
+                listaAlumnos.add(alumnoModelo);
+            }
+
+            rs.close();
+            pt.close();
+            cn.close();
+
+        } catch (Exception e) {
+            System.err.println("Error: " + e);
+        }
+
         return listaAlumnos;
     }
     

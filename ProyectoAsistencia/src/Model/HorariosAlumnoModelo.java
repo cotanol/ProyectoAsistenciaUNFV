@@ -80,6 +80,35 @@ public class HorariosAlumnoModelo {
         return estado;
     }
     
+    public ArrayList<HorariosAlumnoModelo> enlistarHorarioAlumno(){
+        
+        ArrayList<HorariosAlumnoModelo> listaHorarios = new ArrayList<>();
+        
+        try{
+            cn = Conexion_BD.getConexionBD();
+            pt = cn.prepareStatement("SELECT * FROM horarios_alumno;");
+            rs = pt.executeQuery();
+            
+            while (rs.next()) {
+                HorariosAlumnoModelo horarioAlumno = new HorariosAlumnoModelo();
+                
+                horarioAlumno.setIdAlumno(rs.getInt("id_alumno"));
+                horarioAlumno.setIdHorario(rs.getInt("id_horario"));
+                
+                listaHorarios.add(horarioAlumno);
+            }
+            
+            cn.close();
+            pt.close();
+            rs.close();
+            
+        }catch(Exception e){
+            System.err.println("ERROR: " + e);
+        }
+        
+        return listaHorarios;
+    }
+    
     // Método para obtener todos los horarios de un alumno
     public ArrayList<HorariosAlumnoModelo> obtenerHorariosPorAlumno(int idAlumno) {
         ArrayList<HorariosAlumnoModelo> listaHorarios = new ArrayList<>();
@@ -134,5 +163,87 @@ public class HorariosAlumnoModelo {
             e.printStackTrace();
         }
         return listaAlumnos;
+    }
+    //=========================================================================
+    public int obtenerIDLaboratorioPorNumero(String numeroLaboratorio) {
+        int idLaboratorio = -1;
+        try {
+            Connection cn = Conexion_BD.getConexionBD();
+            String sql = "SELECT id_laboratorio FROM laboratorio WHERE numero_lab = ?";
+            PreparedStatement pst = cn.prepareStatement(sql);
+            pst.setString(1, numeroLaboratorio);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                idLaboratorio = rs.getInt("id_laboratorio");
+            }
+            rs.close();
+            pst.close();
+            cn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return idLaboratorio;
+    }
+    
+    public String obtenerNombreAsignaturaPorId(int idAsignatura) {
+        String nombreAsignatura = "Desconocida";
+        try {
+            Connection cn = Conexion_BD.getConexionBD();
+            String sql = "SELECT nombre FROM asignatura WHERE id_asignatura = ?";
+            PreparedStatement pst = cn.prepareStatement(sql);
+            pst.setInt(1, idAsignatura);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                nombreAsignatura = rs.getString("nombre");
+            }
+            rs.close();
+            pst.close();
+            cn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return nombreAsignatura;
+    }
+
+    public String obtenerNombreUsuarioPorId(int idUsuario) {
+        String nombreUsuario = "Desconocido";
+        try {
+            Connection cn = Conexion_BD.getConexionBD();
+            String sql = "SELECT nombre_usuario FROM usuario WHERE id_usuario = ?";
+            PreparedStatement pst = cn.prepareStatement(sql);
+            pst.setInt(1, idUsuario);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                nombreUsuario = rs.getString("nombre_usuario");
+            }
+            rs.close();
+            pst.close();
+            cn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return nombreUsuario;
+    }
+
+    
+
+    public String obtenerNumeroLabPorId(int idLaboratorio) {
+        String NumeroLaboratorio = "Desconocida";
+        try {
+            Connection cn = Conexion_BD.getConexionBD();
+            String sql = "SELECT numero_lab FROM laboratorio WHERE id_laboratorio = ?";
+            PreparedStatement pst = cn.prepareStatement(sql);
+            pst.setInt(1, idLaboratorio);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                NumeroLaboratorio = rs.getString("numero_lab");
+            }
+            rs.close();
+            pst.close();
+            cn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return NumeroLaboratorio;
     }
 }

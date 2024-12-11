@@ -21,8 +21,8 @@ public class AlumnoController {
         return objAlumnoModelo.insertarAlumnoModelo(obj);
     }
     
-    public int modificarAlumnoController (AlumnoModelo obj) {
-        return objAlumnoModelo.modificarAlumnoModelo(obj);
+    public int modificarAlumnoController (String nuevo, String nombre, String apellido, String antiguo) {
+        return objAlumnoModelo.modificarAlumnoModelo(nuevo, nombre, apellido, antiguo);
     }
     
     public int eliminarAlumnoController (AlumnoModelo obj) {
@@ -32,7 +32,11 @@ public class AlumnoController {
     public ArrayList<AlumnoModelo> enlistarAlumnoController () {
         return objAlumnoModelo.enlistarAlumnoModelo();
     }
-            
+    
+    public ArrayList<AlumnoModelo> buscarResgistroAlumnoController(String buscar){
+        return objAlumnoModelo.buscarResgistroAlumno(buscar);
+    }
+    
     public int ultimoIdController () {
         return objAlumnoModelo.ultimoId();
     }
