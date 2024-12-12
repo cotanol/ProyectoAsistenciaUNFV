@@ -123,50 +123,33 @@ public class HorarioLaboratorioModelo {
     }
     
     public ArrayList<HorarioLaboratorioModelo> enlistarHorarioLaboratorioModelo() {
-        
         ArrayList<HorarioLaboratorioModelo> listaHorarioLaboratorios = new ArrayList<>();
-        
         try {
             cn = Conexion_BD.getConexionBD();
             pt = cn.prepareStatement("SELECT * FROM horario_laboratorio;");
             rs = pt.executeQuery();
-            
+
             while (rs.next()) {
                 HorarioLaboratorioModelo horarioLaboratorioModelo = new HorarioLaboratorioModelo();
                 horarioLaboratorioModelo.setIdHorario(rs.getInt("id_horario"));
                 horarioLaboratorioModelo.setIdLaboratorio(rs.getInt("id_laboratorio"));
-
-                // Manejar valores NULL
-                if (rs.getObject("id_asignatura") != null) {
-                    horarioLaboratorioModelo.setIdAsignatura(rs.getInt("id_asignatura"));
-                }
-                if (rs.getObject("dia") != null) {
-                    horarioLaboratorioModelo.setDia(rs.getString("dia"));
-                }
-                if (rs.getObject("horario_inicio") != null) {
-                    horarioLaboratorioModelo.setHorarioInicio(rs.getString("horario_inicio"));
-                }
-                if (rs.getObject("horario_fin") != null) {
-                    horarioLaboratorioModelo.setHorarioFin(rs.getString("horario_fin"));
-                }
-                if (rs.getObject("fecha_inicio") != null) {
-                    horarioLaboratorioModelo.setFechaInicio(rs.getString("fecha_inicio"));
-                }
-                if (rs.getObject("id_usuario") != null) {
-                    horarioLaboratorioModelo.setIdUsuario(rs.getInt("id_usuario"));
-                }
-                if (rs.getObject("codigo_horario") != null) {
-                    horarioLaboratorioModelo.setCodigoHorario(rs.getString("codigo_horario"));
-                }
+                horarioLaboratorioModelo.setIdAsignatura(rs.getInt("id_asignatura"));
+                horarioLaboratorioModelo.setDia(rs.getString("dia"));
+                horarioLaboratorioModelo.setHorarioInicio(rs.getString("horario_inicio"));
+                horarioLaboratorioModelo.setHorarioFin(rs.getString("horario_fin"));
+                horarioLaboratorioModelo.setFechaInicio(rs.getString("fecha_inicio"));
+                horarioLaboratorioModelo.setIdUsuario(rs.getInt("id_usuario"));
+                horarioLaboratorioModelo.setCodigoHorario(rs.getString("codigo_horario"));
 
                 listaHorarioLaboratorios.add(horarioLaboratorioModelo);
             }
-            
-            cn.close();
-            pt.close();
+
             rs.close();
-            
-        } catch (Exception e){  
+            pt.close();
+            cn.close();
+
+        } catch (Exception e) {  
+            e.printStackTrace(); // Es recomendable manejar las excepciones adecuadamente
         }
         return listaHorarioLaboratorios;
     }

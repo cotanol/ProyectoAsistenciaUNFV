@@ -16,7 +16,6 @@ import java.time.LocalDate;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
-import View.VentanaInternalFrameGUI02;
 
 
 public class VentanaRight2 extends JPanel implements MouseListener {
@@ -26,15 +25,15 @@ public class VentanaRight2 extends JPanel implements MouseListener {
     private LaboratorioController laboratorioController;
     private AsistenciaController asistenciaController;
     private HorariosAlumnoController horariosAlumnoController;
+    private AlumnoController alumnoControlador;
 
     // Componentes principales
-    private JLabel lblControlAsistencia, lblDatosLab, lblConfigAvanz, lblNroLab, lblHor, lblAsigs;
+    private JLabel lblControlAsistencia, lblDatosLab, lblConfigAvanz;
     public static JComboBox<String> cboNroLab;
-    private JComboBox<String> cboHorario;
-    private JComboBox<String> cboAsignatura;
+
     private JComboBox<String> cboCodigoHorario;
     private JLabel lblCodigoHorario;
-    private JButton btnBuscar, btnActuDatos, btnReporteGen;
+    private JButton btnBuscar;
     private JTable tablaLaboratorios;
     private DefaultTableModel modeloLaboratorio;
 
@@ -54,7 +53,7 @@ public class VentanaRight2 extends JPanel implements MouseListener {
     DefaultTableModel modelo;
     
     ArrayList<AlumnoModelo> listaAlumno;
-    AlumnoController alumnoControlador;
+    
     // Datos
     private ArrayList<HorarioLaboratorioModelo> listaHorarioLaboratorio;
     
@@ -69,11 +68,12 @@ public class VentanaRight2 extends JPanel implements MouseListener {
     private VentanaRight1 ventanaRight1;
     private VentanaRight4 ventanaRight4;
 
-    public VentanaRight2(LaboratorioController laboratorioController, AsistenciaController asistenciaController, HorarioLaboratorioController horarioLaboratorioController, HorariosAlumnoController horariosAlumnoController) {
+    public VentanaRight2(LaboratorioController laboratorioController, AsistenciaController asistenciaController, HorarioLaboratorioController horarioLaboratorioController, HorariosAlumnoController horariosAlumnoController, AlumnoController alumnoControlador) {
         this.laboratorioController = laboratorioController;
         this.asistenciaController = asistenciaController;
         this.horarioLaboratorioController = horarioLaboratorioController;
         this.horariosAlumnoController = horariosAlumnoController;
+        this.alumnoControlador = alumnoControlador;
         
         
         setLayout(new CardLayout());
@@ -137,12 +137,6 @@ public class VentanaRight2 extends JPanel implements MouseListener {
     }
 
     private void inicializarComponentesDatosLaboratorio(JPanel subPanel) {
-        // Etiqueta y ComboBox para Número de Laboratorio
-        //lblNroLab = ComponentFactory.crearEtiqueta("Nro. Laboratorio", 50, 20, 200, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_HOVER_SELECCIONADO1);
-        //subPanel.add(lblNroLab);
-
-        //cboNroLab = ComponentFactory.crearComboBoxString(new String[]{}, 50, 50, 200, 30, Constantes.BORDER_HOVER);
-        //subPanel.add(cboNroLab);
         
         // Etiqueta para el ComboBox de Código de Horario
         lblCodigoHorario = ComponentFactory.crearEtiqueta("Código de Horario:", 50, 20, 200, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_HOVER_SELECCIONADO1);
@@ -151,23 +145,7 @@ public class VentanaRight2 extends JPanel implements MouseListener {
         // Único ComboBox largo para Código de Horario
         cboCodigoHorario = ComponentFactory.crearComboBoxString(new String[]{}, 50, 50, 700, 30, Constantes.BORDER_HOVER);
         subPanel.add(cboCodigoHorario);
-        cargarComboCodigoHorario(); // Método nuevo para llenar el cboCodigoHorario
 
-        // Etiqueta y ComboBox para Horario
-        //lblHor = ComponentFactory.crearEtiqueta("Horario", 300, 20, 200, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_HOVER_SELECCIONADO1);
-        //subPanel.add(lblHor);
-
-        //cboHorario = ComponentFactory.crearComboBoxString(new String[]{}, 300, 50, 200, 30, Constantes.BORDER_HOVER);
-        //subPanel.add(cboHorario);
-        cargarComboHorario();
-
-        // Etiqueta y ComboBox para Asignatura
-        //lblAsigs = ComponentFactory.crearEtiqueta("Asignatura", 550, 20, 200, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_HOVER_SELECCIONADO1);
-        //subPanel.add(lblAsigs);
-
-        //cboAsignatura = ComponentFactory.crearComboBoxString(new String[]{}, 550, 50, 200, 30, Constantes.BORDER_HOVER);
-        //subPanel.add(cboAsignatura);
-        cargarComboAsignatura();
 
         // Botón de Buscar
         btnBuscar = ComponentFactory.crearBotonAccion("BUSCAR", 850, 35, 150, 50);
@@ -186,20 +164,7 @@ public class VentanaRight2 extends JPanel implements MouseListener {
         
     }
     
-    public void cargarComboCodigoHorario() {
-        cboCodigoHorario.removeAllItems();
-        cboCodigoHorario.addItem(null);
-
-        Set<String> codigosAgregados = new HashSet<>();
-        for (HorarioLaboratorioModelo horaLab : horarioLaboratorioController.enlistarHorarioLaboratorioController()) {
-            // Ahora usamos directamente el código de horario del objeto
-            String codigoHorario = horaLab.getCodigoHorario();
-
-            if (codigosAgregados.add(codigoHorario)) {
-                cboCodigoHorario.addItem(codigoHorario);
-            }
-        }
-    }
+    
 
     private void inicializarPanelConfiguracionAvanzada(JPanel panel) {
         // Subtítulo
@@ -255,14 +220,6 @@ public class VentanaRight2 extends JPanel implements MouseListener {
         barra.setBounds(50, 180, 700, 215);
         subPanel.add(barra);
           
-        
-       /* // Botón para Actualizar Datos
-        btnActuDatos = ComponentFactory.crearBotonAccion("**REGISTRO ALUMNOS**", 50, 30, 400, 50);
-        subPanel.add(btnActuDatos);
-
-        // Botón para Generar Reporte
-        btnReporteGen = ComponentFactory.crearBotonAccion("REPORTE GENERAL POR AÑO-MESES", 50, 110, 400, 50);
-        subPanel.add(btnReporteGen);*/
     }
 
     public void ListarAlumno(){
@@ -305,7 +262,10 @@ public class VentanaRight2 extends JPanel implements MouseListener {
         // Eventos de acción
         btnBuscar.addActionListener(e -> manejarBuscarHorario());
         btnCongifuracion.addActionListener(e -> Configuracion());
-        btnagregarEstudiante.addActionListener(e -> AgregarEstudiante());
+        btnagregarEstudiante.addActionListener(e -> {
+            insertarAlumnoAHorario();
+            cargarComboHorario();
+                });
         
        /* btnActuDatos.addActionListener(e -> manejarCambioAPanelActualizarLaboratorio());*/
        
@@ -320,19 +280,17 @@ public class VentanaRight2 extends JPanel implements MouseListener {
     
     public void Configuracion(){
         AsignaturaController asignaturaControlador = new AsignaturaController();
-        AlumnoController alumnoControlador = new AlumnoController();
-        VentanaRight4 vtn4 = new VentanaRight4();
-        VentanaInternalFrameGUI02 vtn = new VentanaInternalFrameGUI02(asignaturaControlador,alumnoControlador,vtn4);
+        
+        VentanaInternalFrameGUI02 vtn = new VentanaInternalFrameGUI02(asignaturaControlador,alumnoControlador,this);
         vtn.setVisible(true);
     }
     
-    public void AgregarEstudiante(){
-        
-    }
+    
     
     private void manejarBuscarHorario() {
         String codigoHorario = (String) cboCodigoHorario.getSelectedItem();
-
+        
+        
         if (codigoHorario == null) {
             JOptionPane.showMessageDialog(null, "Por favor, seleccione un código de horario antes de buscar.");
             return;
@@ -340,6 +298,7 @@ public class VentanaRight2 extends JPanel implements MouseListener {
 
         try {
             // Obtener el idHorario usando el código de horario
+            
             int idHorario = asistenciaController.obtenerIdHorarioPorCodigoController(codigoHorario);
             if (idHorario == -1) {
                 JOptionPane.showMessageDialog(null, "Código de horario no válido.");
@@ -432,7 +391,7 @@ public class VentanaRight2 extends JPanel implements MouseListener {
 
         // Obtener el horario seleccionado
         HorarioLaboratorioModelo horarioSeleccionado = null;
-        for (HorarioLaboratorioModelo horario : listaHorarioLaboratorio) {
+        for (HorarioLaboratorioModelo horario : horarioLaboratorioController.enlistarHorarioLaboratorioController()) {
             if (horario.getIdHorario() == idHorario) {
                 horarioSeleccionado = horario;
                 break;
@@ -635,198 +594,6 @@ public class VentanaRight2 extends JPanel implements MouseListener {
     }
 
 
-    private void manejarCambioAPanelActualizarLaboratorio() {
-        panelActualizarLaboratorio = new JPanel(null);
-        panelActualizarLaboratorio.setBackground(Constantes.COLOR_FONDO_PANEL);
-
-        // Título
-        lblTitulo = ComponentFactory.crearEtiqueta("CONTROL DE ASISTENCIA", 50, 30, 1200, 52, Constantes.FUENTE_TITULO, Constantes.COLOR_TEXTO_NEGRO);
-        lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
-        panelActualizarLaboratorio.add(lblTitulo);
-
-        // Subtítulo
-        lblSubTitulo = ComponentFactory.crearEtiqueta("DATOS DEL LABORATORIO", 150, 110, 1000, 50, Constantes.FUENTE_SUBTITULO, Constantes.COLOR_TEXTO_BLANCO);
-        lblSubTitulo.setBackground(Constantes.COLOR_HOVER_SELECCIONADO1);
-        lblSubTitulo.setOpaque(true);
-        lblSubTitulo.setHorizontalAlignment(SwingConstants.CENTER);
-        panelActualizarLaboratorio.add(lblSubTitulo);
-
-        // Panel de datos
-        JPanel subPanelDatos = new JPanel(null);
-        subPanelDatos.setBounds(100, 180, 1100, 120);
-        subPanelDatos.setBackground(Color.WHITE);
-        subPanelDatos.setBorder(Constantes.BORDER_NEGRO);
-        panelActualizarLaboratorio.add(subPanelDatos);
-
-        // Componentes dentro del panel de datos
-        inicializarComponentesDatosLaboratorioGestion(subPanelDatos);
-
-        // Botones de acción
-        JButton btnAgregarLab = ComponentFactory.crearBotonAccion("Agregar", 300, 350, 180, 60);
-        JButton btnModificarLab = ComponentFactory.crearBotonAccion("Modificar", 500, 350, 180, 60);
-        JButton btnEliminarLab = ComponentFactory.crearBotonAccion("Eliminar", 700, 350, 180, 60);
-
-        btnAgregarLab.addMouseListener(new EstiloHover.HoverAccionBoton(btnAgregarLab));
-        btnModificarLab.addMouseListener(new EstiloHover.HoverAccionBoton(btnModificarLab));
-        btnEliminarLab.addMouseListener(new EstiloHover.HoverAccionBoton(btnEliminarLab));
-
-        btnAgregarLab.addActionListener(e -> manejarAgregarLaboratorio());
-        btnModificarLab.addActionListener(e -> manejarModificarLaboratorio());
-        btnEliminarLab.addActionListener(e -> manejarEliminarLaboratorio());
-
-        panelActualizarLaboratorio.add(btnAgregarLab);
-        panelActualizarLaboratorio.add(btnModificarLab);
-        panelActualizarLaboratorio.add(btnEliminarLab);
-
-        // Botón Regresar
-        JButton btnRegresar = ComponentFactory.crearBotonAccion("REGRESAR", 900, 350, 180, 60);
-        btnRegresar.addMouseListener(new EstiloHover.HoverAccionBoton(btnRegresar));
-        btnRegresar.addActionListener(e -> cardLayout.show(panelDerecho, "ControlAsistencia"));
-        panelActualizarLaboratorio.add(btnRegresar);
-
-        // Imagen
-        JLabel lblPinguino = new JLabel();
-        lblPinguino.setBounds(100, 450, 350, 300);
-        lblPinguino.setHorizontalAlignment(SwingConstants.CENTER);
-        ImageIcon iconoPinguino = new ImageIcon("Images/pinguinoLab.png");
-        Image imageEscalada = iconoPinguino.getImage().getScaledInstance(-1, 300, Image.SCALE_SMOOTH);
-        lblPinguino.setIcon(new ImageIcon(imageEscalada));
-        panelActualizarLaboratorio.add(lblPinguino);
-
-        // Tabla de laboratorios
-        inicializarTablaLaboratorios(panelActualizarLaboratorio);
-
-        // Añadir panel al CardLayout
-        panelDerecho.add(panelActualizarLaboratorio, "ActualizarLaboratorio");
-        cardLayout.show(panelDerecho, "ActualizarLaboratorio");
-    }
-
-    private void inicializarComponentesDatosLaboratorioGestion(JPanel subPanel) {
-        JLabel lblNroLaboratorio = ComponentFactory.crearEtiqueta("Nro. Laboratorio", 200, 30, 250, 35, Constantes.FUENTE_LABEL, Constantes.COLOR_HOVER_SELECCIONADO1);
-        subPanel.add(lblNroLaboratorio);
-
-        txtNumeroLab = ComponentFactory.crearCampoTexto(200, 70, 250, 35, Constantes.BORDER_HOVER);
-        subPanel.add(txtNumeroLab);
-
-        JLabel lblCapacidad = ComponentFactory.crearEtiqueta("Capacidad", 530, 30, 250, 35, Constantes.FUENTE_LABEL, Constantes.COLOR_HOVER_SELECCIONADO1);
-        subPanel.add(lblCapacidad);
-
-        txtCapacidad = ComponentFactory.crearCampoTexto(530, 70, 250, 35, Constantes.BORDER_HOVER);
-        subPanel.add(txtCapacidad);
-    }
-
-    private void inicializarTablaLaboratorios(JPanel panel) {
-        JPanel subPanelTabla = new JPanel(null);
-        subPanelTabla.setBounds(500, 450, 700, 300);
-        subPanelTabla.setBackground(Color.WHITE);
-        subPanelTabla.setBorder(Constantes.BORDER_NEGRO);
-        panel.add(subPanelTabla);
-
-        String[] columnas = {"LAB", "CAPACIDAD"};
-        modeloLaboratorio = new DefaultTableModel(columnas, 0);
-
-        tablaLaboratorios = ComponentFactory.crearTabla(columnas);
-        tablaLaboratorios.setModel(modeloLaboratorio);
-
-        JScrollPane scrollTabla = ComponentFactory.crearScrollTabla(tablaLaboratorios, 10, 10, 680, 280);
-        subPanelTabla.add(scrollTabla);
-
-        tablaLaboratorios.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                llenarCamposDesdeTablaLaboratorio();
-            }
-        });
-
-        listarLaboratorios();
-    }
-
-    // Métodos para el manejo de laboratorios
-
-    private void manejarAgregarLaboratorio() {
-        if (seLlenaronTodosLosCamposLaboratorio()) {
-            LaboratorioModelo laboratorioModelo = new LaboratorioModelo();
-            int capacidad = Integer.parseInt(txtCapacidad.getText());
-            laboratorioModelo.setCapacidad(capacidad);
-            laboratorioModelo.setNumeroLab(txtNumeroLab.getText());
-
-            int estado = laboratorioController.insertarLaboratorioController(laboratorioModelo);
-            mostrarMensaje(estado, "Laboratorio Insertado 🧪!!", "Laboratorio no Insertado 🧪!!");
-            if (estado == 1) {
-                
-                actualizarCombosHorarioAsignatura();
-                ventanaRight3.cargarComboNroLab();
-                ventanaRight4.cargarComboNroLab();
-            }
-            
-            
-            
-            listarLaboratorios();
-            limpiarCamposLaboratorio();
-        } else {
-            Util.WindowFactory.errorLogin(": Campos en Blanco","CAMPOS_EN_BLANCO");
-        }
-    }
-
-    private void manejarModificarLaboratorio() {
-        if (seLlenaronTodosLosCamposLaboratorio()) {
-            LaboratorioModelo laboratorioModelo = new LaboratorioModelo();
-            String numeroLab = txtNumeroLab.getText();
-            int capacidad = Integer.parseInt(txtCapacidad.getText());
-            laboratorioModelo.setNumeroLab(numeroLab);
-            laboratorioModelo.setCapacidad(capacidad);
-
-            int estado = laboratorioController.modificarLaboratorioController(laboratorioModelo);
-            mostrarMensaje(estado, "Laboratorio Modificado 🧪!!", "Laboratorio no Modificado 🧪!!");
-            if (estado == 1) {
-                actualizarCombosHorarioAsignatura();
-                ventanaRight3.cargarComboNroLab();
-                ventanaRight4.cargarComboNroLab();
-            }
-
-            listarLaboratorios();
-            limpiarCamposLaboratorio();
-        } else {
-            Util.WindowFactory.errorLogin(": Campos en Blanco","CAMPOS_EN_BLANCO");
-        }
-    }
-
-    private void manejarEliminarLaboratorio() {
-        int filaSeleccionada = tablaLaboratorios.getSelectedRow();
-        if (filaSeleccionada == -1) {
-            JOptionPane.showMessageDialog(null, "Seleccione un laboratorio para eliminar 🧪!!");
-            return;
-        }
-
-        try {
-            String numeroLabTexto = txtNumeroLab.getText().trim();
-            if (numeroLabTexto.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "El campo 'Número de Laboratorio' está vacío.");
-                return;
-            }
-
-            
-            LaboratorioModelo laboratorioModelo = new LaboratorioModelo();
-            laboratorioModelo.setNumeroLab(numeroLabTexto);
-
-            int estado = laboratorioController.eliminarLaboratorioController(laboratorioModelo);
-            mostrarMensaje(estado, "Laboratorio Eliminado 🧪!!", "Laboratorio no Eliminado 🧪!!");
-            if (estado == 1) {
-                actualizarCombosHorarioAsignatura();
-                ventanaRight3.cargarComboNroLab();
-                ventanaRight4.cargarComboNroLab();
-            }
-
-            listarLaboratorios();
-            limpiarCamposLaboratorio();
-
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "El número de laboratorio es inválido.");
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Ocurrió un error: " + e.getMessage());
-        }
-    }
-
     private void mostrarMensaje(int estado, String mensajeExito, String mensajeError) {
         if (estado == 1) {
             JOptionPane.showMessageDialog(null, mensajeExito);
@@ -851,28 +618,25 @@ public class VentanaRight2 extends JPanel implements MouseListener {
         }
     }
 
-    private void listarLaboratorios() {
-        modeloLaboratorio.setRowCount(0);
-        ArrayList<LaboratorioModelo> listaLaboratorios = laboratorioController.enlistarLaboratorioController();
-
-        for (LaboratorioModelo laboratorio : listaLaboratorios) {
-            modeloLaboratorio.addRow(new Object[]{laboratorio.getNumeroLab(), laboratorio.getCapacidad()});
-        }
-    }
-
-    private void limpiarCamposLaboratorio() {
-        txtNumeroLab.setText("");
-        txtCapacidad.setText("");
-    }
-
-    private boolean seLlenaronTodosLosCamposLaboratorio() {
-        return !txtCapacidad.getText().equals("");
-    }
     
     public void sincronizarVentanas(VentanaRight1 ventanaRight1,VentanaRight3 ventanaRight3, VentanaRight4 ventanaRight4) {
         this.ventanaRight3 = ventanaRight3;
         this.ventanaRight1 = ventanaRight1;
         this.ventanaRight4 = ventanaRight4;
+    }
+    
+    public void insertarAlumnoAHorario() {
+        int estado;
+        try {
+            HorariosAlumnoModelo hrAl = new HorariosAlumnoModelo();
+            hrAl.setIdAlumno(asistenciaController.obtenerIdAlumnoPorCodigoController(txtCodigoEstudiante.getText()));
+            hrAl.setIdHorario(asistenciaController.obtenerIdHorarioPorCodigoController((String) cboCodigoHorario1.getSelectedItem()));
+            estado = horariosAlumnoController.insertarHorarioAlumnoController(hrAl);
+            mostrarMensaje(estado, "SE INSERTO ALUMNO AL HORARIO", "NO SE INSERTO MI ESTIMADO");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Ocurrio un error: ");
+        }
+        
     }
 
     @Override
@@ -902,5 +666,23 @@ public class VentanaRight2 extends JPanel implements MouseListener {
 
     }
     
+    public void cargarComboCodigoHorario() {
+        cboCodigoHorario.removeAllItems();
+        cboCodigoHorario.addItem(null);
+        
+        cboCodigoHorario1.removeAllItems();
+        cboCodigoHorario1.addItem(null);
+
+        Set<String> codigosAgregados = new HashSet<>();
+        for (HorarioLaboratorioModelo horaLab : horarioLaboratorioController.enlistarHorarioLaboratorioController()) {
+            
+            String codigoHorario = horaLab.getCodigoHorario();
+
+            if (codigosAgregados.add(codigoHorario)) {
+                cboCodigoHorario.addItem(codigoHorario);
+                cboCodigoHorario1.addItem(codigoHorario);
+            }
+        }
+    }
     
 }

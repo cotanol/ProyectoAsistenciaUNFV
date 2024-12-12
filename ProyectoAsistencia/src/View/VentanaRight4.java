@@ -39,7 +39,7 @@ public class VentanaRight4 extends JPanel implements ActionListener {
     private JPanel subPanel1;
     private JLabel lbBuscarLaboratorio;
     private JTextField txtBuscarLaboratorio;
-    private JButton btnExportarExcel, btnCrearClase, btnConfiguracion;
+    private JButton btnExportarExcel, btnCrearClase, btnConfiguracion, btnEliminarHorario;
     private JTable tablaHorarios;
     private DefaultTableModel modeloHorarios;
     
@@ -72,9 +72,7 @@ public class VentanaRight4 extends JPanel implements ActionListener {
         listarHorarios();
     }
     
-    public VentanaRight4(){
-        
-    }
+
     
     private void inicializarComponentes() {
         // Título
@@ -97,11 +95,14 @@ public class VentanaRight4 extends JPanel implements ActionListener {
         add(btnExportarExcel);
 
         // Subtítulo para la tabla
-        nombreSubPanel1_2 = ComponentFactory.crearEtiqueta("LISTA DE HORARIOS", 100, 490, 570, 50, Constantes.FUENTE_SUBTITULO, Constantes.COLOR_TEXTO_BLANCO);
+        nombreSubPanel1_2 = ComponentFactory.crearEtiqueta("LISTA DE HORARIOS", 100, 490, 390, 50, Constantes.FUENTE_SUBTITULO, Constantes.COLOR_TEXTO_BLANCO);
         nombreSubPanel1_2.setBackground(Constantes.COLOR_HOVER_SELECCIONADO1);
         nombreSubPanel1_2.setOpaque(true);
         nombreSubPanel1_2.setHorizontalAlignment(SwingConstants.CENTER);
         add(nombreSubPanel1_2);
+        
+        btnEliminarHorario = ComponentFactory.crearBotonAccion("Eliminar", 1030, 490, 150, 50);
+        add(btnEliminarHorario);
 
         // Tabla de horarios
         String[] columnasHorarios = {"Laboratorio","Asignatura","Docente","Día", "Hora Inicio", "Hora Fin", "Codigo Horario"};
@@ -211,9 +212,9 @@ public class VentanaRight4 extends JPanel implements ActionListener {
         txtHoraFinY.setEnabled(false);
         subPanel1.add(txtHoraFinY);
         
-        lbBuscar = ComponentFactory.crearEtiqueta("Buscar: ", 700, 500, 100, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_TEXTO_NEGRO);
+        lbBuscar = ComponentFactory.crearEtiqueta("Buscar: ", 515, 500, 100, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_TEXTO_NEGRO);
         add(lbBuscar);
-        txtBuscar = ComponentFactory.crearCampoTexto(810, 500, 300, 30, Constantes.BORDER_NEGRO);
+        txtBuscar = ComponentFactory.crearCampoTexto(600, 500, 300, 30, Constantes.BORDER_NEGRO);
         add(txtBuscar);
         
         cargarComboNroLab();
@@ -239,6 +240,12 @@ public class VentanaRight4 extends JPanel implements ActionListener {
            horarioControlador.exportarUsuariosAExcel(txtBuscar.getText());
            JOptionPane.showMessageDialog(null, "Datos exportados a Excel correctamente 🐧!!", "Exportación Exitosa", JOptionPane.INFORMATION_MESSAGE);
         });
+        
+        btnEliminarHorario.addActionListener(e -> {
+            eliminarHorairoLaboratorio();
+            ventanaRight2.cargarComboCodigoHorario();
+        });
+        btnEliminarHorario.addMouseListener(new EstiloHover.HoverAccionBoton(btnEliminarHorario));
         
         btnCrearClase.addMouseListener(new EstiloHover.HoverAccionBoton(btnCrearClase));
         btnConfiguracion.addMouseListener(new EstiloHover.HoverAccionBoton(btnConfiguracion));
@@ -318,10 +325,13 @@ public class VentanaRight4 extends JPanel implements ActionListener {
                 
                 ventanaRight2.cargarComboCodigoHorario();
                 
+                
                 // Si hay Día Y (32 clases), insertar también el horario del Día Y
                 if (nummeroClass == 32 && formattedHoraInicioY != null && formattedHoraFinY != null && fechaInicioFormateadaY != null) {
                     insertarHorarioLaboratorio(dia2, formattedHoraInicioY, formattedHoraFinY, generarCodigoHorario(laboratorio, dia2, docente, asignatura, horaInicioY, horaFinY), fechaInicioFormateadaY);
                     ventanaRight2.cargarComboCodigoHorario();
+                    
+                    
                 }
 
                 listarHorarios();
@@ -409,6 +419,21 @@ public class VentanaRight4 extends JPanel implements ActionListener {
         }catch(Exception ex){
             System.err.println("ERROR: " + ex);
             JOptionPane.showMessageDialog(null, "ERROR: " + ex.getMessage());
+        }
+    }
+    
+    public void eliminarHorairoLaboratorio() {
+        int estado = 0;
+        try {
+            HorarioLaboratorioModelo hl = new HorarioLaboratorioModelo();
+            String codigoHorario = (String) tablaHorarios.getValueAt(tablaHorarios.getSelectedRow(), 6);
+            hl.setCodigoHorario(codigoHorario);
+            estado = horarioControlador.eliminarHorarioLaboratorioController(hl);
+            mostrarMensaje(estado, "Todo ok", "Todo mal :(");
+            listarHorarios();
+            
+        } catch (Exception e) {
+            
         }
     }
 

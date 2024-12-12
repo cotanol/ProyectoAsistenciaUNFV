@@ -24,7 +24,7 @@ public class VentanaInternalFrameGUI02 extends JFrame implements MouseListener {
     //Controlador
     private AsignaturaController asignaturaControlador;
     private AlumnoController alumnoControlador;
-    private VentanaRight4 ventanaRight4;
+    private VentanaRight2 ventanaRight2;
     
     JMenuBar barra;
     JMenu item1;
@@ -52,10 +52,10 @@ public class VentanaInternalFrameGUI02 extends JFrame implements MouseListener {
     
     
     
-    public VentanaInternalFrameGUI02(AsignaturaController asignaturaControlador, AlumnoController alumnoControlador, VentanaRight4 ventanaRight4) {
+    public VentanaInternalFrameGUI02(AsignaturaController asignaturaControlador, AlumnoController alumnoControlador, VentanaRight2 ventanaRight2) {
         this.asignaturaControlador = asignaturaControlador;
         this.alumnoControlador = alumnoControlador;
-        this.ventanaRight4 = ventanaRight4;
+        this.ventanaRight2 = ventanaRight2;
         
         setSize(900, 900);
         setTitle("GESTOR DE ESTUDIANTES");
@@ -236,21 +236,26 @@ public class VentanaInternalFrameGUI02 extends JFrame implements MouseListener {
            btnInsertar.setCursor(new Cursor(Cursor.HAND_CURSOR));
            btnInsertar.addActionListener((e)-> {
                InsertarAlumno();
-               ventanaRight4.cargarComboNroLab();
-               ventanaRight4.cargarCombosOtrasVentana();
+               ventanaRight2.ListarAlumno();
                    });
            panel1.add(btnInsertar);
 
            btnModificar = new JButton("Modificar");
            btnModificar.setBounds(190,260,100,30);
            btnModificar.setCursor(new Cursor(Cursor.HAND_CURSOR));
-           btnModificar.addActionListener((e)-> ModificarAlumno());
+           btnModificar.addActionListener((e)-> {
+               ModificarAlumno();
+               ventanaRight2.ListarAlumno();
+                   });
            panel1.add(btnModificar);
 
            btnEliminar = new JButton("Eliminar");
            btnEliminar.setBounds(300,260,100,30);
            btnEliminar.setCursor(new Cursor(Cursor.HAND_CURSOR));
-           btnEliminar.addActionListener((e)-> EliminarAlumno());
+           btnEliminar.addActionListener((e)-> {
+               EliminarAlumno();
+               ventanaRight2.ListarAlumno();
+                   });
            panel1.add(btnEliminar);
 
            btnLimpiar = new JButton("Limpiar");
@@ -520,16 +525,6 @@ public class VentanaInternalFrameGUI02 extends JFrame implements MouseListener {
             txtApellidos.setText(tabla1.getValueAt(filaSeleccionada, 1).toString());
             txtNombres.setText(tabla1.getValueAt(filaSeleccionada, 2).toString());
         }
-    }
-    
-    public static void main(String[] args) {
-        AsignaturaController asignaturaControlador = new AsignaturaController();
-        AlumnoController alumnoControlador = new AlumnoController();
-        VentanaRight4 ventanaRight4 = new VentanaRight4();
-        
-        VentanaInternalFrameGUI02  internal2 = new VentanaInternalFrameGUI02(asignaturaControlador,alumnoControlador,ventanaRight4);
-        internal2.setVisible(true);
-        
     }
 
     @Override
