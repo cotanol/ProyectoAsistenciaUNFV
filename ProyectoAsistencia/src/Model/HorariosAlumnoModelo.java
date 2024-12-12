@@ -10,6 +10,9 @@ public class HorariosAlumnoModelo {
     private int idAlumno;
     private int idHorario;
     
+    private String codigoEstudiante;
+    private String codigoHorario;
+    
     // Conexión a la base de datos
     Connection cn = null;
     PreparedStatement pt = null;
@@ -41,6 +44,24 @@ public class HorariosAlumnoModelo {
     public void setIdHorario(int idHorario) {
         this.idHorario = idHorario;
     }
+
+    public String getCodigoEstudiante() {
+        return codigoEstudiante;
+    }
+
+    public void setCodigoEstudiante(String codigoEstudiante) {
+        this.codigoEstudiante = codigoEstudiante;
+    }
+
+    public String getCodigoHorario() {
+        return codigoHorario;
+    }
+
+    public void setCodigoHorario(String codigoHorario) {
+        this.codigoHorario = codigoHorario;
+    }
+    
+    
     
     // Método para insertar horarios de un alumno
     public int insertarHorarioAlumno(HorariosAlumnoModelo horariosAlumno) {
@@ -79,7 +100,7 @@ public class HorariosAlumnoModelo {
         }
         return estado;
     }
-    
+  
     public ArrayList<HorariosAlumnoModelo> enlistarHorarioAlumno(){
         
         ArrayList<HorariosAlumnoModelo> listaHorarios = new ArrayList<>();
@@ -165,78 +186,18 @@ public class HorariosAlumnoModelo {
         return listaAlumnos;
     }
     //=========================================================================
-    public int obtenerIDLaboratorioPorNumero(String numeroLaboratorio) {
-        int idLaboratorio = -1;
-        try {
-            Connection cn = Conexion_BD.getConexionBD();
-            String sql = "SELECT id_laboratorio FROM laboratorio WHERE numero_lab = ?";
-            PreparedStatement pst = cn.prepareStatement(sql);
-            pst.setString(1, numeroLaboratorio);
-            ResultSet rs = pst.executeQuery();
-            if (rs.next()) {
-                idLaboratorio = rs.getInt("id_laboratorio");
-            }
-            rs.close();
-            pst.close();
-            cn.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return idLaboratorio;
-    }
-    
-    public String obtenerNombreAsignaturaPorId(int idAsignatura) {
-        String nombreAsignatura = "Desconocida";
-        try {
-            Connection cn = Conexion_BD.getConexionBD();
-            String sql = "SELECT nombre FROM asignatura WHERE id_asignatura = ?";
-            PreparedStatement pst = cn.prepareStatement(sql);
-            pst.setInt(1, idAsignatura);
-            ResultSet rs = pst.executeQuery();
-            if (rs.next()) {
-                nombreAsignatura = rs.getString("nombre");
-            }
-            rs.close();
-            pst.close();
-            cn.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return nombreAsignatura;
-    }
-
-    public String obtenerNombreUsuarioPorId(int idUsuario) {
-        String nombreUsuario = "Desconocido";
-        try {
-            Connection cn = Conexion_BD.getConexionBD();
-            String sql = "SELECT nombre_usuario FROM usuario WHERE id_usuario = ?";
-            PreparedStatement pst = cn.prepareStatement(sql);
-            pst.setInt(1, idUsuario);
-            ResultSet rs = pst.executeQuery();
-            if (rs.next()) {
-                nombreUsuario = rs.getString("nombre_usuario");
-            }
-            rs.close();
-            pst.close();
-            cn.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return nombreUsuario;
-    }
 
     
-
-    public String obtenerNumeroLabPorId(int idLaboratorio) {
-        String NumeroLaboratorio = "Desconocida";
+    public String obtenerCodigoHoraioPorId(int idHorario) {
+        String codigoHorario = "Desconocida";
         try {
             Connection cn = Conexion_BD.getConexionBD();
-            String sql = "SELECT numero_lab FROM laboratorio WHERE id_laboratorio = ?";
+            String sql = "SELECT codigo_horario  FROM horario_laboratorio WHERE id_horario  = ?";
             PreparedStatement pst = cn.prepareStatement(sql);
-            pst.setInt(1, idLaboratorio);
+            pst.setInt(1, idHorario);
             ResultSet rs = pst.executeQuery();
             if (rs.next()) {
-                NumeroLaboratorio = rs.getString("numero_lab");
+                codigoHorario = rs.getString("codigo_horario");
             }
             rs.close();
             pst.close();
@@ -244,6 +205,110 @@ public class HorariosAlumnoModelo {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return NumeroLaboratorio;
+        return codigoHorario;
     }
+
+    public String obtenerCodigoEstudiantePorId(int idEstudiante) {
+        String codigoEstudiante = "Desconocido";
+        try {
+            Connection cn = Conexion_BD.getConexionBD();
+            String sql = "SELECT codigo_alumno FROM alumno WHERE id_alumno = ?";
+            PreparedStatement pst = cn.prepareStatement(sql);
+            pst.setInt(1, idEstudiante);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                codigoEstudiante = rs.getString("codigo_alumno");
+            }
+            rs.close();
+            pst.close();
+            cn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return codigoEstudiante;
+    }
+    
+    public int obtenerIdEstudiantePorCodigoEstudiante(String codigoEstudiante) {
+        int idEstudiante = -1;
+        try {
+            Connection cn = Conexion_BD.getConexionBD();
+            String sql = "SELECT id_alumno FROM alumno WHERE codigo_alumno  = ?";
+            PreparedStatement pst = cn.prepareStatement(sql);
+            pst.setString(1, codigoEstudiante);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                idEstudiante = rs.getInt("id_alumno");
+            }
+            rs.close();
+            pst.close();
+            cn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return idEstudiante;
+    }
+    
+    public int obtenerIdHorarioPorCodigoHorario(String codigoHorario) {
+        int idHorario = -1;
+        try {
+            Connection cn = Conexion_BD.getConexionBD();
+            String sql = "SELECT id_horario FROM horario_laboratorio WHERE codigo_horario  = ?";
+            PreparedStatement pst = cn.prepareStatement(sql);
+            pst.setString(1, codigoHorario);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                idHorario = rs.getInt("id_horario");
+            }
+            rs.close();
+            pst.close();
+            cn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return idHorario;
+    }
+    
+    public ArrayList<HorariosAlumnoModelo> buscarRegistroHorarioAlumno(String buscar) {
+        ArrayList<HorariosAlumnoModelo> listaHorarios = new ArrayList<>();
+
+        try {
+            // Consulta con JOIN para mostrar los nombres en lugar de los IDs
+            String sql = "SELECT ha.id_alumno, ha.id_horario, a.codigo_alumno, hl.codigo_horario " +
+                         "FROM horarios_alumno ha " +
+                         "JOIN alumno a ON ha.id_alumno = a.id_alumno " +
+                         "JOIN horario_laboratorio hl ON ha.id_horario = hl.id_horario " +
+                         "WHERE a.codigo_alumno LIKE ? OR hl.codigo_horario LIKE ?;";
+
+            cn = Conexion_BD.getConexionBD();
+            pt = cn.prepareStatement(sql);
+
+            // Asignar el mismo valor de búsqueda a todos los parámetros
+            pt.setString(1, "%" + buscar + "%"); // for codigo_alumno
+            pt.setString(2, "%" + buscar + "%"); // for codigo_horario
+
+            rs = pt.executeQuery();
+
+            // Itera sobre los resultados y agrega los registros a la lista
+            while (rs.next()) {
+                HorariosAlumnoModelo horarioAlumno = new HorariosAlumnoModelo();
+                horarioAlumno.setCodigoEstudiante(rs.getString("codigo_alumno"));
+                horarioAlumno.setCodigoHorario(rs.getString("codigo_horario")); // Nombre del laboratorio
+
+                listaHorarios.add(horarioAlumno);
+            }
+
+            rs.close();
+            pt.close();
+            cn.close();
+
+        } catch (Exception e) {
+            System.err.println("Error: " + e);
+        }
+
+        return listaHorarios;
+    }
+
+    
+
+
 }

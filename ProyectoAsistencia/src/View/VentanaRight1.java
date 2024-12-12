@@ -360,7 +360,7 @@ public class VentanaRight1 extends JPanel {
         cbCargo.setSelectedIndex(0);
         txtEmail.setText("");
     }
-    
+     
     public void sincronizarVentanas(VentanaRight2 ventanaRight2,VentanaRight3 ventanaRight3, VentanaRight4 ventanaRight4) {
         this.ventanaRight2 = ventanaRight2;
         this.ventanaRight3 = ventanaRight3;

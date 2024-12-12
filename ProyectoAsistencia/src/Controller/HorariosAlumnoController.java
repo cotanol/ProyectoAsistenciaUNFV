@@ -38,4 +38,28 @@ public class HorariosAlumnoController {
     public ArrayList<AlumnoModelo> obtenerAlumnosPorHorarioController(int idHorario) {
         return objHorariosAlumnoModelo.obtenerAlumnosPorHorario(idHorario);
     }
+    
+    public ArrayList<HorariosAlumnoModelo> enlistarHorarioAlumno(){
+        return objHorariosAlumnoModelo.enlistarHorarioAlumno();
+    }
+    
+    public String obtenerCodigoHoraioPorId(int idHorario){
+        return objHorariosAlumnoModelo.obtenerCodigoHoraioPorId(idHorario);
+    }
+    
+    public String obtenerCodigoEstudiantePorId(int idEstudiante) {
+        return objHorariosAlumnoModelo.obtenerCodigoEstudiantePorId(idEstudiante);
+    }
+    
+    public int obtenerIdEstudiantePorCodigoEstudiante(String codigoEstudiante){
+        return objHorariosAlumnoModelo.obtenerIdEstudiantePorCodigoEstudiante(codigoEstudiante);
+    }
+    
+    public int obtenerIdHorarioPorCodigoHorario(String codigoHorario){
+        return objHorariosAlumnoModelo.obtenerIdHorarioPorCodigoHorario(codigoHorario);
+    }
+    
+    public ArrayList<HorariosAlumnoModelo> buscarResgistroHorarioAlumno(String buscar){
+        return objHorariosAlumnoModelo.buscarRegistroHorarioAlumno(buscar);
+    }
 }

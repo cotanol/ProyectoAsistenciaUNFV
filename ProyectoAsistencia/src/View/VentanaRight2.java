@@ -281,7 +281,7 @@ public class VentanaRight2 extends JPanel implements MouseListener {
     public void Configuracion(){
         AsignaturaController asignaturaControlador = new AsignaturaController();
         
-        VentanaInternalFrameGUI02 vtn = new VentanaInternalFrameGUI02(asignaturaControlador,alumnoControlador,this);
+        VentanaInternalFrameGUI02 vtn = new VentanaInternalFrameGUI02(horariosAlumnoController,alumnoControlador,this);
         vtn.setVisible(true);
     }
     
