@@ -1,11 +1,14 @@
 package View;
 import Controller.AlumnoController;
 import Controller.AsignaturaController;
+import Controller.HorariosAlumnoController;
 import Controller.LaboratorioController;
 import Model.AlumnoModelo;
 import Model.AsignaturaModelo;
+import Model.HorariosAlumnoModelo;
 import Model.LaboratorioModelo;
 import Util.Conexion_BD;
+import View.VentanaRight2;
 import java.awt.Cursor;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -22,7 +25,7 @@ import View.VentanaRight3;
 public class VentanaInternalFrameGUI02 extends JFrame implements MouseListener {
     
     //Controlador
-    private AsignaturaController asignaturaControlador;
+    private HorariosAlumnoController horariosAlumnoControlador;
     private AlumnoController alumnoControlador;
     private VentanaRight2 ventanaRight2;
     
@@ -37,7 +40,7 @@ public class VentanaInternalFrameGUI02 extends JFrame implements MouseListener {
     JScrollPane scroll1, scroll2;
     
     String[] titulo1 = {"CODIGO","APELLIDOS","NOMBRES"};
-    String[] titulo2 = {"ID_ASIG","NOMBRE DE LA ASIGNATURA","CODIGO"};
+    String[] titulo2 = {"CODIGO ESTUDIANTE","CODIGO HORARIO"};
     
     JButton btnInsertar, btnModificar, btnEliminar, btnLimpiar;
     
@@ -49,11 +52,11 @@ public class VentanaInternalFrameGUI02 extends JFrame implements MouseListener {
     
     ArrayList<AsignaturaModelo> listaAsignatura;
     ArrayList<AlumnoModelo> listaAlumno;
+    ArrayList<HorariosAlumnoModelo> listaHorariosAlumno;
     
     
-    
-    public VentanaInternalFrameGUI02(AsignaturaController asignaturaControlador, AlumnoController alumnoControlador, VentanaRight2 ventanaRight2) {
-        this.asignaturaControlador = asignaturaControlador;
+    public VentanaInternalFrameGUI02(HorariosAlumnoController horariosAlumnoControlador, AlumnoController alumnoControlador, VentanaRight2 ventanaRight2) {
+        this.horariosAlumnoControlador = horariosAlumnoControlador;
         this.alumnoControlador = alumnoControlador;
         this.ventanaRight2 = ventanaRight2;
         
@@ -80,9 +83,9 @@ public class VentanaInternalFrameGUI02 extends JFrame implements MouseListener {
         
         internalFrameInitComponents2();
         internalFrameInitComponents1();
-        listarAsignatura();
         listarEstudiante();
-
+        listarHorariosAlumno();
+        
        txtBuscarHorarioEstudiante.addKeyListener(new java.awt.event.KeyAdapter() {
             @Override
             public void keyReleased(java.awt.event.KeyEvent evt) {
@@ -115,21 +118,21 @@ public class VentanaInternalFrameGUI02 extends JFrame implements MouseListener {
         internalClase.add(panel2);
         
         lbCodigoHorario = new JLabel("Código Horario:");
-        lbCodigoHorario.setBounds(110,50,100,30);
+        lbCodigoHorario.setBounds(80,50,100,30);
         panel2.add(lbCodigoHorario);
         txtnCodigoHorario = new JTextField();
         txtnCodigoHorario.setBounds(190,50,300,30);
         panel2.add(txtnCodigoHorario);
         
         lbCodigoEstudiante1 = new JLabel("Codigo Estudiante:");
-        lbCodigoEstudiante1.setBounds(110,100,100,30);
+        lbCodigoEstudiante1.setBounds(62,100,120,30);
         panel2.add(lbCodigoEstudiante1);
         txtCodEstudiante = new JTextField();
         txtCodEstudiante.setBounds(190,100,300,30);
         panel2.add(txtCodEstudiante);
 
         lbBuscarHorario = new JLabel("Buscar:");
-        lbBuscarHorario.setBounds(110,150,100,30);
+        lbBuscarHorario.setBounds(123,150,100,30);
         panel2.add(lbBuscarHorario);
         txtBuscarHorarioEstudiante = new JTextField();
         txtBuscarHorarioEstudiante.setBounds(190,150,300,30);
@@ -144,31 +147,11 @@ public class VentanaInternalFrameGUI02 extends JFrame implements MouseListener {
         scroll2.setBounds(50,275,500,342);
         panel2.add(scroll2);
         
-       /*
-       btnInsertar = new JButton("Insertar");
-       btnInsertar.setBounds(80,210,100,30);
-       btnInsertar.setCursor(new Cursor(Cursor.HAND_CURSOR));
-       btnInsertar.addActionListener((e)-> {
-           InsertarAsignatura();
-           //ventanaRight4.cargarComboAsignatura();
-               });
-       panel2.add(btnInsertar);
-        
-       btnModificar = new JButton("Modificar");
-       btnModificar.setBounds(190,210,100,30);
-       btnModificar.setCursor(new Cursor(Cursor.HAND_CURSOR));
-       btnModificar.addActionListener((e)-> {
-           ModificarAsignatura();
-           //ventanaRight4.cargarComboAsignatura();
-               });
-       panel2.add(btnModificar);
-       */
        btnEliminar = new JButton("Eliminar");
        btnEliminar.setBounds(300,210,100,30);
        btnEliminar.setCursor(new Cursor(Cursor.HAND_CURSOR));
        btnEliminar.addActionListener((e)-> {
            EliminarEstudianteHorario();
-           //ventanaRight4.cargarComboAsignatura();
                });
        panel2.add(btnEliminar);
        
@@ -177,6 +160,8 @@ public class VentanaInternalFrameGUI02 extends JFrame implements MouseListener {
        btnLimpiar.setCursor(new Cursor(Cursor.HAND_CURSOR));
        btnLimpiar.addActionListener((e)-> Limpiar());
        panel2.add(btnLimpiar);
+       
+       listarHorariosAlumno();
     }
     
     public void internalFrameInitComponents1(){
@@ -265,35 +250,12 @@ public class VentanaInternalFrameGUI02 extends JFrame implements MouseListener {
            panel1.add(btnLimpiar);  
            
            listarEstudiante();
-           listarAsignatura();
     }
     
     public void Salir() {
         this.dispose();
     }
-    /*
-    public void InsertarAsignatura(){
-       if (seLlenaronTodosLosCampos()) {
-            AsignaturaModelo asigModelo = new AsignaturaModelo();
 
-            asigModelo.setNombre(txtnombreasignatura.getText());
-            asigModelo.setCodigo(txtcodigoasignatura.getText());
-
-            int estado = asignaturaControlador.insertarAsignaturaController(asigModelo);
-            
-            if (estado == 1) {
-                Util.WindowFactory.confirmationWindowCRUD("Registro Insertado","INSERTADO");
-            } else {
-                Util.WindowFactory.errorWindowCRUD("Registro No Insertado","INSERTADO");
-            }
-            
-            listarAsignatura();
-            Limpiar();
-        } else {
-            Util.WindowFactory.errorLogin(": Campos en Blanco","CAMPOS_EN_BLANCO");
-        } 
-    }
-    */
     public void InsertarAlumno(){
        if (seLlenaronTodosLosCampos1()) {
            
@@ -316,32 +278,7 @@ public class VentanaInternalFrameGUI02 extends JFrame implements MouseListener {
             Util.WindowFactory.errorLogin(": Campos en Blanco","CAMPOS_EN_BLANCO");
         }        
     }
-    /*
-    public void ModificarAsignatura(){
-        if (seLlenaronTodosLosCampos()){
-            String codigoAntiguo = (String) tabla2.getValueAt(tabla2.getSelectedRow(), 2);
-            String nombre = txtnombreasignatura.getText();
-            String codigoNuevo = txtcodigoasignatura.getText();
 
-            AsignaturaModelo asigModelo = new AsignaturaModelo();
-            asigModelo.setNombre(nombre);
-            asigModelo.setCodigo(codigoNuevo);
-
-            int estado = asignaturaControlador.modificarAsignaturaController(nombre,codigoAntiguo,codigoNuevo);
-
-                if (estado == 1) {
-                    Util.WindowFactory.confirmationWindowCRUD("Registro Modificado","MODIFICADO");
-                } else {
-                    Util.WindowFactory.errorWindowCRUD("Registro No Modificado","MODIFICADO");
-                }
-
-            listarAsignatura();
-            Limpiar(); 
-        }else{
-           Util.WindowFactory.errorLogin(": Campos en Blanco","CAMPOS_EN_BLANCO"); 
-        } 
-    }
-    */
     public void ModificarAlumno(){
         if (seLlenaronTodosLosCampos1()){
             
@@ -365,28 +302,6 @@ public class VentanaInternalFrameGUI02 extends JFrame implements MouseListener {
         }else{
            Util.WindowFactory.errorLogin(": Campos en Blanco","CAMPOS_EN_BLANCO"); 
         } 
-    }
-    
-    public void EliminarEstudianteHorario(){
-        if (seLlenaronTodosLosCampos()){
-            String codigo = (String) tabla2.getValueAt(tabla2.getSelectedRow(), 2);
-            AsignaturaModelo asigModelo = new AsignaturaModelo();
-            asigModelo.setCodigo(codigo);
-
-            int estado = asignaturaControlador.eliminarAsignaturaController(asigModelo);
-
-                if (estado == 1) {
-                    Util.WindowFactory.confirmationWindowCRUD("Registro Eliminado","ELIMINADO");
-                } else {
-                    Util.WindowFactory.errorWindowCRUD("Registro No Eliminado","ELIMINADO");
-                }
-
-            listarAsignatura();
-            Limpiar();            
-        }else{
-            Util.WindowFactory.errorLogin(": Campos en Blanco","CAMPOS_EN_BLANCO"); 
-        }
-
     }
     
     public void EliminarAlumno(){
@@ -413,15 +328,45 @@ public class VentanaInternalFrameGUI02 extends JFrame implements MouseListener {
 
     }
     
-    public void FiltrarCodigoHorario(String buscar) {
-        listaAsignatura = asignaturaControlador.buscarAsignaturaController(buscar); 
-        modelo2.setRowCount(0); // Limpia la tabla
+    public void EliminarEstudianteHorario(){
+        if (seLlenaronTodosLosCampos()){
 
-        for (AsignaturaModelo obj : listaAsignatura) {
+            String codigoEstudiante = (String) tabla2.getValueAt(tabla2.getSelectedRow(), 0);
+            String codigoHorario = (String) tabla2.getValueAt(tabla2.getSelectedRow(), 1);
+            
+            System.out.println("code estudainte: " + codigoEstudiante);
+            System.out.println("code horario: " + codigoHorario);
+            
+            int idHorario = horariosAlumnoControlador.obtenerIdHorarioPorCodigoHorario(codigoHorario);
+            int idEstudiante = horariosAlumnoControlador.obtenerIdEstudiantePorCodigoEstudiante(codigoEstudiante);
+            
+            System.out.println("id horario:" + idHorario);
+            System.out.println("id Estduiante:" + idEstudiante);
+            
+            int estado = horariosAlumnoControlador.eliminarHorarioAlumnoController(idEstudiante, idHorario);
+
+                if (estado == 1) {
+                    Util.WindowFactory.confirmationWindowCRUD("Registro Eliminado","ELIMINADO");
+                } else {
+                    Util.WindowFactory.errorWindowCRUD("Registro No Eliminado","ELIMINADO");
+                }
+            System.out.println("VALOR OBTENIDO:" + estado);
+            listarHorariosAlumno();    
+            Limpiar();            
+        }else{
+            Util.WindowFactory.errorLogin(": Campos en Blanco","CAMPOS_EN_BLANCO"); 
+        }
+
+    }   
+    
+     public void FiltrarCodigoHorario(String buscar) {
+        listaHorariosAlumno = horariosAlumnoControlador.buscarResgistroHorarioAlumno(buscar); 
+        modelo2.setRowCount(0); 
+
+        for (HorariosAlumnoModelo obj : listaHorariosAlumno) {
             Object[] fila = {
-                obj.getIdAsignatura(),
-                obj.getNombre(),
-                obj.getCodigo(),   
+                obj.getCodigoEstudiante(),
+                obj.getCodigoHorario(),  
             };
             modelo2.addRow(fila); 
         }
@@ -458,19 +403,6 @@ public class VentanaInternalFrameGUI02 extends JFrame implements MouseListener {
         internalEstudiante.setVisible(true);
     }
     
-    public void listarAsignatura() {
-        modelo2.setRowCount(0);
-        listaAsignatura = asignaturaControlador.enlistarAsignaturaController();
-
-        for (AsignaturaModelo usuarioTa : listaAsignatura) {
-            modelo2.addRow(new Object[]{
-                usuarioTa.getIdAsignatura(),
-                usuarioTa.getNombre(),
-                usuarioTa.getCodigo()
-            });
-        }
-    }
-    
     public void listarEstudiante() {
         modelo1.setRowCount(0);
         listaAlumno = alumnoControlador.enlistarAlumnoController();
@@ -480,6 +412,18 @@ public class VentanaInternalFrameGUI02 extends JFrame implements MouseListener {
                 alu.getCodigoAlumno(),
                 alu.getApellidos(),
                 alu.getNombres()
+            });
+        }
+    }
+    
+    public void listarHorariosAlumno() {
+        modelo2.setRowCount(0);
+        listaHorariosAlumno = horariosAlumnoControlador.enlistarHorarioAlumno();
+
+        for (HorariosAlumnoModelo horarioAlumno : listaHorariosAlumno) {
+            modelo2.addRow(new Object[]{
+                horariosAlumnoControlador.obtenerCodigoEstudiantePorId(horarioAlumno.getIdHorario()),
+                horariosAlumnoControlador.obtenerCodigoHoraioPorId(horarioAlumno.getIdHorario())
             });
         }
     }
@@ -537,6 +481,7 @@ public class VentanaInternalFrameGUI02 extends JFrame implements MouseListener {
         }
     }
 
+    
     @Override
     public void mousePressed(MouseEvent e) {
 

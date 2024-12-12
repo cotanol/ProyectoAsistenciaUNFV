@@ -9,7 +9,9 @@ import Util.Constantes;
 import Controller.*;
 
 public class VentanaPrincipal extends JFrame {
-
+    
+    private UsuarioController usuarioControlador;
+    
     // Paneles principales
     private JPanel panelLeft, panelDerecho;
 
@@ -29,7 +31,7 @@ public class VentanaPrincipal extends JFrame {
 
     // Botón actualmente seleccionado
     private JButton botonSeleccionado;
-
+    
     public VentanaPrincipal() {
         // Foco transparente de seleccion
         UIManager.put("Button.select", new Color(0, 0, 0, 0));         
@@ -43,7 +45,7 @@ public class VentanaPrincipal extends JFrame {
 
         // Inicializar componentes
         inicializarComponentes();
-
+        
         // Configurar el menú lateral
         configurarMenu();
 
@@ -92,7 +94,7 @@ public class VentanaPrincipal extends JFrame {
         lbNameUser.setOpaque(true);
         lbNameUser.setHorizontalAlignment(SwingConstants.CENTER);
         panelUser.add(lbNameUser);
-
+         
         // Panel derecho con CardLayout
         cardLayout = new CardLayout();
         panelDerecho = new JPanel(cardLayout);
@@ -123,7 +125,7 @@ public class VentanaPrincipal extends JFrame {
         panelDerecho.add(ventanaRight1, "RegistroUsuarios");
         panelDerecho.add(ventanaRight2, "ControlAsistencia");
         panelDerecho.add(ventanaRight3, "ControlEquipos");
-        panelDerecho.add(ventanaRight4, "Horarios");
+        panelDerecho.add(ventanaRight4, "Horarios");    
     }
 
     private void configurarMenu() {

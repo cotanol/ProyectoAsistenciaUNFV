@@ -341,6 +341,29 @@ public ArrayList<UsuarioModelo> buscarResgistroUsuarios(String buscar) {
         return listaDocentes;
     }
     
+    public String obtenerCargo(String usuario) {
+        String cargo = null; 
+        try {
+            cn = Conexion_BD.getConexionBD();
+            pt = cn.prepareStatement("SELECT tipo_usuario FROM usuario WHERE nombre_usuario = ?;");
+            pt.setString(1, usuario);
+            rs = pt.executeQuery();
+
+            if (rs.next()) {
+                cargo = rs.getString("tipo_usuario"); // Obtener el cargo
+            }
+
+            rs.close();
+            pt.close();
+            cn.close();
+
+        } catch (Exception e) {
+            System.err.println("Error al obtener cargo del usuario: " + e.getMessage());
+        }
+        return cargo;
+    }
+
+    
     public int ultimoId() {
         int id = 0;
         try {

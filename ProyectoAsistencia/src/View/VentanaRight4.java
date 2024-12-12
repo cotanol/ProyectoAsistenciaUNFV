@@ -39,7 +39,7 @@ public class VentanaRight4 extends JPanel implements ActionListener {
     private JPanel subPanel1;
     private JLabel lbBuscarLaboratorio;
     private JTextField txtBuscarLaboratorio;
-    private JButton btnExportarExcel, btnCrearClase, btnConfiguracion, btnEliminarHorario;
+    private JButton btnExportarExcel, btnCrearClase, btnConfiguracion, btnEliminarHorario, btnLimpiarHorario;
     private JTable tablaHorarios;
     private DefaultTableModel modeloHorarios;
     
@@ -95,14 +95,17 @@ public class VentanaRight4 extends JPanel implements ActionListener {
         add(btnExportarExcel);
 
         // Subtítulo para la tabla
-        nombreSubPanel1_2 = ComponentFactory.crearEtiqueta("LISTA DE HORARIOS", 100, 490, 390, 50, Constantes.FUENTE_SUBTITULO, Constantes.COLOR_TEXTO_BLANCO);
+        nombreSubPanel1_2 = ComponentFactory.crearEtiqueta("LISTA DE HORARIOS", 100, 490, 360, 50, Constantes.FUENTE_SUBTITULO, Constantes.COLOR_TEXTO_BLANCO);
         nombreSubPanel1_2.setBackground(Constantes.COLOR_HOVER_SELECCIONADO1);
         nombreSubPanel1_2.setOpaque(true);
         nombreSubPanel1_2.setHorizontalAlignment(SwingConstants.CENTER);
         add(nombreSubPanel1_2);
         
-        btnEliminarHorario = ComponentFactory.crearBotonAccion("Eliminar", 1030, 490, 150, 50);
+        btnEliminarHorario = ComponentFactory.crearBotonAccion("Eliminar", 1050, 490, 130, 50);
         add(btnEliminarHorario);
+        
+        btnLimpiarHorario = ComponentFactory.crearBotonAccion("Limpiar", 900, 490, 130, 50);
+        add(btnLimpiarHorario);
 
         // Tabla de horarios
         String[] columnasHorarios = {"Laboratorio","Asignatura","Docente","Día", "Hora Inicio", "Hora Fin", "Codigo Horario"};
@@ -135,7 +138,7 @@ public class VentanaRight4 extends JPanel implements ActionListener {
         lbdocente = ComponentFactory.crearEtiqueta("Docente", 30, 20, 200, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_HOVER_SELECCIONADO1);
         subPanel1.add(lbdocente);
         
-        String[] dias = {"","Lunes", "Martes", "Miercoles", "Juves", "Viernes", "Sabado", "Domingo"};
+        String[] dias = {"","Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo"};
         String[] clases = {"","16", "32"}; // Esto queda fijo
 
         comboDocente = ComponentFactory.crearComboBoxString(new String[]{},30, 50, 300, 30, Constantes.BORDER_HOVER);
@@ -212,9 +215,9 @@ public class VentanaRight4 extends JPanel implements ActionListener {
         txtHoraFinY.setEnabled(false);
         subPanel1.add(txtHoraFinY);
         
-        lbBuscar = ComponentFactory.crearEtiqueta("Buscar: ", 515, 500, 100, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_TEXTO_NEGRO);
+        lbBuscar = ComponentFactory.crearEtiqueta("Buscar: ", 485, 500, 100, 30, Constantes.FUENTE_LABEL, Constantes.COLOR_TEXTO_NEGRO);
         add(lbBuscar);
-        txtBuscar = ComponentFactory.crearCampoTexto(600, 500, 300, 30, Constantes.BORDER_NEGRO);
+        txtBuscar = ComponentFactory.crearCampoTexto(570, 500, 300, 30, Constantes.BORDER_NEGRO);
         add(txtBuscar);
         
         cargarComboNroLab();
@@ -236,6 +239,7 @@ public class VentanaRight4 extends JPanel implements ActionListener {
     
     private void agregarEventos() {
         btnConfiguracion.addActionListener((e)->Configuracion());
+        
         btnExportarExcel.addActionListener((e)->{
            horarioControlador.exportarUsuariosAExcel(txtBuscar.getText());
            JOptionPane.showMessageDialog(null, "Datos exportados a Excel correctamente 🐧!!", "Exportación Exitosa", JOptionPane.INFORMATION_MESSAGE);
@@ -245,19 +249,17 @@ public class VentanaRight4 extends JPanel implements ActionListener {
             eliminarHorairoLaboratorio();
             ventanaRight2.cargarComboCodigoHorario();
         });
-        btnEliminarHorario.addMouseListener(new EstiloHover.HoverAccionBoton(btnEliminarHorario));
         
+        btnLimpiarHorario.addActionListener(e -> {
+            limpiarDatosClase();
+        });
+        
+        btnEliminarHorario.addMouseListener(new EstiloHover.HoverAccionBoton(btnEliminarHorario));
+        btnLimpiarHorario.addMouseListener(new EstiloHover.HoverAccionBoton(btnLimpiarHorario));
         btnCrearClase.addMouseListener(new EstiloHover.HoverAccionBoton(btnCrearClase));
         btnConfiguracion.addMouseListener(new EstiloHover.HoverAccionBoton(btnConfiguracion));
         btnExportarExcel.addMouseListener(new EstiloHover.HoverAccionBotonExcel(btnExportarExcel));
         
-        // Evento de selección en la tabla
-        tablaHorarios.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent evt) {
-                llenarCamposDesdeTabla();
-            }
-        });
         
         btnCrearClase.addActionListener(new ActionListener() {
         @Override
@@ -415,25 +417,36 @@ public class VentanaRight4 extends JPanel implements ActionListener {
             }
             
             mostrarMensaje(estado, "Insertado Correctamente", "Ocurrió un error");
-            
         }catch(Exception ex){
             System.err.println("ERROR: " + ex);
             JOptionPane.showMessageDialog(null, "ERROR: " + ex.getMessage());
         }
+        
     }
     
     public void eliminarHorairoLaboratorio() {
         int estado = 0;
         try {
-            HorarioLaboratorioModelo hl = new HorarioLaboratorioModelo();
-            String codigoHorario = (String) tablaHorarios.getValueAt(tablaHorarios.getSelectedRow(), 6);
-            hl.setCodigoHorario(codigoHorario);
-            estado = horarioControlador.eliminarHorarioLaboratorioController(hl);
-            mostrarMensaje(estado, "Todo ok", "Todo mal :(");
-            listarHorarios();
-            
+            int selectedRow = tablaHorarios.getSelectedRow();
+                if (selectedRow == -1) {
+                    // Si no hay fila seleccionada, mostrar mensaje
+                    Util.WindowFactory.errorWindowCRUD("Registro No Eliminado","ELIMINADO");
+                } else {
+                    HorarioLaboratorioModelo hl = new HorarioLaboratorioModelo();
+                    String codigoHorario = (String) tablaHorarios.getValueAt(tablaHorarios.getSelectedRow(), 6);
+                    hl.setCodigoHorario(codigoHorario);
+                    estado = horarioControlador.eliminarHorarioLaboratorioController(hl);
+
+                    if(estado == 1){
+                        Util.WindowFactory.confirmationWindowCRUD("Registro Eliminado","ELIMINADO");
+                    }else{
+                        Util.WindowFactory.errorWindowCRUD("Registro No Eliminado","ELIMINADO");
+                    }
+                    listarHorarios();
+                }
+   
         } catch (Exception e) {
-            
+            System.err.println("ERROR: " + e);
         }
     }
 
@@ -462,16 +475,23 @@ public class VentanaRight4 extends JPanel implements ActionListener {
         }
     }
 
-    private void limpiarCampos() {
-        txtBuscarLaboratorio.setText("");
+
+    
+    public void limpiarDatosClase() {
+        // Limpiar datechoser
+        calendarInicioX.setDate(null);
+        calendarInicioY.setDate(null);
+        // Limpiar los JTextField
+        txtHoraInicioX.setText("");
+        txtHoraFinX.setText("");
+        txtHoraInicioY.setText("");
+        txtHoraFinY.setText("");
+        // Limpiar combobox
+        /*comboDocente.setSelectedIndex(0); 
+        comboLaboratorio.setSelectedIndex(0);
+        combonroClases.setSelectedIndex(0);  */
     }
 
-    private void llenarCamposDesdeTabla() {
-        int filaSeleccionada = tablaHorarios.getSelectedRow();
-        if (filaSeleccionada != -1) {
-            txtBuscarLaboratorio.setText(tablaHorarios.getValueAt(filaSeleccionada, 1).toString());
-        }
-    }
 
     @Override
     public void actionPerformed(ActionEvent e) {

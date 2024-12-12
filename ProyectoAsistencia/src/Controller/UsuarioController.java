@@ -48,4 +48,8 @@ public class UsuarioController {
     public int ultimoIdController () {
         return objUsuarioModelo.ultimoId();
     }
+    
+    public String validarUsuario(String usuario){
+        return objUsuarioModelo.obtenerCargo(usuario);
+    }
 }
