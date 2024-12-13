@@ -362,7 +362,37 @@ public ArrayList<UsuarioModelo> buscarResgistroUsuarios(String buscar) {
         }
         return cargo;
     }
+    
+    public UsuarioModelo obtenerUsuarioPorNombre(String nombreUsuario) {
+        UsuarioModelo usuarioModelo = new UsuarioModelo(); 
+        try {
+            cn = Conexion_BD.getConexionBD();
+            pt = cn.prepareStatement("SELECT * FROM usuario WHERE nombre_usuario = ?;");
+            pt.setString(1, nombreUsuario);
+            rs = pt.executeQuery();
 
+            if (rs.next()) {
+                usuarioModelo.setIdUsuario(rs.getInt("id_usuario"));
+                usuarioModelo.setNombres(rs.getString("nombres"));
+                usuarioModelo.setApellidos(rs.getString("apellidos"));
+                usuarioModelo.setTipoDocumento(rs.getString("tipo_documento"));
+                usuarioModelo.setNroDocumento(rs.getString("nro_documento"));
+                usuarioModelo.setNumero(rs.getString("numero"));
+                usuarioModelo.setTipoUsuario(rs.getString("tipo_usuario"));
+                usuarioModelo.setNombreUsuario(rs.getString("nombre_usuario"));
+                usuarioModelo.setContrasena(rs.getString("contrasena"));
+                usuarioModelo.setEmail(rs.getString("email"));
+            }
+
+            rs.close();
+            pt.close();
+            cn.close();
+
+        } catch (Exception e) {
+            System.err.println("Error al obtener cargo del usuario: " + e.getMessage());
+        }
+        return usuarioModelo;
+    }
     
     public int ultimoId() {
         int id = 0;
