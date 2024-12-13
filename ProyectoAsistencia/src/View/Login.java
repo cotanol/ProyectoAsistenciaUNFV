@@ -114,17 +114,7 @@ public class Login extends JFrame {
 
     private void Entrar() {
         UsuarioController usuarioControlador = new UsuarioController();
-        ArrayList<String> usu = new ArrayList<>();
-        ArrayList<String> pass = new ArrayList<>();
-
-        for (UsuarioModelo usuario : usuarioControlador.enlistarUsuarioController()) {
-            usu.add(usuario.getNombreUsuario());
-            pass.add(usuario.getContrasena());
-        }
-
-        // Agregar usuario administrador por defecto
-        usu.add("admin");
-        pass.add("123");
+        UsuarioModelo objUsuario = new UsuarioModelo();
 
         String usuario = txtUsuario.getText().trim();
         String clave = new String(txtPassword.getPassword()).trim();
@@ -135,10 +125,12 @@ public class Login extends JFrame {
         }
 
         boolean autenticado = false;
-        for (int i = 0; i < usu.size(); i++) {
-            if (usu.get(i).equals(usuario) && pass.get(i).equals(clave)) {
+        
+        for (UsuarioModelo us : usuarioControlador.enlistarUsuarioController()) {
+            if (us.getNombreUsuario().equals(usuario) && us.getContrasena().equals(clave)) {
                 autenticado = true;
-                break;
+                objUsuario = us;
+                break; 
             }
         }
 
@@ -146,6 +138,7 @@ public class Login extends JFrame {
             this.dispose();
             VentanaPrincipal vtn = new VentanaPrincipal();
             vtn.setUser(usuario);
+            vtn.permisosDocente(objUsuario);
             vtn.setVisible(true);
         } else {
             Util.WindowFactory.errorLogin(" del login: Usuario/Contraseña Incorrectos","USUARIO_CONTRASEÑA_INCORRECTOS");
@@ -155,5 +148,6 @@ public class Login extends JFrame {
     public static void main(String[] args) {
         Login ventanaLogin = new Login();
         ventanaLogin.setVisible(true);
+        
     }
 }
