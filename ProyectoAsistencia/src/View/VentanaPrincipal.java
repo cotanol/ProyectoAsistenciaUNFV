@@ -54,6 +54,7 @@ public class VentanaPrincipal extends JFrame {
         botonSeleccionado = btnRegistroUsuarios; // Establecer el botón predeterminado
         actualizarEstadoBotones();
         cardLayout.show(panelDerecho, "RegistroUsuarios");
+        usuarioControlador = new UsuarioController();
     }
 
     private void inicializarComponentes() {
@@ -188,7 +189,7 @@ public class VentanaPrincipal extends JFrame {
         btnCerrarSesion.addMouseListener(new EstiloHover.HoverAccionBoton(btnCerrarSesion));
         btnCerrarSesion.addActionListener(e -> {
             this.dispose();
-            Util.WindowFactory.windowClose("Cirre de Sesión","CIERRE_SESION");
+            Util.WindowFactory.windowClose("Cirre de Sesión","CIERRE_SESION", lbNameUser.getText());
         });
     }
 
@@ -221,6 +222,11 @@ public class VentanaPrincipal extends JFrame {
             cardLayout.show(panelDerecho, "ControlAsistencia");
         }
     }
+    
+    public UsuarioModelo obtenerElUsuario(String nombreUsuario) {
+        return usuarioControlador.obtenerUsuarioPorNombreController(nombreUsuario);
+    }
+
 
     public static void main(String[] args) {
         VentanaPrincipal ventana = new VentanaPrincipal();

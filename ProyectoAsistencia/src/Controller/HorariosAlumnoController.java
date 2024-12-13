@@ -34,7 +34,7 @@ public class HorariosAlumnoController {
         return objHorariosAlumnoModelo.obtenerHorariosPorAlumno(idAlumno);
     }
     
-    // **Nuevo Método:** Obtener Alumnos por Horario
+    // Obtener Alumnos por Horario
     public ArrayList<AlumnoModelo> obtenerAlumnosPorHorarioController(int idHorario) {
         return objHorariosAlumnoModelo.obtenerAlumnosPorHorario(idHorario);
     }

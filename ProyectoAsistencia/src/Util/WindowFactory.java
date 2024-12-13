@@ -182,7 +182,7 @@ public class WindowFactory {
         return ventana; 
     }
     
-    public static JFrame windowClose(String title, String msj){
+    public static JFrame windowClose(String title, String msj, String nombreUsuario){
         // Crear la ventana
         JFrame ventana = new JFrame();
         ventana.setTitle("Ventana de Cofirmación: " + title);
@@ -215,6 +215,8 @@ public class WindowFactory {
             btnNo.addMouseListener(new EstiloHover.HoverAccionBoton(btnNo));
             btnNo.addActionListener(e -> {
                 ventana.dispose();
+                w.setUser(nombreUsuario);
+                w.permisosDocente(w.obtenerElUsuario(nombreUsuario));
                 w.setVisible(true);  
             });
             ventana.add(btnNo);

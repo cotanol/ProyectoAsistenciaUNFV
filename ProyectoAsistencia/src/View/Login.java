@@ -108,7 +108,7 @@ public class Login extends JFrame {
         // Eventos de acción
         btnEntrar.addActionListener(e -> Entrar());
         btnSalir.addActionListener(e -> {
-            Util.WindowFactory.windowClose("Cirre de Programa","CIERRE_PROGRAMA");
+            Util.WindowFactory.windowClose("Cierre de Programa","CIERRE_PROGRAMA", null);
         });
     }
 

@@ -41,6 +41,10 @@ public class UsuarioController {
         return objUsuarioModelo.buscarResgistroUsuarios(buscar);
     }
     
+    public UsuarioModelo obtenerUsuarioPorNombreController (String nombreUser) {
+        return objUsuarioModelo.obtenerUsuarioPorNombre(nombreUser);
+    }
+    
     public void exportarUsuariosAExcel(String buscar) {
         objUsuarioModelo.cargarBD_Excel(buscar);
     }

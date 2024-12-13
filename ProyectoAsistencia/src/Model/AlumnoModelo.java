@@ -174,7 +174,7 @@ public class AlumnoModelo {
                 id = rs.getInt("max_id"); // Obtén el máximo ID de la columna 'max_id'
             }
 
-            // Cerrar recursos
+            
             rs.close();
             pt.close();
             cn.close();
