@@ -103,7 +103,9 @@ INSERT INTO usuario (nombres, apellidos, tipo_documento, nro_documento, numero, 
 ('Verónica', 'Morales', 'DNI', '78901236', '987654367', 'DOCENTE', 'veronicamorales', 'pass123', 'veronica.morales@email.com'),
 ('Pablo', 'Rodríguez', 'PASAPORTE', 'P890123458', '987654368', 'ADMIN', 'pablorodriguez', 'pass123', 'pablo.rodriguez@email.com'),
 ('Marcos', 'Jiménez', 'DNI', '90123457', '987654369', 'DOCENTE', 'marcosjimenez', 'pass123', 'marcos.jimenez@email.com'),
-('Silvia', 'Pérez', 'PASAPORTE', 'P901234569', '987654370', 'ADMIN', 'silviaperez', 'pass123', 'silvia.perez@email.com');
+('Silvia', 'Pérez', 'PASAPORTE', 'P901234569', '987654370', 'ADMIN', 'silviaperez', 'pass123', 'silvia.perez@email.com'),
+('Ciancas', 'Xiancas', 'DNI', '12398009', '387823982', 'ADMIN', 'admin', '123', 'xiancas@gmail.com'),
+('CiancasDoc', 'XiancasDoc', 'DNI', '89892890', '878979999', 'DOCENTE', 'docente', '123', 'xiancasDoc@gmail.com');
 
 
 INSERT INTO laboratorio (numero_lab, capacidad) VALUES
@@ -375,18 +377,18 @@ INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (4, 5);
 INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (5, 6);
 INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (6, 7);
 INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (7, 8);
-INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (8, 9);
-INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (9, 10);
-INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (10, 11);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (8, 1);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (9, 1);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (10, 1);
 
 -- Continuación con más combinaciones
-INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (11, 12);
-INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (12, 13);
-INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (13, 14);
-INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (14, 15);
-INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (15, 16);
-INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (16, 17);
-INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (17, 18);
-INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (18, 19);
-INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (19, 20);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (11, 1);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (12, 1);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (13, 1);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (14, 1);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (15, 1);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (16, 1);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (17, 1);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (18, 1);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (19, 1);
 INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (20, 1);

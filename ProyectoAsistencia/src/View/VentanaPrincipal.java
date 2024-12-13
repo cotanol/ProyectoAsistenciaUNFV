@@ -7,6 +7,7 @@ import Util.ComponentFactory;
 import Util.EstiloHover;
 import Util.Constantes;
 import Controller.*;
+import Model.UsuarioModelo;
 
 public class VentanaPrincipal extends JFrame {
     
@@ -207,6 +208,18 @@ public class VentanaPrincipal extends JFrame {
 
     public void setUser(String user) {
         lbNameUser.setText(user);
+    }
+    
+    public void permisosDocente(UsuarioModelo usuario) {
+        if (usuario.getTipoUsuario().equals("DOCENTE")) {
+            btnRegistroUsuarios.setEnabled(false);
+            btnControlEquipos.setEnabled(false);
+            btnHorariosLaboratorio.setEnabled(false);
+            
+            botonSeleccionado = btnControlAsistencia;
+            actualizarEstadoBotones();
+            cardLayout.show(panelDerecho, "ControlAsistencia");
+        }
     }
 
     public static void main(String[] args) {
