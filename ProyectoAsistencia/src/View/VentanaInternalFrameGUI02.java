@@ -24,7 +24,7 @@ import View.VentanaRight3;
 
 public class VentanaInternalFrameGUI02 extends JFrame implements MouseListener {
     
-    //Controlador
+    //Controladores
     private HorariosAlumnoController horariosAlumnoControlador;
     private AlumnoController alumnoControlador;
     private VentanaRight2 ventanaRight2;

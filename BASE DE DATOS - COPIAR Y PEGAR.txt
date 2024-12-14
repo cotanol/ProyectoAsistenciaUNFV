@@ -1,3 +1,100 @@
+-- Eliminar la base de datos 'unfv_bd' si existe y crearla nuevamente
+DROP DATABASE IF EXISTS unfv_bd;
+CREATE DATABASE unfv_bd;
+USE unfv_bd;
+
+-- 1. Crear la tabla 'alumno'
+-- Esta tabla almacena la información de los alumnos
+CREATE TABLE alumno (
+  id_alumno INT AUTO_INCREMENT PRIMARY KEY,  -- Identificador único del alumno (clave primaria)
+  codigo_alumno VARCHAR(30) UNIQUE,          -- Código único del alumno asignado por la universidad
+  nombres VARCHAR(100),                      -- Nombres del alumno
+  apellidos VARCHAR(100)                     -- Apellidos del alumno
+);
+
+-- 2. Crear la tabla 'usuario'
+-- Esta tabla almacena los usuarios del sistema (administradores y docentes)
+CREATE TABLE usuario (
+  id_usuario INT AUTO_INCREMENT PRIMARY KEY,  -- Identificador único del usuario (clave primaria)
+  nombres VARCHAR(100),                       -- Nombres del usuario
+  apellidos VARCHAR(100),                     -- Apellidos del usuario
+  tipo_documento ENUM('DNI', 'PASAPORTE'),    -- Tipo de documento de identidad
+  nro_documento VARCHAR(20) UNIQUE,           -- Número de documento (único)
+  numero VARCHAR(20),                         -- Número de contacto telefónico
+  tipo_usuario ENUM('ADMIN', 'DOCENTE'),      -- Tipo de usuario: 'ADMIN' o 'DOCENTE'
+  nombre_usuario VARCHAR(100) UNIQUE,         -- Nombre de usuario para el inicio de sesión (único)
+  contrasena VARCHAR(100),                    -- Contraseña del usuario
+  email VARCHAR(100) UNIQUE                   -- Correo electrónico del usuario (único)
+);
+
+-- 3. Crear la tabla 'laboratorio'
+-- Esta tabla almacena la información de los laboratorios disponibles
+CREATE TABLE laboratorio (
+  id_laboratorio INT AUTO_INCREMENT PRIMARY KEY,  -- Identificador único del laboratorio (clave primaria)
+  numero_lab VARCHAR(20) UNIQUE,                          -- Número asignado al laboratorio (único)
+  capacidad INT                                   -- Capacidad máxima del laboratorio
+);
+
+-- 4. Crear la tabla 'asignatura'
+-- Esta tabla almacena las asignaturas que se imparten en los laboratorios
+CREATE TABLE asignatura (
+  id_asignatura INT AUTO_INCREMENT PRIMARY KEY,  -- Identificador único de la asignatura (clave primaria)
+  nombre VARCHAR(100) UNIQUE,                           -- Nombre de la asignatura
+  codigo VARCHAR(20) UNIQUE                      -- Código único de la asignatura
+);
+
+-- 5. Crear la tabla 'horario_laboratorio'
+-- Esta tabla relaciona laboratorios, asignaturas, horarios y docentes
+CREATE TABLE horario_laboratorio (
+  id_horario INT AUTO_INCREMENT PRIMARY KEY,      -- Identificador único del horario (clave primaria)
+  id_laboratorio INT,                             -- Clave foránea al laboratorio
+  id_asignatura INT,                              -- Clave foránea a la asignatura
+  dia VARCHAR(100),  -- Día de la semana
+  horario_inicio VARCHAR(50),                            -- Hora de inicio de la clase
+  horario_fin VARCHAR(50),                               -- Hora de fin de la clase
+  fecha_inicio VARCHAR(50),
+  id_usuario INT,                                 -- Clave foránea al docente (usuario)
+  codigo_horario VARCHAR(300) UNIQUE,			  -- Almacenar el código del horario (unico)
+  FOREIGN KEY (id_laboratorio) REFERENCES laboratorio(id_laboratorio) ON DELETE CASCADE,   -- Si se elimina el laboratorio, se eliminan los horarios asociados
+  FOREIGN KEY (id_asignatura) REFERENCES asignatura(id_asignatura) ON DELETE SET NULL,     -- Si se elimina la asignatura, se establece NULL en este campo
+  FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario) ON DELETE SET NULL               -- Si se elimina el docente, se establece NULL en este campo
+);
+
+-- 6. Crear la tabla 'equipo'
+-- Esta tabla almacena los equipos disponibles en los laboratorios
+CREATE TABLE equipo (
+  id_equipo INT AUTO_INCREMENT PRIMARY KEY,     -- Identificador único del equipo (clave primaria)
+  cod_patrimonial VARCHAR(50) UNIQUE,           -- Código patrimonial del equipo (único)
+  id_laboratorio INT,                           -- Clave foránea al laboratorio donde está el equipo
+  tipo_equipo ENUM('Teclado', 'CPU', 'Monitor', 'PizarraDigital'),                     -- Tipo o categoría del equipo (ejemplo: Computadora, Proyector)
+  numero_serie VARCHAR(50),                     -- Número de serie del equipo
+  estado VARCHAR(50),     -- Estado actual del equipo
+  FOREIGN KEY (id_laboratorio) REFERENCES laboratorio(id_laboratorio) ON DELETE SET NULL  -- Si se elimina el laboratorio, el campo se establece en NULL
+);
+
+-- 7. Crear la tabla 'asistencia'
+-- Esta tabla registra la asistencia de los alumnos a las clases en los laboratorios
+CREATE TABLE asistencia (
+  id_asistencia INT AUTO_INCREMENT PRIMARY KEY,  -- Identificador único de la asistencia (clave primaria)
+  fecha DATE,                                    -- Fecha de la asistencia
+  estado ENUM('PRESENTE', 'AUSENTE'),            -- Estado de asistencia del alumno
+  id_alumno INT,                                 -- Clave foránea al alumno
+  id_horario INT,                                -- Clave foránea al horario de la clase
+  FOREIGN KEY (id_alumno) REFERENCES alumno(id_alumno) ON DELETE CASCADE,                -- Si se elimina el alumno, se eliminan sus asistencias
+  FOREIGN KEY (id_horario) REFERENCES horario_laboratorio(id_horario) ON DELETE CASCADE, -- Si se elimina el horario, se eliminan las asistencias asociadas
+  CONSTRAINT unique_alumno_horario_fecha UNIQUE (id_alumno, id_horario, fecha)  -- Combinación de alumno, horario y fecha debe ser única
+);
+
+-- 8. Crear la tabla 'horarios_alumno'
+-- Esta tabla almacena la relación de los alumnos con los horarios de laboratorio
+CREATE TABLE horarios_alumno (
+  id_alumno INT,                                 -- Clave foránea al alumno
+  id_horario INT,                                -- Clave foránea al horario
+  PRIMARY KEY (id_alumno, id_horario),           -- Combinación única de alumno y horario
+  FOREIGN KEY (id_alumno) REFERENCES alumno(id_alumno) ON DELETE CASCADE,  -- Si se elimina el alumno, se eliminan las asignaciones de horario
+  FOREIGN KEY (id_horario) REFERENCES horario_laboratorio(id_horario) ON DELETE CASCADE  -- Si se elimina el horario, se eliminan las asignaciones
+);
+
 USE unfv_bd;
 
 INSERT INTO alumno (codigo_alumno, nombres, apellidos) VALUES
@@ -103,16 +200,18 @@ INSERT INTO usuario (nombres, apellidos, tipo_documento, nro_documento, numero, 
 ('Verónica', 'Morales', 'DNI', '78901236', '987654367', 'DOCENTE', 'veronicamorales', 'pass123', 'veronica.morales@email.com'),
 ('Pablo', 'Rodríguez', 'PASAPORTE', 'P890123458', '987654368', 'ADMIN', 'pablorodriguez', 'pass123', 'pablo.rodriguez@email.com'),
 ('Marcos', 'Jiménez', 'DNI', '90123457', '987654369', 'DOCENTE', 'marcosjimenez', 'pass123', 'marcos.jimenez@email.com'),
-('Silvia', 'Pérez', 'PASAPORTE', 'P901234569', '987654370', 'ADMIN', 'silviaperez', 'pass123', 'silvia.perez@email.com');
+('Silvia', 'Pérez', 'PASAPORTE', 'P901234569', '987654370', 'ADMIN', 'silviaperez', 'pass123', 'silvia.perez@email.com'),
+('Ciancas', 'Xiancas', 'DNI', '12398009', '387823982', 'ADMIN', 'admin', '123', 'xiancas@gmail.com'),
+('CiancasDoc', 'XiancasDoc', 'DNI', '89892890', '878979999', 'DOCENTE', 'docente', '123', 'xiancasDoc@gmail.com');
 
 
 INSERT INTO laboratorio (numero_lab, capacidad) VALUES
-('LAB-1', 60),
-('LAB-2', 65),
-('LAB-3', 75),
-('LAB-4', 70),
-('LAB-5', 60),
-('LAB-6', 50);
+('LAB-101', 30),
+('LAB-102', 25),
+('LAB-103', 35),
+('LAB-104', 40),
+('LAB-105', 20),
+('LAB-106', 30);
 
 
 
@@ -195,91 +294,48 @@ INSERT INTO horario_laboratorio (id_laboratorio, id_asignatura, dia, horario_ini
 
 INSERT INTO equipo (cod_patrimonial, id_laboratorio, tipo_equipo, numero_serie, estado) 
 VALUES 
-('180105', 1, 'CPU', 'MXL3493967', 'OPERATIVO'),
-('180112', 1, 'CPU', 'MXL3493939', 'NO OPERATIVO'),
-('180113', 1, 'CPU', 'MXL3493990', 'OPERATIVO'),
-('180114', 1, 'CPU', 'MXL349398M', 'NO OPERATIVO'),
-('180120', 1, 'CPU', 'MXL349398Q', 'OPERATIVO'),
-('180457', 1, 'Teclado', '7CL34000I6', 'NO OPERATIVO'),
-('180458', 1, 'Teclado', '7CL34000AC', 'OPERATIVO'),
-('180459', 1, 'Teclado', '7CL34000HQ', 'NO OPERATIVO'),
-('180460', 1, 'Teclado', '7CL34000DD', 'OPERATIVO'),
-('180466', 1, 'Teclado', '7CL34000G9', 'NO OPERATIVO'),
-('180769', 1, 'Monitor', 'CNC33535Y4', 'OPERATIVO'),
-('180777', 1, 'Monitor', 'CNC33625BT', 'NO OPERATIVO'),
-('180832', 1, 'Monitor', 'CNC3321KFH', 'OPERATIVO'),
-('180833', 1, 'Monitor', 'CNC3321K2W', 'NO OPERATIVO'),
-('180836', 1, 'Monitor', 'CNC3362561', 'OPERATIVO'),
-('177690', 1, 'PizarraDigital', 'CNC3360000', 'OPERATIVO'),
-('180104', 2, 'CPU', 'MXL3493960', 'OPERATIVO'),
-('180107', 2, 'CPU', 'MXL349393V', 'NO OPERATIVO'),
-('180109', 2, 'CPU', 'MXL349396C', 'OPERATIVO'),
-('180110', 2, 'CPU', 'MXL349398H', 'NO OPERATIVO'),
-('180422', 2, 'Teclado', '7CL34000FG', 'NO OPERATIVO'),
-('180424', 2, 'Teclado', '7CL34000BH', 'OPERATIVO'),
-('180428', 2, 'Teclado', '7CL34000DG', 'NO OPERATIVO'),
-('180429', 2, 'Teclado', '7CL34000GI', 'OPERATIVO'),
-('180431', 2, 'Teclado', '7CL340008I', 'NO OPERATIVO'),
-('180774', 2, 'Monitor', 'CNC33625B2', 'NO OPERATIVO'),
-('180807', 2, 'Monitor', 'CNC336256M', 'OPERATIVO'),
-('180820', 2, 'Monitor', 'CNC3321KFM', 'NO OPERATIVO'),
-('180830', 2, 'Monitor', 'CNC33625C5', 'OPERATIVO'),
-('180846', 2, 'Monitor', 'CNC3362527', 'NO OPERATIVO'),
-('180116', 3, 'CPU', 'MXL349393H', 'OPERATIVO'),
-('180118', 3, 'CPU', 'MXL349396P', 'NO OPERATIVO'),
-('180119', 3, 'CPU', 'MXL349398D', 'OPERATIVO'),
-('180124', 3, 'CPU', 'MXL3493977', 'NO OPERATIVO'),
-('180130', 3, 'CPU', 'MXL3493942', 'OPERATIVO'),
-('180132', 3, 'CPU', 'MXL349395P', 'NO OPERATIVO'),
-('180443', 3, 'Teclado', '7CL34000G6', 'NO OPERATIVO'),
-('180448', 3, 'Teclado', '7CL34000LR', 'OPERATIVO'),
-('180450', 3, 'Teclado', '7CL34000EG', 'NO OPERATIVO'),
-('180451', 3, 'Teclado', '7CL34000I9', 'OPERATIVO'),
-('180758', 3, 'Monitor', 'CNC336258S', 'NO OPERATIVO'),
-('180759', 3, 'Monitor', 'CNC3353641', 'OPERATIVO'),
-('180760', 3, 'Monitor', 'CNC335365C', 'NO OPERATIVO'),
-('180761', 3, 'Monitor', 'CNC33535ZL', 'OPERATIVO'),
-('180095', 4, 'CPU', 'MXL3493951', 'NO OPERATIVO'),
-('180098', 4, 'CPU', 'MXL349396N', 'OPERATIVO'),
-('180100', 4, 'CPU', 'MXL349394Y', 'NO OPERATIVO'),
-('180101', 4, 'CPU', 'MXL3493976', 'OPERATIVO'),
-('180423', 4, 'Teclado', '7CL34000HX', 'NO OPERATIVO'),
-('180426', 4, 'Teclado', '7CL34000F0', 'OPERATIVO'),
-('180427', 4, 'Teclado', '7CL34000G5', 'NO OPERATIVO'),
-('180430', 4, 'Teclado', '7CL34000AK', 'OPERATIVO'),
-('180432', 4, 'Teclado', '9CT33509XA', 'NO OPERATIVO'),
-('180770', 4, 'Monitor', 'CNC33535XL', 'OPERATIVO'),
-('180775', 4, 'Monitor', 'CNC336256Y', 'NO OPERATIVO'),
-('180776', 4, 'Monitor', 'CNC33625BM', 'OPERATIVO'),
-('180787', 4, 'Monitor', 'CNC33535XW', 'NO OPERATIVO'),
-('180150', 5, 'CPU', 'MXL349398Y', 'NO OPERATIVO'),
-('180151', 5, 'CPU', 'MXL3493965', 'OPERATIVO'),
-('180152', 5, 'CPU', 'MXL349396H', 'NO OPERATIVO'),
-('180173', 5, 'CPU', 'MXL349393R', 'OPERATIVO'),
-('180182', 5, 'CPU', 'MXL349391Q', 'NO OPERATIVO'),
-('177079', 5, 'PizarraDigital', '9CT3350000', 'OPERATIVO'),
-('180482', 5, 'Teclado', '7CL34000LT', 'NO OPERATIVO'),
-('180483', 5, 'Teclado', '7CL34000EY', 'OPERATIVO'),
-('180484', 5, 'Teclado', '7CL340009U', 'NO OPERATIVO'),
-('180505', 5, 'Teclado', '7CL34000G7', 'OPERATIVO'),
-('180514', 5, 'Teclado', '7CL34000EN', 'NO OPERATIVO'),
-('180516', 5, 'Teclado', '9CT3350ACP', 'OPERATIVO'),
-('180756', 5, 'Monitor', 'CNC335365J', 'OPERATIVO'),
-('180762', 5, 'Monitor', 'CNC33625BY', 'NO OPERATIVO'),
-('180766', 5, 'Monitor', 'CNC335363V', 'OPERATIVO'),
-('180767', 5, 'Monitor', 'CNC335365M', 'NO OPERATIVO'),
-('180148', 6, 'CPU', 'MXL349398Z', 'NO OPERATIVO'),
-('180149', 6, 'CPU', 'MXL3493947', 'OPERATIVO'),
-('180185', 6, 'CPU', 'MXL3463F1S', 'NO OPERATIVO'),
-('180198', 6, 'CPU', 'MXL349396Q', 'OPERATIVO'),
-('180754', 6, 'Monitor', 'CNC335366S', 'OPERATIVO'),
-('180757', 6, 'Monitor', 'CNC335365D', 'NO OPERATIVO'),
-('180763', 6, 'Monitor', 'CNC335365H', 'OPERATIVO'),
-('180771', 6, 'Monitor', 'CNC33535XK', 'NO OPERATIVO'),
-('180480', 6, 'Teclado', '7CL34000GV', 'OPERATIVO'),
-('180481', 6, 'Teclado', '7CL34000GD', 'NO OPERATIVO'),
-('180517', 6, 'Teclado', '9CT3350AHW', 'OPERATIVO'),
-('180530', 6, 'Teclado', '7CL34000ET', 'NO OPERATIVO');
+('EQ001', 1, 'Teclado', 'SN1234567890', 'OPERATIVO'),
+('EQ002', 1, 'CPU', 'SN9876543210', 'OPERATIVO'),
+('EQ003', 2, 'Monitor', 'SN1122334455', 'NO OPERATIVO'),
+('EQ004', 2, 'PizarraDigital', 'SN2233445566', 'OPERATIVO'),
+('EQ005', 3, 'Teclado', 'SN3344556677', 'NO OPERATIVO'),
+('EQ006', 3, 'CPU', 'SN4455667788', 'OPERATIVO'),
+('EQ007', 4, 'Monitor', 'SN5566778899', 'OPERATIVO'),
+('EQ008', 4, 'Teclado', 'SN6677889900', 'NO OPERATIVO'),
+('EQ009', 5, 'PizarraDigital', 'SN7788990011', 'OPERATIVO'),
+('EQ010', 5, 'CPU', 'SN8899001122', 'NO OPERATIVO'),
+('EQ011', 6, 'Monitor', 'SN9900112233', 'OPERATIVO'),
+('EQ012', 6, 'Teclado', 'SN0011223344', 'NO OPERATIVO'),
+('EQ013', 1, 'CPU', 'SN1122334455', 'OPERATIVO'),
+('EQ014', 1, 'PizarraDigital', 'SN2233445566', 'NO OPERATIVO'),
+('EQ015', 2, 'Monitor', 'SN3344556677', 'OPERATIVO'),
+('EQ016', 2, 'Teclado', 'SN4455667788', 'NO OPERATIVO'),
+('EQ017', 3, 'CPU', 'SN5566778899', 'OPERATIVO'),
+('EQ018', 3, 'Monitor', 'SN6677889900', 'NO OPERATIVO'),
+('EQ019', 4, 'PizarraDigital', 'SN7788990011', 'OPERATIVO'),
+('EQ020', 4, 'Teclado', 'SN8899001122', 'NO OPERATIVO'),
+('EQ021', 5, 'CPU', 'SN9900112233', 'OPERATIVO'),
+('EQ022', 5, 'Monitor', 'SN0011223344', 'NO OPERATIVO'),
+('EQ023', 6, 'PizarraDigital', 'SN1122334455', 'OPERATIVO'),
+('EQ024', 6, 'Teclado', 'SN2233445566', 'NO OPERATIVO'),
+('EQ025', 1, 'CPU', 'SN3344556677', 'OPERATIVO'),
+('EQ026', 1, 'Monitor', 'SN4455667788', 'NO OPERATIVO'),
+('EQ027', 2, 'PizarraDigital', 'SN5566778899', 'OPERATIVO'),
+('EQ028', 2, 'Teclado', 'SN6677889900', 'NO OPERATIVO'),
+('EQ029', 3, 'CPU', 'SN7788990011', 'OPERATIVO'),
+('EQ030', 3, 'Monitor', 'SN8899001122', 'NO OPERATIVO'),
+('EQ031', 4, 'PizarraDigital', 'SN9900112233', 'OPERATIVO'),
+('EQ032', 4, 'Teclado', 'SN0011223344', 'NO OPERATIVO'),
+('EQ033', 5, 'CPU', 'SN1122334455', 'OPERATIVO'),
+('EQ034', 5, 'Monitor', 'SN2233445566', 'NO OPERATIVO'),
+('EQ035', 6, 'PizarraDigital', 'SN3344556677', 'OPERATIVO'),
+('EQ036', 6, 'Teclado', 'SN4455667788', 'NO OPERATIVO'),
+('EQ037', 1, 'CPU', 'SN5566778899', 'OPERATIVO'),
+('EQ038', 1, 'Monitor', 'SN6677889900', 'NO OPERATIVO'),
+('EQ039', 2, 'PizarraDigital', 'SN7788990011', 'OPERATIVO'),
+('EQ040', 2, 'Teclado', 'SN8899001122', 'NO OPERATIVO');
+
+
 
 INSERT INTO asistencia (fecha, estado, id_alumno, id_horario) VALUES
 ('2024-11-29', 'PRESENTE', 1, 1),
@@ -418,18 +474,18 @@ INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (4, 5);
 INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (5, 6);
 INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (6, 7);
 INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (7, 8);
-INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (8, 9);
-INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (9, 10);
-INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (10, 11);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (8, 1);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (9, 1);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (10, 1);
 
 -- Continuación con más combinaciones
-INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (11, 12);
-INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (12, 13);
-INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (13, 14);
-INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (14, 15);
-INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (15, 16);
-INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (16, 17);
-INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (17, 18);
-INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (18, 19);
-INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (19, 20);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (11, 1);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (12, 1);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (13, 1);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (14, 1);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (15, 1);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (16, 1);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (17, 1);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (18, 1);
+INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (19, 1);
 INSERT INTO horarios_alumno (id_alumno, id_horario) VALUES (20, 1);

@@ -127,7 +127,7 @@ public class AlumnoModelo {
         ArrayList<AlumnoModelo> listaAlumnos = new ArrayList<>();
 
         try {
-            // Consulta segura con parámetros preparados
+            
             String sql = "SELECT * FROM alumno WHERE "
                        + "codigo_alumno LIKE ? OR "
                        + "nombres LIKE ? OR "
@@ -164,14 +164,14 @@ public class AlumnoModelo {
     }
     
     public int ultimoId() {
-        int id = 0; // Inicializa el ID con un valor predeterminado
+        int id = 0; 
         try {
             cn = Conexion_BD.getConexionBD();
             pt = cn.prepareStatement("SELECT MAX(codigo_alumno) AS max_id FROM alumno;");
             rs = pt.executeQuery();
 
             if (rs.next()) {
-                id = rs.getInt("max_id"); // Obtén el máximo ID de la columna 'max_id'
+                id = rs.getInt("max_id"); 
             }
 
             

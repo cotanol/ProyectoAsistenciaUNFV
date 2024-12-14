@@ -22,8 +22,8 @@ public class Login extends JFrame {
     public Login() {
         // Foco transparente de seleccion
         UIManager.put("Button.select", new Color(0, 0, 0, 0)); 
-        // Configuración de la ventana principal
         
+        // Configuración de la ventana principal
         setSize(1000, 600);
         setTitle("Login del Gestionador");
         setResizable(false);
