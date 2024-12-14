@@ -20,8 +20,8 @@ public class EquipoController {
         return objEquipoModelo.insertarEquipoModelo(obj);
     }
     
-    public int modificarEquipoController (EquipoModelo obj) {
-        return objEquipoModelo.modificarEquipoModelo(obj);
+    public int modificarEquipoController (EquipoModelo obj, String codigo) {
+        return objEquipoModelo.modificarEquipoModelo(obj,codigo);
     }
     
     public int eliminarEquipoController (EquipoModelo obj) {

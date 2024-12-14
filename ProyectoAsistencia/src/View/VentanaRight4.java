@@ -27,7 +27,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class VentanaRight4 extends JPanel implements ActionListener {
-    // Controlador
+    // Controladores
     private HorarioLaboratorioController horarioControlador;
     private UsuarioController usuarioControlador;
     private LaboratorioController laboratorioControlador;
@@ -486,10 +486,6 @@ public class VentanaRight4 extends JPanel implements ActionListener {
         txtHoraFinX.setText("");
         txtHoraInicioY.setText("");
         txtHoraFinY.setText("");
-        // Limpiar combobox
-        /*comboDocente.setSelectedIndex(0); 
-        comboLaboratorio.setSelectedIndex(0);
-        combonroClases.setSelectedIndex(0);  */
     }
 
 

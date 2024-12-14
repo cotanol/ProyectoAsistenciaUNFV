@@ -149,7 +149,7 @@ public class HorarioLaboratorioModelo {
             cn.close();
 
         } catch (Exception e) {  
-            e.printStackTrace(); // Es recomendable manejar las excepciones adecuadamente
+            e.printStackTrace(); 
         }
         return listaHorarioLaboratorios;
     }
@@ -176,7 +176,6 @@ public class HorarioLaboratorioModelo {
         "Código de Horario"
     };
 
-    // Crear fila de cabeceras
     Row filaCabeceras = hoja.createRow(0);
     for (int i = 0; i < cabeceras.length; i++) {
         Cell celda = filaCabeceras.createCell(i);
@@ -188,14 +187,13 @@ public class HorarioLaboratorioModelo {
     try {
         Connection conexion = cn.getConexionBD();
 
-        // Consulta SQL ajustada para incluir nombres en lugar de los IDs
         String sql = "SELECT " +
             "hl.id_horario, " +
-            "l.id_laboratorio, " +  // Selecciona id_laboratorio
+            "l.id_laboratorio, " +  
             "l.numero_lab AS laboratorio_nombre, " + 
-            "a.id_asignatura, " +   // Selecciona id_asignatura
+            "a.id_asignatura, " +   
             "a.nombre AS asignatura_nombre, " + 
-            "u.id_usuario, " +      // Selecciona id_usuario
+            "u.id_usuario, " +      
             "u.nombre_usuario AS usuario_nombre, " + 
             "hl.dia, " +
             "hl.horario_inicio, " +
@@ -216,33 +214,26 @@ public class HorarioLaboratorioModelo {
 
         ps = conexion.prepareStatement(sql);
 
-        // Asignar el valor de búsqueda a todos los parámetros de la consulta
         for (int i = 1; i <= 7; i++) {
             ps.setString(i, "%" + buscar + "%");
         }
 
         rs = ps.executeQuery();
 
-        // Crear instancia del modelo para obtener los nombres de asignatura y usuario
         HorarioLaboratorioModelo objHorarioLabModelo = new HorarioLaboratorioModelo();
 
-        // Llenar las filas con los datos obtenidos
         while (rs.next()) {
             Row filaDatos = hoja.createRow(numFila);
 
-            // Obtener el número de laboratorio por id_laboratorio
-            int idLaboratorio = rs.getInt("id_laboratorio"); // Aquí debes usar el nombre original de la columna
+            int idLaboratorio = rs.getInt("id_laboratorio"); 
             String numeroLab = objHorarioLabModelo.obtenerNumeroLabPorId(idLaboratorio);
 
-            // Obtener el nombre de la asignatura por id_asignatura
             int idAsignatura = rs.getInt("id_asignatura");
             String nombreAsignatura = objHorarioLabModelo.obtenerNombreAsignaturaPorId(idAsignatura);
 
-            // Obtener el nombre del docente por id_usuario
             int idUsuario = rs.getInt("id_usuario");
             String nombreUsuario = objHorarioLabModelo.obtenerNombreUsuarioPorId(idUsuario);
 
-            // Crear el arreglo con los datos de la fila
             Object[] fila = {
                 numeroLab,
                 nombreAsignatura,
@@ -253,7 +244,6 @@ public class HorarioLaboratorioModelo {
                 rs.getString("codigo_horario")
             };
 
-            // Llenar las celdas de la fila con los datos obtenidos
             for (int i = 0; i < fila.length; i++) {
                 Cell celda = filaDatos.createCell(i);
                 celda.setCellValue(fila[i].toString());
@@ -266,18 +256,15 @@ public class HorarioLaboratorioModelo {
         ps.close();
         conexion.close();
 
-        // Ajustar el ancho de las columnas
         for (int i = 0; i < cabeceras.length; i++) {
             hoja.setColumnWidth(i, 30 * 256);
         }
 
-        // Guardar el archivo Excel
         String filePath = "ReporteHorarioLaboratorio.xlsx";
         FileOutputStream archivo = new FileOutputStream(filePath);
         libro.write(archivo);
         archivo.close();
 
-        // Abrir el archivo Excel automáticamente
         File archivoExcel = new File(filePath);
         if (Desktop.isDesktopSupported()) {
             Desktop.getDesktop().open(archivoExcel);
@@ -289,16 +276,15 @@ public class HorarioLaboratorioModelo {
         System.err.println("Error: " + ex);
     }
 }
-    //=================================================================================    
     
-            //============================================================================
+       //============================================================================
        //                     METODO DE USUARIO DAO PARA BUSCAR
        //============================================================================
 public ArrayList<HorarioLaboratorioModelo> buscarResgistroHorarioLaboratorio(String buscar) {
     ArrayList<HorarioLaboratorioModelo> listaHorarioLaboratorio = new ArrayList<>();
 
     try {
-        // Consulta con JOIN para mostrar los nombres en lugar de los IDs
+
         String sql = "SELECT " +
                      "hl.id_horario, " +
                      "l.numero_lab AS laboratorio_nombre, " +
@@ -324,14 +310,13 @@ public ArrayList<HorarioLaboratorioModelo> buscarResgistroHorarioLaboratorio(Str
         cn = Conexion_BD.getConexionBD();
         pt = cn.prepareStatement(sql);
 
-        // Asignar el mismo valor de búsqueda a todos los parámetros
+
         for (int i = 1; i <= 7; i++) {
             pt.setString(i, "%" + buscar + "%");
         }
 
         rs = pt.executeQuery();
 
-        // Itera sobre los resultados y agrega los registros a la lista
         while (rs.next()) {
             HorarioLaboratorioModelo horarioLabModelo = new HorarioLaboratorioModelo();
             horarioLabModelo.setIdHorario(rs.getInt("id_horario"));

@@ -20,7 +20,7 @@ import java.util.Set;
 public class VentanaRight3 extends JPanel {
     
     
-    // Controlador
+    // Controladores
     private EquipoController equipoController;
     private HorarioLaboratorioController horarioLaboratorioController;
     private LaboratorioController laboratorioController;
@@ -293,13 +293,7 @@ public class VentanaRight3 extends JPanel {
             }
         });
     }
-    //====================================================================================================================
-    //====================================================================================================================
-    //====================================================================================================================
-    //====================================================================================================================
-    //====================================================================================================================
-    //====================================================================================================================
-    
+  
     private void configurarPanelRightExportExcel() {
         // Nuevo panel de exportación
         panelRightExportExcel = new JPanel(null);
@@ -349,8 +343,6 @@ public class VentanaRight3 extends JPanel {
                   
         });
 
-
-        // Evento para el botón de exportar real
         btnRealExportarExcel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -359,7 +351,6 @@ public class VentanaRight3 extends JPanel {
             }
         });
 
-        // Listar los equipos para exportar (puedes reutilizar el mismo método o crear uno nuevo)
         listarEquiposParaExportar();
     }
     
@@ -373,8 +364,6 @@ public class VentanaRight3 extends JPanel {
             }
         }
     }
-
-    // Métodos para el manejo de eventos y lógica
 
     private void manejarConfigurarEquipo() {
         // Cambia al panel de configuraciones de equipos
@@ -427,16 +416,20 @@ public class VentanaRight3 extends JPanel {
 
             if (seLlenaronTodosLosCamposEquipo()) {
                 equipo = new EquipoModelo();
-
+                
+                String codigo = (String)tablaEquiposRegistrados.getValueAt(tablaEquiposRegistrados.getSelectedRow(),2);
+                
                 // Asignar valores al objeto equipo
                 equipo.setTipoEquipo(cbTipoEquipo.getSelectedItem().toString());
                 equipo.setIdLaboratorio( horarioLaboratorioController.obtenerIDLaboratorioPorNumeroController((String) cbLaboratorio.getSelectedItem()));
                 equipo.setEstado(cbEstado.getSelectedItem().toString());
                 equipo.setNumeroSerie(txtNumeroSerie.getText().trim());
                 equipo.setCodPatrimonial(txtCodigoPatrimonial.getText().trim());
-
+                equipo.setCodPatrimonial(codigo);
+                
+                
                 // Modificar el equipo
-                int estado = equipoController.modificarEquipoController(equipo);
+                int estado = equipoController.modificarEquipoController(equipo,codigo);
 
                 if (estado == 1) {
                     Util.WindowFactory.confirmationWindowCRUD("Registro Modificado","MODIFICADO");
@@ -494,8 +487,8 @@ public class VentanaRight3 extends JPanel {
     }
     
     public void Filtrar(String buscar) {
-        listaEquipos = equipoController.buscarResgistroEquipos(buscar); // Llama al método Buscar del DAO
-        modeloEquiposRegistrados.setRowCount(0); // Limpia la tabla
+        listaEquipos = equipoController.buscarResgistroEquipos(buscar); 
+        modeloEquiposRegistrados.setRowCount(0); 
 
         for (EquipoModelo obj : listaEquipos) {
             Object[] fila = {
@@ -506,7 +499,7 @@ public class VentanaRight3 extends JPanel {
                 obj.getEstado()
                 
             };
-            modeloEquiposRegistrados.addRow(fila); // Agrega cada registro filtrado a la tabla
+            modeloEquiposRegistrados.addRow(fila); 
         }
     }
     

@@ -134,14 +134,14 @@ public class AsistenciaModelo {
         return listaAsistencias;
     }
     public int ultimoId() {
-        int id = 0; // Inicializa el ID con un valor predeterminado
+        int id = 0; 
         try {
             cn = Conexion_BD.getConexionBD();
             pt = cn.prepareStatement("SELECT MAX(id_asistencia) AS max_id FROM asistencia;");
             rs = pt.executeQuery();
 
             if (rs.next()) {
-                id = rs.getInt("max_id"); // Obtén el máximo ID de la columna 'max_id'
+                id = rs.getInt("max_id"); 
             }
 
             // Cerrar recursos

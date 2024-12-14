@@ -113,7 +113,7 @@ public class AsignaturaModelo {
         ArrayList<AsignaturaModelo> listaAsignaturas = new ArrayList<>();
 
         try {
-            // Consulta segura con parámetros preparados
+            
             String sql = "SELECT * FROM asignatura WHERE "
                        + "id_asignatura LIKE ? OR "
                        + "nombre LIKE ? OR "
@@ -127,7 +127,7 @@ public class AsignaturaModelo {
 
             rs = pt.executeQuery();
 
-            // Itera sobre los resultados y agrega los usuarios a la lista
+            
             while (rs.next()) {
                 AsignaturaModelo asignaturaModelo= new AsignaturaModelo();
                 asignaturaModelo.setIdAsignatura(rs.getInt("id_asignatura"));

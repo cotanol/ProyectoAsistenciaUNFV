@@ -184,7 +184,7 @@ public class VentanaRight2 extends JPanel implements MouseListener {
         // Componentes dentro del panel de configuración
         inicializarComponentesConfiguracionAvanzada(subPanelConfigAvanz);
     }
- //****************************************************************************************************************
+
     private void inicializarComponentesConfiguracionAvanzada(JPanel subPanel) {
         
         // Etiqueta y caja de texto "Buscar"
@@ -251,24 +251,18 @@ public class VentanaRight2 extends JPanel implements MouseListener {
     }
     
     private void agregarEventos() {
-        // Eventos de hover
+        // Eventos de acción y hover
         btnBuscar.addMouseListener(new EstiloHover.HoverAccionBoton(btnBuscar));
         btnCongifuracion.addMouseListener(new EstiloHover.HoverAccionBoton(btnCongifuracion));
         btnagregarEstudiante.addMouseListener(new EstiloHover.HoverAccionBoton(btnagregarEstudiante));
-        
-       /* btnActuDatos.addMouseListener(new EstiloHover.HoverAccionBoton(btnActuDatos));
-        btnReporteGen.addMouseListener(new EstiloHover.HoverAccionBoton(btnReporteGen));*/
 
-        // Eventos de acción
         btnBuscar.addActionListener(e -> manejarBuscarHorario());
         btnCongifuracion.addActionListener(e -> Configuracion());
         btnagregarEstudiante.addActionListener(e -> {
             insertarAlumnoAHorario();
             cargarComboHorario();
                 });
-        
-       /* btnActuDatos.addActionListener(e -> manejarCambioAPanelActualizarLaboratorio());*/
-       
+     
        // Evento para buscar desde la caja de texto para actulizar la tabla alumnos
        txtBuscar.addKeyListener(new java.awt.event.KeyAdapter() {
             @Override
@@ -298,7 +292,6 @@ public class VentanaRight2 extends JPanel implements MouseListener {
 
         try {
             // Obtener el idHorario usando el código de horario
-            
             int idHorario = asistenciaController.obtenerIdHorarioPorCodigoController(codigoHorario);
             if (idHorario == -1) {
                 JOptionPane.showMessageDialog(null, "Código de horario no válido.");

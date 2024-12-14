@@ -7,10 +7,6 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.*;
 
-/**
- *
- * @author brigi
- */
 public class Constantes {
      // Colores
     public static final Color COLOR_BASE_BOTONES = new Color(255, 152, 0);

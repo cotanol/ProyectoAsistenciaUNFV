@@ -43,27 +43,25 @@ public class EquipoModelo {
             
             pt = cn.prepareStatement("INSERT INTO equipo (cod_patrimonial, id_laboratorio, tipo_equipo, numero_serie, estado) VALUES (?,?,?,?,?);");
 
-            // Establecer los valores correspondientes
             pt.setString(1, equipoModelo.getCodPatrimonial()); // Código Patrimonial
             pt.setInt(2, equipoModelo.getIdLaboratorio());         // Número de laboratorio
             pt.setString(3, equipoModelo.getTipoEquipo());     // Tipo de equipo
             pt.setString(4, equipoModelo.getNumeroSerie());    // Número de serie
             pt.setString(5, equipoModelo.getEstado());         // Estado
 
-            estado = pt.executeUpdate(); // Ejecutar la consulta
+            estado = pt.executeUpdate(); 
 
-            // Cerrar recursos
             cn.close();
             pt.close();
 
         } catch (Exception e) {
-            e.printStackTrace(); // Imprimir el error en caso de problemas
+            e.printStackTrace(); 
         }
 
         return estado;
     }
     
-    public int modificarEquipoModelo(EquipoModelo equipoModelo) {
+    public int modificarEquipoModelo(EquipoModelo equipoModelo, String codigo) {
         int estado = 0;
         
         try {
@@ -74,7 +72,7 @@ public class EquipoModelo {
             pt.setString(3, equipoModelo.getTipoEquipo());
             pt.setString(4, equipoModelo.getNumeroSerie());
             pt.setString(5, equipoModelo.getEstado());
-            pt.setString(6, equipoModelo.getCodPatrimonial());
+            pt.setString(6, codigo);
             
             estado = pt.executeUpdate();
             
@@ -137,7 +135,6 @@ public static void cargarBD_Excel_Equipo(String buscar) {
     try {
         Connection conexion = cn.getConexionBD();
 
-        // Construcción dinámica de la consulta SQL
         String sql = "SELECT l.id_laboratorio, e.tipo_equipo, e.cod_patrimonial, e.numero_serie, e.estado " +
                      "FROM equipo e " +
                      "INNER JOIN laboratorio l ON e.id_laboratorio = l.id_laboratorio " +
@@ -151,20 +148,16 @@ public static void cargarBD_Excel_Equipo(String buscar) {
 
         rs = ps.executeQuery();
 
-        // Crear una instancia de la clase que contiene el método obtenerNumeroLabPorId
         EquipoModelo equipoModelo = new EquipoModelo();
 
-        // Llenar filas con los datos filtrados
         while (rs.next()) {
             Row filaDatos = hoja.createRow(numFila);
 
-            // Obtener el numero_lab usando el método
             int idLaboratorio = rs.getInt("id_laboratorio");
             String numeroLab = equipoModelo.obtenerNumeroLabPorId(idLaboratorio);
 
-            // Llenar la fila de datos
             Object[] fila = {
-                numeroLab,  // En lugar de rs.getInt("id_laboratorio"), usamos el numeroLab
+                numeroLab,  
                 rs.getString("tipo_equipo"),
                 rs.getString("cod_patrimonial"),
                 rs.getString("numero_serie"),
@@ -183,18 +176,15 @@ public static void cargarBD_Excel_Equipo(String buscar) {
         ps.close();
         conexion.close();
 
-        // Ajustar ancho de columnas
         for (int i = 0; i < cabeceras.length; i++) {
             hoja.setColumnWidth(i, 30 * 256);
         }
 
-        // Guardar archivo Excel
         String filePath = "ReporteEquipos.xlsx";
         FileOutputStream archivo = new FileOutputStream(filePath);
         libro.write(archivo);
         archivo.close();
 
-        // Abrir automáticamente el archivo Excel
         File archivoExcel = new File(filePath);
         if (Desktop.isDesktopSupported()) {
             Desktop.getDesktop().open(archivoExcel);
@@ -241,7 +231,6 @@ public static void cargarBD_Excel_Equipo(String buscar) {
         return listaEquipos;
     }
     
-    //======================================================================
     
          //============================================================================
     //                     METODO DE USUARIO DAO PARA BUSCAR
@@ -250,12 +239,11 @@ public static void cargarBD_Excel_Equipo(String buscar) {
         ArrayList<EquipoModelo> listaEquipos = new ArrayList<>();
 
         try {
-            // Consulta segura con parámetros preparados
             String sql = "SELECT e.id_laboratorio, e.tipo_equipo, e.cod_patrimonial, e.numero_serie, e.estado " +
                  "FROM equipo e " +
                  "INNER JOIN laboratorio l ON e.id_laboratorio = l.id_laboratorio " +
                  "WHERE e.cod_patrimonial LIKE ? OR " +
-                 "l.numero_lab LIKE ? OR " +  // Búsqueda por numero_lab
+                 "l.numero_lab LIKE ? OR " + 
                  "e.tipo_equipo LIKE ? OR " +
                  "e.numero_serie LIKE ? OR " +
                  "e.estado LIKE ?";
@@ -263,17 +251,15 @@ public static void cargarBD_Excel_Equipo(String buscar) {
             cn = Conexion_BD.getConexionBD();
             pt = cn.prepareStatement(sql);
 
-            // Establecer el parámetro de búsqueda
             for (int i = 1; i <= 5; i++) {
                 pt.setString(i, "%" + buscar + "%");
             }
 
             rs = pt.executeQuery();
 
-            // Iterar sobre los resultados y agregar los equipos a la lista
             while (rs.next()) {
                 EquipoModelo equipoModelo = new EquipoModelo();
-                equipoModelo.setIdLaboratorio(rs.getInt("id_laboratorio"));  // Obtener id_laboratorio
+                equipoModelo.setIdLaboratorio(rs.getInt("id_laboratorio"));  
                 equipoModelo.setTipoEquipo(rs.getString("tipo_equipo"));
                 equipoModelo.setCodPatrimonial(rs.getString("cod_patrimonial"));
                 equipoModelo.setNumeroSerie(rs.getString("numero_serie"));

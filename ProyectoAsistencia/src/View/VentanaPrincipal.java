@@ -38,7 +38,7 @@ public class VentanaPrincipal extends JFrame {
         UIManager.put("Button.select", new Color(0, 0, 0, 0));         
         // Configuración de la ventana principal
         setSize(1600, 900);
-        setTitle("GESTOR DE LABORATORIOS");
+        setTitle("GESTOR GENERAL DE LABORATORIOS DE LA FACULTAD DE INGENIERIA INDUSTRIAL Y SISTEMAS");
         setResizable(false);
         setLocationRelativeTo(null);
         setLayout(null);

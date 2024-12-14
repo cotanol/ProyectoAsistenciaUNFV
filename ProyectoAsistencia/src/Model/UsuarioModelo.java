@@ -184,7 +184,6 @@ public ArrayList<UsuarioModelo> buscarResgistroUsuarios(String buscar) {
 
         rs = pt.executeQuery();
 
-        // Itera sobre los resultados y agrega los usuarios a la lista
         while (rs.next()) {
             UsuarioModelo usuarioModelo = new UsuarioModelo();
             usuarioModelo.setIdUsuario(rs.getInt("id_usuario"));
@@ -238,7 +237,6 @@ public ArrayList<UsuarioModelo> buscarResgistroUsuarios(String buscar) {
         try {
             Connection conexion = cn.getConexionBD();
 
-            // Consulta con filtro dinámico
             String sql = "SELECT nombres, apellidos, tipo_documento, nro_documento, numero, tipo_usuario, nombre_usuario, contrasena, email " +
                          "FROM usuario WHERE " +
                          "nombres LIKE ? OR " +
@@ -253,7 +251,6 @@ public ArrayList<UsuarioModelo> buscarResgistroUsuarios(String buscar) {
 
             ps = conexion.prepareStatement(sql);
 
-            // Configurar los parámetros del filtro
             for (int i = 1; i <= 9; i++) {
                 ps.setString(i, "%" + buscar + "%");
             }
@@ -261,7 +258,6 @@ public ArrayList<UsuarioModelo> buscarResgistroUsuarios(String buscar) {
             rs = ps.executeQuery();
             int numCol = rs.getMetaData().getColumnCount();
 
-            // Llenar filas con los datos filtrados
             while (rs.next()) {
                 Row filaDatos = hoja.createRow(numFila);
 
@@ -277,18 +273,15 @@ public ArrayList<UsuarioModelo> buscarResgistroUsuarios(String buscar) {
             ps.close();
             conexion.close();
 
-            // Ajustar ancho de columnas
             for (int i = 0; i < cabeceras.length; i++) {
                 hoja.setColumnWidth(i, 30 * 256);
             }
 
-            // Guardar archivo Excel
             String filePath = "ReporteRegistrosUsuarios.xlsx";
             FileOutputStream archivo = new FileOutputStream(filePath);
             libro.write(archivo);
             archivo.close();
 
-            // Abrir automáticamente el archivo Excel
             File archivoExcel = new File(filePath);
             if (Desktop.isDesktopSupported()) {
                 Desktop.getDesktop().open(archivoExcel);
@@ -350,7 +343,7 @@ public ArrayList<UsuarioModelo> buscarResgistroUsuarios(String buscar) {
             rs = pt.executeQuery();
 
             if (rs.next()) {
-                cargo = rs.getString("tipo_usuario"); // Obtener el cargo
+                cargo = rs.getString("tipo_usuario");
             }
 
             rs.close();

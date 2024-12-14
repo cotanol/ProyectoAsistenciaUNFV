@@ -19,7 +19,7 @@ import View.VentanaRight3;
 
 public class VentanaInternalFrame extends JFrame implements MouseListener {
     
-    //Controlador
+    //Controladores
     private AsignaturaController asignaturaControlador;
     private LaboratorioController laboratorioControlador;
     private VentanaRight4 ventanaRight4;

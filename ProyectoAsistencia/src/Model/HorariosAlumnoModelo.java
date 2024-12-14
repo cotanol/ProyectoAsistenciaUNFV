@@ -13,7 +13,6 @@ public class HorariosAlumnoModelo {
     private String codigoEstudiante;
     private String codigoHorario;
     
-    // Conexión a la base de datos
     Connection cn = null;
     PreparedStatement pt = null;
     ResultSet rs = null;
@@ -25,10 +24,10 @@ public class HorariosAlumnoModelo {
     }
     
     public HorariosAlumnoModelo() {
-        // Constructor vacío
+
     }
     
-    // Getter y Setter
+
     public int getIdAlumno() {
         return idAlumno;
     }
@@ -62,8 +61,6 @@ public class HorariosAlumnoModelo {
     }
     
     
-    
-    // Método para insertar horarios de un alumno
     public int insertarHorarioAlumno(HorariosAlumnoModelo horariosAlumno) {
         int estado = 0;
         try {
@@ -82,7 +79,6 @@ public class HorariosAlumnoModelo {
         return estado;
     }
     
-    // Método para eliminar un horario de un alumno
     public int eliminarHorarioAlumno(int idAlumno, int idHorario) {
         int estado = 0;
         try {
@@ -130,7 +126,7 @@ public class HorariosAlumnoModelo {
         return listaHorarios;
     }
     
-    // Método para obtener todos los horarios de un alumno
+
     public ArrayList<HorariosAlumnoModelo> obtenerHorariosPorAlumno(int idAlumno) {
         ArrayList<HorariosAlumnoModelo> listaHorarios = new ArrayList<>();
         try {
@@ -155,7 +151,7 @@ public class HorariosAlumnoModelo {
         return listaHorarios;
     }
     
-     // Nuevo Método: Obtener Alumnos por Horario
+
     public ArrayList<AlumnoModelo> obtenerAlumnosPorHorario(int idHorario) {
         ArrayList<AlumnoModelo> listaAlumnos = new ArrayList<>();
         String sql = "SELECT a.id_alumno, a.codigo_alumno, a.nombres, a.apellidos " +
@@ -185,9 +181,7 @@ public class HorariosAlumnoModelo {
         }
         return listaAlumnos;
     }
-    //=========================================================================
-
-    
+  
     public String obtenerCodigoHoraioPorId(int idHorario) {
         String codigoHorario = "Desconocida";
         try {
@@ -272,7 +266,7 @@ public class HorariosAlumnoModelo {
         ArrayList<HorariosAlumnoModelo> listaHorarios = new ArrayList<>();
 
         try {
-            // Consulta con JOIN para mostrar los nombres en lugar de los IDs
+
             String sql = "SELECT ha.id_alumno, ha.id_horario, a.codigo_alumno, hl.codigo_horario " +
                          "FROM horarios_alumno ha " +
                          "JOIN alumno a ON ha.id_alumno = a.id_alumno " +
@@ -282,17 +276,15 @@ public class HorariosAlumnoModelo {
             cn = Conexion_BD.getConexionBD();
             pt = cn.prepareStatement(sql);
 
-            // Asignar el mismo valor de búsqueda a todos los parámetros
-            pt.setString(1, "%" + buscar + "%"); // for codigo_alumno
-            pt.setString(2, "%" + buscar + "%"); // for codigo_horario
+            pt.setString(1, "%" + buscar + "%");
+            pt.setString(2, "%" + buscar + "%");
 
             rs = pt.executeQuery();
 
-            // Itera sobre los resultados y agrega los registros a la lista
             while (rs.next()) {
                 HorariosAlumnoModelo horarioAlumno = new HorariosAlumnoModelo();
                 horarioAlumno.setCodigoEstudiante(rs.getString("codigo_alumno"));
-                horarioAlumno.setCodigoHorario(rs.getString("codigo_horario")); // Nombre del laboratorio
+                horarioAlumno.setCodigoHorario(rs.getString("codigo_horario")); 
 
                 listaHorarios.add(horarioAlumno);
             }
