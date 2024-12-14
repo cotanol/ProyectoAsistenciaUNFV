@@ -31,6 +31,8 @@ Si deseas clonar este repositorio para trabajar en él de manera local, sigue es
 3. Abrir NetBeans para poder abrir el proyecto.
 4. Ejecutar el proyecto: clic derecho y seleccionar "Run File".
 
+![penguin_walk](penguin_walk.gif)
+
 ## Login del Programa
 1. Puedes ingresar como docente o administrador (`admin`). El administrador tiene acceso a todas las opciones, mientras que el docente solo puede acceder al botón de asistencia.
 2. Datos de acceso:
